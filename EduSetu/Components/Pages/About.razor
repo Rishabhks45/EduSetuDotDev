@@ -1,0 +1,298 @@
+@page "/about"
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager NavigationManager
+
+<div class="min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold mb-4">About EduSetu</h1>
+                <p class="text-xl text-primary-100 max-w-3xl mx-auto">
+                    Empowering students with comprehensive educational resources, collaborative learning tools, and a supportive community to achieve academic excellence.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mission Section -->
+    <div class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        At EduSetu, we believe that quality education should be accessible to every student. Our mission is to bridge the gap between traditional learning and modern digital resources, creating a comprehensive platform that supports students throughout their academic journey.
+                    </p>
+                    <p class="text-gray-600 mb-6">
+                        We strive to provide high-quality study materials, interactive learning experiences, and a collaborative environment where students can share knowledge, ask questions, and grow together.
+                    </p>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="text-gray-700">Quality Education</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="text-gray-700">Accessibility</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="text-gray-700">Collaboration</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-100 rounded-lg p-8">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-primary-600 mb-2">10K+</div>
+                            <div class="text-gray-600">Active Students</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-primary-600 mb-2">5K+</div>
+                            <div class="text-gray-600">Study Materials</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-primary-600 mb-2">50+</div>
+                            <div class="text-gray-600">Subjects Covered</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-primary-600 mb-2">95%</div>
+                            <div class="text-gray-600">Success Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">What We Offer</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Comprehensive educational tools and resources designed to enhance your learning experience
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @foreach (var feature in features)
+                {
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                        <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-4">
+                            <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                @feature.Icon
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">@feature.Title</h3>
+                        <p class="text-gray-600">@feature.Description</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Our Team</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Meet the passionate educators and developers behind EduSetu
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @foreach (var member in teamMembers)
+                {
+                    <div class="text-center">
+                        <div class="w-24 h-24 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                            @member.Initials
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">@member.Name</h3>
+                        <p class="text-primary-600 mb-3">@member.Role</p>
+                        <p class="text-gray-600 text-sm">@member.Description</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Values Section -->
+    <div class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Our Values</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    The principles that guide everything we do
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                @foreach (var value in values)
+                {
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                @value.Icon
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">@value.Title</h3>
+                        <p class="text-gray-600 text-sm">@value.Description</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="py-16 bg-primary-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-white mb-4">Ready to Start Learning?</h2>
+            <p class="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
+                Join thousands of students who are already benefiting from our comprehensive educational platform.
+            </p>
+            <div class="flex items-center justify-center space-x-4">
+                <button @onclick="@(() => NavigationManager.NavigateTo("/register"))" class="px-8 py-3 bg-white text-primary-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    Get Started
+                </button>
+                <button @onclick="@(() => NavigationManager.NavigateTo("/contact"))" class="px-8 py-3 border border-white text-white rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-colors">
+                    Contact Us
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Feature> features = new();
+    private List<TeamMember> teamMembers = new();
+    private List<Value> values = new();
+
+    protected override void OnInitialized()
+    {
+        features = new List<Feature>
+        {
+            new() {
+                Title = "Comprehensive Study Materials",
+                Description = "Access a vast library of notes, question papers, solutions, and study guides across all subjects and levels.",
+                Icon = "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253\"></path>"
+            },
+            new() {
+                Title = "Interactive Learning",
+                Description = "Engage with video tutorials, practice tests, and interactive quizzes to reinforce your understanding.",
+                Icon = "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z\"></path>"
+            },
+            new() {
+                Title = "Community Support",
+                Description = "Connect with fellow students, ask questions, and share knowledge in our collaborative learning community.",
+                Icon = "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z\"></path>"
+            },
+            new() {
+                Title = "Progress Tracking",
+                Description = "Monitor your learning progress with detailed analytics and personalized recommendations.",
+                Icon = "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z\"></path>"
+            },
+            new() {
+                Title = "Mobile Access",
+                Description = "Study anywhere, anytime with our mobile-responsive platform that works on all devices.",
+                Icon = "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z\"></path>"
+            },
+            new() {
+                Title = "Expert Guidance",
+                Description = "Get help from qualified educators and subject matter experts through our support system.",
+                Icon = "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z\"></path>"
+            }
+        };
+
+        teamMembers = new List<TeamMember>
+        {
+            new() {
+                Name = "Dr. Sarah Johnson",
+                Role = "Chief Education Officer",
+                Initials = "SJ",
+                Description = "Former university professor with 15+ years of experience in curriculum development and educational technology."
+            },
+            new() {
+                Name = "Michael Chen",
+                Role = "Lead Developer",
+                Initials = "MC",
+                Description = "Full-stack developer passionate about creating intuitive educational platforms and learning experiences."
+            },
+            new() {
+                Name = "Dr. Priya Sharma",
+                Role = "Content Director",
+                Initials = "PS",
+                Description = "Subject matter expert specializing in creating high-quality educational content across multiple disciplines."
+            },
+            new() {
+                Name = "Alex Rodriguez",
+                Role = "UX/UI Designer",
+                Initials = "AR",
+                Description = "Designer focused on creating engaging and accessible learning interfaces for students of all ages."
+            },
+            new() {
+                Name = "Emily Watson",
+                Role = "Community Manager",
+                Initials = "EW",
+                Description = "Dedicated to fostering a supportive learning community and ensuring student success."
+            },
+            new() {
+                Name = "David Kim",
+                Role = "Product Manager",
+                Initials = "DK",
+                Description = "Oversees product development and ensures our platform meets the evolving needs of students and educators."
+            }
+        };
+
+        values = new List<Value>
+        {
+            new() {
+                Title = "Excellence",
+                Description = "We strive for excellence in everything we do, from content quality to user experience.",
+                Icon = "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z\"></path>"
+            },
+            new() {
+                Title = "Accessibility",
+                Description = "Education should be accessible to everyone, regardless of background or circumstances.",
+                Icon = "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6\"></path>"
+            },
+            new() {
+                Title = "Innovation",
+                Description = "We continuously innovate to provide cutting-edge learning tools and experiences.",
+                Icon = "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13 10V3L4 14h7v7l9-11h-7z\"></path>"
+            },
+            new() {
+                Title = "Community",
+                Description = "We believe in the power of collaborative learning and supportive communities.",
+                Icon = "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z\"></path>"
+            }
+        };
+    }
+
+    public class Feature
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Icon { get; set; } = "";
+    }
+
+    public class TeamMember
+    {
+        public string Name { get; set; } = "";
+        public string Role { get; set; } = "";
+        public string Initials { get; set; } = "";
+        public string Description { get; set; } = "";
+    }
+
+    public class Value
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Icon { get; set; } = "";
+    }
+} 

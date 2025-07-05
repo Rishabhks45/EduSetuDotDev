@@ -1,0 +1,673 @@
+@page "/notes"
+@using System.ComponentModel.DataAnnotations
+@using EduSetu.Components.Shared
+@inject NavigationManager NavigationManager
+
+<div class="min-h-screen bg-gray-50 pt-16">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-3 bg-primary-100 rounded-xl">
+                    <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800">Study Notes</h1>
+                    <p class="text-gray-600 mt-1">Comprehensive study materials organized by category</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar -->
+            <NotesSidebar SelectedCategory="selectedCategory"
+                         OnCategorySelect="@(cat => SelectCategory(cat))"
+                         Filters="filters"
+                         FilterOptions="filterOptions"
+                         OnFilterChange="@(args => HandleFilterChange(args.Item1, args.Item2))"
+                         OnClearFilters="@(() => ClearFilters())" />
+
+            <!-- Main Content -->
+            <div class="flex-1">
+                <!-- Search and Controls -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                    <!-- Search Bar -->
+                    <div class="relative mb-4">
+                        <input type="text" placeholder="Search notes by title, description, tags, or author..."
+                               @bind-value="searchQuery" @bind-value:event="oninput"
+                               class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors" />
+                        <svg class="absolute left-4 top-3.5 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+
+                    <!-- Dynamic Filters -->
+                    @if (!string.IsNullOrEmpty(selectedCategory) && GetActiveFilters().Any())
+                    {
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
+                                    </svg>
+                                    <h3 class="font-medium text-gray-800">Filters</h3>
+                                </div>
+                                <button @onclick="ClearFilters"
+                                        class="text-sm text-primary-600 hover:text-primary-700 font-medium">
+                                    Clear All
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                @foreach (var filterType in GetActiveFilters())
+                                {
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            @GetFilterLabel(filterType)
+                                        </label>
+                                        <select @bind="filters[filterType]" @bind:after="() => StateHasChanged()"
+                                                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm">
+                                            <option value="">All @GetFilterLabel(filterType)s</option>
+                                            @if (filterOptions.ContainsKey(filterType))
+                                            {
+                                                @foreach (var option in filterOptions[filterType])
+                                                {
+                                                    <option value="@option">@option</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Active Filters Display -->
+                            @if (filters.Any(f => !string.IsNullOrEmpty(f.Value)))
+                            {
+                                <div class="mt-4 pt-4 border-t border-gray-200">
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach (var filter in filters)
+                                        {
+                                            @if (!string.IsNullOrEmpty(filter.Value))
+                                            {
+                                                <span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 text-primary-800 text-sm rounded-full">
+                                                    @GetFilterLabel(filter.Key): @filter.Value
+                                                    <button @onclick="() => ClearFilter(filter.Key)"
+                                                            class="ml-1 hover:text-primary-900">
+                                                        ×
+                                                    </button>
+                                                </span>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <!-- Controls -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <!-- View Mode Toggle -->
+                            <div class="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                                <button @onclick="@(() => SetViewMode("grid"))"
+                                        class="@($"p-2 rounded-md transition-colors {(viewMode == "grid" ? "bg-white text-gray-800 shadow-sm" : "text-gray-600 hover:text-gray-800")}")">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                                    </svg>
+                                </button>
+                                <button @onclick="@(() => SetViewMode("list"))"
+                                        class="@($"p-2 rounded-md transition-colors {(viewMode == "list" ? "bg-white text-gray-800 shadow-sm" : "text-gray-600 hover:text-gray-800")}")">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Mobile Filters Toggle -->
+                            <button @onclick="ToggleShowFilters"
+                                    class="lg:hidden flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
+                                </svg>
+                                <span>Filters</span>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <!-- Sort Controls -->
+                            <div class="flex items-center gap-2">
+                                <label class="text-sm font-medium text-gray-700">Sort by:</label>
+                                <select @bind="sortBy" @bind:after="() => StateHasChanged()"
+                                        class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm">
+                                    <option value="newest">Newest</option>
+                                    <option value="popular">Most Popular</option>
+                                    <option value="rating">Highest Rated</option>
+                                    <option value="downloads">Most Downloaded</option>
+                                </select>
+                                <button @onclick="ToggleSortOrder"
+                                        class="p-2 hover:bg-gray-100 rounded-md transition-colors"
+                                        title="@($"Sort {(sortOrder == "asc" ? "Ascending" : "Descending")}")">
+                                    @if (sortOrder == "asc")
+                                    {
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path>
+                                        </svg>
+                                    }
+                                    else
+                                    {
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path>
+                                        </svg>
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Count and Pagination Info -->
+                <div class="mb-6 flex items-center justify-between">
+                    <p class="text-gray-600">
+                        Showing @(startIndex + 1)-@Math.Min(endIndex, filteredNotes.Count) of @filteredNotes.Count notes
+                        @if (!string.IsNullOrEmpty(selectedCategory))
+                        {
+                            <span class="ml-2 px-2 py-1 bg-primary-100 text-primary-800 text-sm rounded">
+                                @(char.ToUpper(selectedCategory[0]) + selectedCategory.Substring(1)) Wise
+                            </span>
+                        }
+                    </p>
+                    
+                    @if (totalPages > 1)
+                    {
+                        <p class="text-sm text-gray-500">
+                            Page @currentPage of @totalPages
+                        </p>
+                    }
+                </div>
+
+                <!-- Notes Display -->
+                @if (currentNotes.Any())
+                {
+                    @if (viewMode == "grid")
+                    {
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+                            @foreach (var note in currentNotes)
+                            {
+                                <NoteCard Note="note" OnView="@(() => HandleViewNote(note))" OnDownload="@(() => HandleDownloadNote(note))" />
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="space-y-4 mb-8">
+                            @foreach (var note in currentNotes)
+                            {
+                                <NotesListView Note="note" OnView="@(() => HandleViewNote(note))" OnDownload="@(() => HandleDownloadNote(note))" />
+                            }
+                        </div>
+                    }
+
+                    <!-- Pagination -->
+                    @if (totalPages > 1)
+                    {
+                        <div class="flex items-center justify-center gap-2 mt-8">
+                            <button @onclick="() => HandlePageChange(currentPage - 1)"
+                                    disabled="@(currentPage == 1)"
+                                    class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                                Previous
+                            </button>
+
+                            <div class="flex items-center gap-1">
+                                @foreach (var page in GetPageNumbers())
+                                {
+                                    @if (page == "...")
+                                    {
+                                        <span class="px-3 py-2 text-gray-500">...</span>
+                                    }
+                                    else
+                                    {
+                                        <button @onclick="() => HandlePageChange((int)page)"
+                                                class="@($"px-3 py-2 rounded-lg transition-colors {(currentPage == (int)page ? "bg-primary-600 text-white" : "hover:bg-gray-100 text-gray-700")}")">
+                                            @((int)page)
+                                        </button>
+                                    }
+                                }
+                            </div>
+
+                            <button @onclick="() => HandlePageChange(currentPage + 1)"
+                                    disabled="@(currentPage == totalPages)"
+                                    class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                                Next
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-12">
+                        <div class="text-gray-400 mb-4">
+                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No notes found</h3>
+                        <p class="text-gray-600 mb-4">
+                            Try adjusting your search terms or filters to find what you"re looking for.
+                        </p>
+                        @if (filters.Any(f => !string.IsNullOrEmpty(f.Value)))
+                        {
+                            <button @onclick="ClearFilters"
+                                    class="text-primary-600 hover:text-primary-700 font-medium">
+                                Clear all filters
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string selectedCategory = "";
+    private string searchQuery = "";
+    private string viewMode = "grid";
+    private string sortBy = "newest";
+    private string sortOrder = "desc";
+    private int currentPage = 1;
+    private const int itemsPerPage = 12;
+    private bool showFilters = false;
+
+    private Dictionary<string, string> filters = new()
+    {
+        ["board"] = "",
+        ["university"] = "",
+        ["exam"] = "",
+        ["state"] = "",
+        ["subject"] = "",
+        ["course"] = "",
+        ["semester"] = "",
+        ["noteType"] = "",
+        ["difficulty"] = "",
+        ["author"] = "",
+        ["rating"] = "",
+        ["verified"] = "",
+        ["premium"] = ""
+    };
+
+    private readonly Dictionary<string, List<string>> filterOptions = new()
+    {
+        ["board"] = new List<string> { "CBSE", "ICSE", "Maharashtra State Board", "Karnataka State Board", "Tamil Nadu State Board" },
+        ["university"] = new List<string> { "Delhi University", "Mumbai University", "Bangalore University", "IIT Bombay", "IIT Delhi", "IIT Madras" },
+        ["exam"] = new List<string> { "JEE Main", "JEE Advanced", "NEET", "GATE", "CAT", "UPSC", "SSC" },
+        ["state"] = new List<string> { "Delhi", "Maharashtra", "Karnataka", "Tamil Nadu", "Gujarat", "Rajasthan" },
+        ["subject"] = new List<string> { "Physics", "Chemistry", "Mathematics", "Biology", "Computer Science", "English" },
+        ["course"] = new List<string> { "Class 10", "Class 11", "Class 12", "B.Tech Computer Science", "B.Tech Engineering", "JEE Preparation", "NEET Preparation", "GATE Preparation" },
+        ["semester"] = new List<string> { "Semester 1", "Semester 2", "Semester 3", "Semester 4", "Semester 5", "Semester 6", "Semester 7", "Semester 8" },
+        ["noteType"] = new List<string> { "lecture", "summary", "reference", "assignment", "lab" },
+        ["difficulty"] = new List<string> { "beginner", "intermediate", "advanced" },
+        ["author"] = new List<string> { "Dr. Sarah Johnson", "Prof. Michael Chen", "Dr. Priya Sharma", "Prof. Rajesh Kumar", "Dr. Alex Thompson", "Ms. Lisa Anderson", "Prof. David Wilson", "Dr. Emily Rodriguez" },
+        ["rating"] = new List<string> { "4+ Stars", "3+ Stars", "2+ Stars", "1+ Stars" }
+    };
+
+    private List<Note> notes = new()
+    {
+        new Note
+        {
+            Id = "1",
+            Title = "CBSE Class 12 Physics Complete Notes",
+            Subject = "Physics",
+            Course = "Class 12",
+            Semester = "",
+            University = "",
+            Board = "CBSE",
+            Exam = "",
+            State = "",
+            Author = "Dr. Sarah Johnson",
+            Description = "Comprehensive physics notes covering all chapters for CBSE Class 12 including mechanics, thermodynamics, optics, and modern physics with solved examples.",
+            Tags = new List<string> { "Physics", "CBSE", "Class 12", "Mechanics", "Thermodynamics", "Optics" },
+            DownloadCount = 5245,
+            ViewCount = 28750,
+            Rating = 4.8f,
+            TotalRatings = 256,
+            FileSize = "15.2 MB",
+            Pages = 345,
+            UploadDate = "2024-01-15",
+            LastUpdated = "2024-01-20",
+            Thumbnail = "https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg",
+            Category = "board",
+            NoteType = "lecture",
+            Difficulty = "intermediate",
+            IsVerified = true,
+            IsPremium = false
+        },
+        new Note
+        {
+            Id = "2",
+            Title = "Delhi University Computer Science Semester 4 Notes",
+            Subject = "Computer Science",
+            Course = "B.Tech Computer Science",
+            Semester = "Semester 4",
+            University = "Delhi University",
+            Board = "",
+            Exam = "",
+            State = "Delhi",
+            Author = "Prof. Michael Chen",
+            Description = "Complete study material for DU Computer Science covering Data Structures, Algorithms, Database Management, and Operating Systems.",
+            Tags = new List<string> { "Computer Science", "Data Structures", "Algorithms", "DBMS", "Operating Systems" },
+            DownloadCount = 3890,
+            ViewCount = 18420,
+            Rating = 4.9f,
+            TotalRatings = 203,
+            FileSize = "22.1 MB",
+            Pages = 420,
+            UploadDate = "2024-01-10",
+            LastUpdated = "2024-01-18",
+            Thumbnail = "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
+            Category = "university",
+            NoteType = "lecture",
+            Difficulty = "advanced",
+            IsVerified = true,
+            IsPremium = true
+        }
+    };
+
+    // Add more sample notes for pagination demonstration
+    protected override void OnInitialized()
+    {
+        for (int i = 3; i <= 35; i++)
+        {
+            var subjects = new[] { "Physics", "Chemistry", "Mathematics", "Biology", "Computer Science" };
+            var universities = new[] { "Delhi University", "Mumbai University", "Bangalore University" };
+            var boards = new[] { "CBSE", "ICSE", "State Board" };
+            var exams = new[] { "JEE", "NEET", "GATE" };
+            var states = new[] { "Delhi", "Maharashtra", "Karnataka" };
+            var categories = new[] { "board", "university", "exam", "state" };
+            var noteTypes = new[] { "lecture", "summary", "reference", "assignment", "lab" };
+            var difficulties = new[] { "beginner", "intermediate", "advanced" };
+
+            notes.Add(new Note
+            {
+                Id = i.ToString(),
+                Title = $"Sample Note {i}",
+                Subject = subjects[i % subjects.Length],
+                Course = "Sample Course",
+                Semester = $"Semester {(i % 8) + 1}",
+                University = universities[i % universities.Length],
+                Board = boards[i % boards.Length],
+                Exam = exams[i % exams.Length],
+                State = states[i % states.Length],
+                Author = $"Author {i}",
+                Description = $"Sample description for note {i}",
+                Tags = new List<string> { "Sample", "Education", "Learning" },
+                DownloadCount = Random.Shared.Next(100, 5000),
+                ViewCount = Random.Shared.Next(1000, 20000),
+                Rating = 4.0f + (float)Random.Shared.NextDouble(),
+                TotalRatings = Random.Shared.Next(50, 300),
+                FileSize = $"{Random.Shared.Next(5, 20)}.{Random.Shared.Next(0, 9)} MB",
+                Pages = Random.Shared.Next(50, 400),
+                UploadDate = "2024-01-01",
+                LastUpdated = "2024-01-01",
+                Thumbnail = "https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg",
+                Category = categories[i % categories.Length],
+                NoteType = noteTypes[i % noteTypes.Length],
+                Difficulty = difficulties[i % difficulties.Length],
+                IsVerified = Random.Shared.Next(2) == 1,
+                IsPremium = Random.Shared.Next(10) > 7
+            });
+        }
+    }
+
+    private List<Note> filteredNotes => notes.Where(note =>
+    {
+        var matchesSearch = string.IsNullOrEmpty(searchQuery) ||
+                           note.Title.ToLower().Contains(searchQuery.ToLower()) ||
+                           note.Description.ToLower().Contains(searchQuery.ToLower()) ||
+                           note.Tags.Any(tag => tag.ToLower().Contains(searchQuery.ToLower())) ||
+                           note.Author.ToLower().Contains(searchQuery.ToLower());
+
+        var matchesCategory = string.IsNullOrEmpty(selectedCategory) || note.Category == selectedCategory;
+
+        var matchesFilters = filters.All(filter =>
+        {
+            if (string.IsNullOrEmpty(filter.Value)) return true;
+
+            return filter.Key switch
+            {
+                "rating" => note.Rating >= int.Parse(filter.Value[0].ToString()),
+                "verified" => !bool.Parse(filter.Value) || note.IsVerified,
+                "premium" => !bool.Parse(filter.Value) || note.IsPremium,
+                _ => (GetNoteValue(note, filter.Key) ?? "") == (filter.Value ?? "")
+            };
+        });
+
+        return matchesSearch && matchesCategory && matchesFilters;
+    }).ToList();
+
+    private string GetNoteValue(Note note, string filterKey)
+    {
+        return filterKey switch
+        {
+            "board" => note.Board,
+            "university" => note.University,
+            "exam" => note.Exam,
+            "state" => note.State,
+            "subject" => note.Subject,
+            "course" => note.Course,
+            "semester" => note.Semester,
+            "noteType" => note.NoteType,
+            "difficulty" => note.Difficulty,
+            "author" => note.Author,
+            _ => ""
+        };
+    }
+
+    private List<Note> sortedNotes
+    {
+        get
+        {
+            return sortBy switch
+            {
+                "newest" => filteredNotes
+                    .OrderByDescending(note => DateTime.Parse(note.UploadDate))
+                    .ThenBy(note => note.Title)
+                    .ToList(),
+
+                "popular" => filteredNotes
+                    .OrderByDescending(note => note.ViewCount)
+                    .ThenBy(note => note.Title)
+                    .ToList(),
+
+                "rating" => filteredNotes
+                    .OrderByDescending(note => note.Rating)
+                    .ThenBy(note => note.Title)
+                    .ToList(),
+
+                "downloads" => filteredNotes
+                    .OrderByDescending(note => note.DownloadCount)
+                    .ThenBy(note => note.Title)
+                    .ToList(),
+
+                _ => filteredNotes
+                    .OrderByDescending(note => DateTime.Parse(note.UploadDate))
+                    .ThenBy(note => note.Title)
+                    .ToList(),
+            };
+        }
+    }
+
+    private int totalPages => (int)Math.Ceiling((double)filteredNotes.Count / itemsPerPage);
+    private int startIndex => (currentPage - 1) * itemsPerPage;
+    private int endIndex => startIndex + itemsPerPage;
+    private List<Note> currentNotes => sortedNotes.Skip(startIndex).Take(itemsPerPage).ToList();
+
+    private void SelectCategory(string category)
+    {
+        selectedCategory = (selectedCategory == category ? "" : category);
+        ClearFilters();
+        currentPage = 1;
+    }
+
+    private void SetViewMode(string mode)
+    {
+        viewMode = mode;
+    }
+
+    private void ToggleShowFilters()
+    {
+        showFilters = !showFilters;
+    }
+
+    private void ToggleSortOrder()
+    {
+        sortOrder = sortOrder == "asc" ? "desc" : "asc";
+        if (sortOrder == "desc")
+        {
+            // Reverse the sorted list for descending order
+            sortedNotes.Reverse();
+        }
+    }
+
+    private void ClearFilters()
+    {
+        filters = new Dictionary<string, string>
+        {
+            ["board"] = "",
+            ["university"] = "",
+            ["exam"] = "",
+            ["state"] = "",
+            ["subject"] = "",
+            ["course"] = "",
+            ["semester"] = "",
+            ["noteType"] = "",
+            ["difficulty"] = "",
+            ["author"] = "",
+            ["rating"] = "",
+            ["verified"] = "",
+            ["premium"] = ""
+        };
+    }
+
+    private void HandleFilterChange(string filterType, string value)
+    {
+        if (filters.ContainsKey(filterType))
+        {
+            filters[filterType] = value;
+        }
+        currentPage = 1;
+    }
+
+    private void ClearFilter(string filterType)
+    {
+        if (filters.ContainsKey(filterType))
+        {
+            filters[filterType] = "";
+        }
+    }
+
+    private void HandlePageChange(int page)
+    {
+        if (page >= 1 && page <= totalPages)
+        {
+            currentPage = page;
+        }
+    }
+
+    private List<object> GetPageNumbers()
+    {
+        var pages = new List<object>();
+        var maxVisible = 5;
+
+        if (totalPages <= maxVisible)
+        {
+            for (int i = 1; i <= totalPages; i++)
+            {
+                pages.Add(i);
+            }
+        }
+        else
+        {
+            if (currentPage <= 3)
+            {
+                for (int i = 1; i <= 4; i++)
+                {
+                    pages.Add(i);
+                }
+                pages.Add("...");
+                pages.Add(totalPages);
+            }
+            else if (currentPage >= totalPages - 2)
+            {
+                pages.Add(1);
+                pages.Add("...");
+                for (int i = totalPages - 3; i <= totalPages; i++)
+                {
+                    pages.Add(i);
+                }
+            }
+            else
+            {
+                pages.Add(1);
+                pages.Add("...");
+                for (int i = currentPage - 1; i <= currentPage + 1; i++)
+                {
+                    pages.Add(i);
+                }
+                pages.Add("...");
+                pages.Add(totalPages);
+            }
+        }
+
+        return pages;
+    }
+
+    private List<string> GetActiveFilters()
+    {
+        return selectedCategory switch
+        {
+            "board" => new List<string> { "board", "subject", "course" },
+            "university" => new List<string> { "university", "subject", "course", "semester" },
+            "exam" => new List<string> { "exam", "subject", "course" },
+            "state" => new List<string> { "state", "subject", "course" },
+            _ => new List<string>()
+        };
+    }
+
+    private string GetFilterLabel(string filterType)
+    {
+        return filterType switch
+        {
+            "board" => "Board",
+            "university" => "University",
+            "exam" => "Exam",
+            "state" => "State",
+            "subject" => "Subject",
+            "course" => "Course",
+            "semester" => "Semester",
+            "noteType" => "Note Type",
+            "difficulty" => "Difficulty",
+            "author" => "Author",
+            "rating" => "Rating",
+            _ => filterType
+        };
+    }
+
+    private void HandleViewNote(Note note)
+    {
+        NavigationManager.NavigateTo($"/notes/{note.Id}");
+    }
+
+    private void HandleDownloadNote(Note note)
+    {
+        Console.WriteLine($"Downloading note: {note.Id}");
+        // In a real app, this would trigger the download
+    }
+} 

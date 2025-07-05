@@ -1,0 +1,529 @@
+@page "/papers"
+@page "/papers/{PaperId:int}"
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager NavigationManager
+
+<div class="min-h-screen bg-gray-50 pt-16">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Study Papers</h1>
+                        <p class="text-gray-600 mt-1">Browse and view study materials, papers, and documents</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button @onclick="ShowSearch" class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            Search
+                        </button>
+                        <button @onclick="UploadPaper" class="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Upload Paper
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    @if (showSearch)
+    {
+        <div class="bg-white border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-1">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                            <input @bind="searchQuery" @bind:event="oninput" @onkeyup="HandleSearch" type="text" placeholder="Search papers by title, subject, or author..."
+                                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" />
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <select @bind="selectedSubject" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <option value="">All Subjects</option>
+                            <option value="physics">Physics</option>
+                            <option value="chemistry">Chemistry</option>
+                            <option value="mathematics">Mathematics</option>
+                            <option value="biology">Biology</option>
+                            <option value="english">English</option>
+                        </select>
+                        <select @bind="selectedType" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <option value="">All Types</option>
+                            <option value="question-paper">Question Papers</option>
+                            <option value="notes">Notes</option>
+                            <option value="solutions">Solutions</option>
+                            <option value="study-material">Study Material</option>
+                        </select>
+                        <button @onclick="ClearSearch" class="px-4 py-2 text-gray-600 hover:text-gray-800">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        @if (selectedPaper != null)
+        {
+            <!-- Paper Detail View -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <!-- Paper Header -->
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <span class="@GetTypeBadgeColor(selectedPaper.Type) inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                                    @selectedPaper.Type
+                                </span>
+                                <span class="@GetSubjectBadgeColor(selectedPaper.Subject) inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                                    @selectedPaper.Subject
+                                </span>
+                            </div>
+                            <h1 class="text-2xl font-bold text-gray-900 mb-2">@selectedPaper.Title</h1>
+                            <p class="text-gray-600 mb-4">@selectedPaper.Description</p>
+                            <div class="flex items-center space-x-6 text-sm text-gray-500">
+                                <span>By @selectedPaper.Author</span>
+                                <span>@selectedPaper.UploadDate.ToString("MMM dd, yyyy")</span>
+                                <span>@selectedPaper.Downloads downloads</span>
+                                <span>@selectedPaper.Rating ★</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button @onclick="DownloadPaper" class="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                Download
+                            </button>
+                            <button @onclick="SharePaper" class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                </svg>
+                                Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paper Content -->
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Paper Viewer -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-gray-100 rounded-lg p-4 min-h-96 flex items-center justify-center">
+                                <div class="text-center">
+                                    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    <p class="text-gray-600">Paper preview will be displayed here</p>
+                                    <button @onclick="OpenPaperViewer" class="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                                        Open Full View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paper Details -->
+                        <div class="space-y-6">
+                            <!-- File Info -->
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <h3 class="font-semibold text-gray-900 mb-3">File Information</h3>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">File Size:</span>
+                                        <span class="font-medium">@selectedPaper.FileSize</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Pages:</span>
+                                        <span class="font-medium">@selectedPaper.Pages</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Format:</span>
+                                        <span class="font-medium">@selectedPaper.Format</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Language:</span>
+                                        <span class="font-medium">@selectedPaper.Language</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tags -->
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-3">Tags</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach (var tag in selectedPaper.Tags)
+                                    {
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            @tag
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Related Papers -->
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-3">Related Papers</h3>
+                                <div class="space-y-2">
+                                    @foreach (var related in relatedPapers)
+                                    {
+                                        <button @onclick="@(() => SelectPaper(related))" class="w-full text-left p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <p class="text-sm font-medium text-gray-900">@related.Title</p>
+                                            <p class="text-xs text-gray-500">@related.Subject • @related.Type</p>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Papers Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                @foreach (var paper in filteredPapers)
+                {
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer" @onclick="@(() => SelectPaper(paper))">
+                        <div class="p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-2">
+                                    <span class="@GetTypeBadgeColor(paper.Type) inline-flex items-center px-2 py-1 rounded text-xs font-medium">
+                                        @paper.Type
+                                    </span>
+                                    <span class="@GetSubjectBadgeColor(paper.Subject) inline-flex items-center px-2 py-1 rounded text-xs font-medium">
+                                        @paper.Subject
+                                    </span>
+                                </div>
+                                <button @onclick="@(() => ShowPaperMenu(paper))" class="text-gray-400 hover:text-gray-600">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">@paper.Title</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-2">@paper.Description</p>
+                            
+                            <div class="flex items-center justify-between text-sm text-gray-500">
+                                <span>@paper.Author</span>
+                                <span>@paper.Downloads downloads</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between mt-3">
+                                <span class="text-xs text-gray-500">@paper.UploadDate.ToString("MMM dd")</span>
+                                <div class="flex items-center space-x-1">
+                                    <span class="text-yellow-400">★</span>
+                                    <span class="text-sm">@paper.Rating</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination -->
+            @if (totalPages > 1)
+            {
+                <div class="flex items-center justify-center space-x-2 mt-8">
+                    <button @onclick="PreviousPage" disabled="@(currentPage == 1)" class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Previous
+                    </button>
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <button @onclick="@(() => GoToPage(i))" class="px-3 py-2 border rounded-lg @(i == currentPage ? "bg-primary-600 text-white border-primary-600" : "border-gray-300 text-gray-700 hover:bg-gray-50")">
+                            @i
+                        </button>
+                    }
+                    <button @onclick="NextPage" disabled="@(currentPage == totalPages)" class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Next
+                    </button>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int? PaperId { get; set; }
+
+    private List<Paper> papers = new();
+    private List<Paper> filteredPapers = new();
+    private List<Paper> relatedPapers = new();
+    private Paper? selectedPaper;
+    private bool showSearch = false;
+    private string searchQuery = "";
+    private string selectedSubject = "";
+    private string selectedType = "";
+    private int currentPage = 1;
+    private int totalPages = 1;
+    private int pageSize = 12;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPapers();
+        
+        if (PaperId.HasValue)
+        {
+            selectedPaper = papers.FirstOrDefault(p => p.Id == PaperId.Value);
+            if (selectedPaper != null)
+            {
+                LoadRelatedPapers();
+            }
+        }
+    }
+
+    private async Task LoadPapers()
+    {
+        papers = new List<Paper>
+        {
+            new() {
+                Id = 1,
+                Title = "Physics Class 12 Question Paper 2023",
+                Description = "Complete question paper with solutions for Class 12 Physics board examination.",
+                Subject = "physics",
+                Type = "question-paper",
+                Author = "Dr. Sharma",
+                UploadDate = DateTime.Now.AddDays(-5),
+                Downloads = 234,
+                Rating = 4.8,
+                FileSize = "2.4 MB",
+                Pages = 8,
+                Format = "PDF",
+                Language = "English",
+                Tags = new List<string> { "Class 12", "Board Exam", "2023" }
+            },
+            new() {
+                Id = 2,
+                Title = "Chemistry Lab Manual",
+                Description = "Comprehensive lab manual with experiments and procedures for chemistry practicals.",
+                Subject = "chemistry",
+                Type = "study-material",
+                Author = "Prof. Gupta",
+                UploadDate = DateTime.Now.AddDays(-7),
+                Downloads = 156,
+                Rating = 4.6,
+                FileSize = "1.8 MB",
+                Pages = 45,
+                Format = "PDF",
+                Language = "English",
+                Tags = new List<string> { "Lab Manual", "Practical", "Experiments" }
+            },
+            new() {
+                Id = 3,
+                Title = "Mathematics Integration Notes",
+                Description = "Detailed notes on integration techniques with solved examples and practice problems.",
+                Subject = "mathematics",
+                Type = "notes",
+                Author = "Mr. Kumar",
+                UploadDate = DateTime.Now.AddDays(-3),
+                Downloads = 189,
+                Rating = 4.9,
+                FileSize = "3.1 MB",
+                Pages = 32,
+                Format = "PDF",
+                Language = "English",
+                Tags = new List<string> { "Integration", "Calculus", "Class 12" }
+            },
+            new() {
+                Id = 4,
+                Title = "Biology Cell Division Solutions",
+                Description = "Step-by-step solutions for cell division problems with diagrams and explanations.",
+                Subject = "biology",
+                Type = "solutions",
+                Author = "Dr. Patel",
+                UploadDate = DateTime.Now.AddDays(-10),
+                Downloads = 98,
+                Rating = 4.7,
+                FileSize = "1.5 MB",
+                Pages = 15,
+                Format = "PDF",
+                Language = "English",
+                Tags = new List<string> { "Cell Division", "Mitosis", "Meiosis" }
+            }
+        };
+
+        ApplyFilters();
+    }
+
+    private void ShowSearch()
+    {
+        showSearch = !showSearch;
+    }
+
+    private void HandleSearch()
+    {
+        ApplyFilters();
+    }
+
+    private void ClearSearch()
+    {
+        searchQuery = "";
+        selectedSubject = "";
+        selectedType = "";
+        ApplyFilters();
+    }
+
+    private void ApplyFilters()
+    {
+        var filtered = papers.AsEnumerable();
+
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            filtered = filtered.Where(p => 
+                p.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                p.Description.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                p.Author.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+            );
+        }
+
+        if (!string.IsNullOrEmpty(selectedSubject))
+        {
+            filtered = filtered.Where(p => p.Subject == selectedSubject);
+        }
+
+        if (!string.IsNullOrEmpty(selectedType))
+        {
+            filtered = filtered.Where(p => p.Type == selectedType);
+        }
+
+        filteredPapers = filtered.ToList();
+        currentPage = 1;
+        totalPages = (int)Math.Ceiling((double)filteredPapers.Count / pageSize);
+    }
+
+    private void SelectPaper(Paper paper)
+    {
+        selectedPaper = paper;
+        LoadRelatedPapers();
+        NavigationManager.NavigateTo($"/papers/{paper.Id}");
+    }
+
+    private void LoadRelatedPapers()
+    {
+        if (selectedPaper != null)
+        {
+            relatedPapers = papers
+                .Where(p => p.Id != selectedPaper.Id && (p.Subject == selectedPaper.Subject || p.Type == selectedPaper.Type))
+                .Take(3)
+                .ToList();
+        }
+    }
+
+    private void DownloadPaper()
+    {
+        if (selectedPaper != null)
+        {
+            Console.WriteLine($"Downloading paper: {selectedPaper.Title}");
+            // Simulate download
+        }
+    }
+
+    private void SharePaper()
+    {
+        if (selectedPaper != null)
+        {
+            Console.WriteLine($"Sharing paper: {selectedPaper.Title}");
+            // Implement share functionality
+        }
+    }
+
+    private void OpenPaperViewer()
+    {
+        if (selectedPaper != null)
+        {
+            Console.WriteLine($"Opening paper viewer for: {selectedPaper.Title}");
+            // Open full paper viewer
+        }
+    }
+
+    private void ShowPaperMenu(Paper paper)
+    {
+        Console.WriteLine($"Show menu for paper: {paper.Title}");
+        // Show context menu
+    }
+
+    private void UploadPaper()
+    {
+        NavigationManager.NavigateTo("/profile/uploads");
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+        }
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+        }
+    }
+
+    private void GoToPage(int page)
+    {
+        currentPage = page;
+    }
+
+    private string GetTypeBadgeColor(string type)
+    {
+        return type switch
+        {
+            "question-paper" => "bg-red-100 text-red-800",
+            "notes" => "bg-blue-100 text-blue-800",
+            "solutions" => "bg-green-100 text-green-800",
+            "study-material" => "bg-purple-100 text-purple-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+
+    private string GetSubjectBadgeColor(string subject)
+    {
+        return subject switch
+        {
+            "physics" => "bg-indigo-100 text-indigo-800",
+            "chemistry" => "bg-yellow-100 text-yellow-800",
+            "mathematics" => "bg-red-100 text-red-800",
+            "biology" => "bg-green-100 text-green-800",
+            "english" => "bg-blue-100 text-blue-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+
+    public class Paper
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Subject { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Author { get; set; } = "";
+        public DateTime UploadDate { get; set; }
+        public int Downloads { get; set; }
+        public double Rating { get; set; }
+        public string FileSize { get; set; } = "";
+        public int Pages { get; set; }
+        public string Format { get; set; } = "";
+        public string Language { get; set; } = "";
+        public List<string> Tags { get; set; } = new();
+    }
+} 

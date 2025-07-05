@@ -1,0 +1,22 @@
+{
+  "name": "edusetu",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "tailwindcss -i ./wwwroot/css/app.css -o ./wwwroot/css/app.min.css --watch",
+    "build:css:prod": "tailwindcss -i ./wwwroot/css/app.css -o ./wwwroot/css/app.min.css --minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": "",
+  "devDependencies": {
+    "autoprefixer": "^10.4.18",
+    "postcss": "^8.4.35"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

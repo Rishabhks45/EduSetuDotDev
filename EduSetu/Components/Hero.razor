@@ -1,0 +1,86 @@
+@page "/hero"
+
+<div class="relative bg-gradient-to-br from-primary-50 to-secondary-50 py-16 md:py-24">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <!-- Hero Content -->
+            <div class="text-center lg:text-left">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+                    Transform Your
+                    <span class="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                        Learning Journey
+                    </span>
+                </h1>
+                <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0">
+                    Discover personalized educational resources, connect with expert tutors, and achieve your academic goals with our comprehensive learning platform.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <a href="/courses" class="inline-flex items-center justify-center px-8 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors duration-200 shadow-lg hover:shadow-xl">
+                        Explore Courses
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </a>
+                    <a href="/about" class="inline-flex items-center justify-center px-8 py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                        Learn More
+                    </a>
+                </div>
+                
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-6 mt-12 max-w-md mx-auto lg:mx-0">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-primary-600">10K+</div>
+                        <div class="text-sm text-gray-600">Students</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-primary-600">500+</div>
+                        <div class="text-sm text-gray-600">Courses</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-primary-600">95%</div>
+                        <div class="text-sm text-gray-600">Success Rate</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hero Image/Illustration -->
+            <div class="relative">
+                <div class="bg-white rounded-2xl shadow-xl p-8">
+                    <div class="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center">
+                        <div class="text-center">
+                            <svg class="w-24 h-24 mx-auto text-primary-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Interactive Learning</h3>
+                            <p class="text-gray-600">Engage with dynamic content and real-time feedback</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Feature Cards -->
+                    <div class="grid grid-cols-2 gap-4 mt-6">
+                        <div class="bg-gray-50 rounded-lg p-4 text-center">
+                            <div class="w-8 h-8 bg-accent-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="text-sm font-medium text-gray-800">Progress Tracking</div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4 text-center">
+                            <div class="w-8 h-8 bg-accent-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="text-sm font-medium text-gray-800">Expert Tutors</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Decorative Elements -->
+    <div class="absolute top-0 left-0 w-32 h-32 bg-primary-100 rounded-full opacity-20 -translate-x-16 -translate-y-16"></div>
+    <div class="absolute bottom-0 right-0 w-24 h-24 bg-secondary-100 rounded-full opacity-20 translate-x-12 translate-y-12"></div>
+</div> 

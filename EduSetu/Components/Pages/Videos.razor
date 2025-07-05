@@ -1,0 +1,486 @@
+@page "/videos"
+@using System.ComponentModel.DataAnnotations
+@using EduSetu.Components.Shared
+@inject NavigationManager NavigationManager
+
+<div class="min-h-screen bg-gray-50 pt-16">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-3 bg-primary-100 rounded-xl">
+                    <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800">Educational Videos</h1>
+                    <p class="text-gray-600 mt-1">Comprehensive video lectures and tutorials organized by subject</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar -->
+            <VideosSidebar SelectedCategory="selectedCategory" 
+                          OnCategorySelect="@(cat => SelectCategory(cat))"
+                          Filters="filters"
+                          FilterOptions="filterOptions"
+                          OnFilterChange="@(args => HandleFilterChange(args.Item1, args.Item2))"
+                          OnClearFilters="@(() => ClearFilters())" />
+
+            <!-- Main Content -->
+            <div class="flex-1">
+                <!-- Search and Controls -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                    <!-- Search Bar -->
+                    <div class="relative mb-4">
+                        <input type="text" placeholder="Search videos by title, description, instructor, or tags..."
+                               @bind-value="searchQuery" @bind-value:event="oninput"
+                               class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors" />
+                        <svg class="absolute left-4 top-3.5 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <!-- View Mode Toggle -->
+                            <div class="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                                <button @onclick="@(() => SetViewMode("grid"))"
+                                        class="@($"p-2 rounded-md transition-colors {(viewMode == "grid" ? "bg-white text-gray-800 shadow-sm" : "text-gray-600 hover:text-gray-800")}")">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                                    </svg>
+                                </button>
+                                <button @onclick="@(() => SetViewMode("list"))"
+                                        class="@($"p-2 rounded-md transition-colors {(viewMode == "list" ? "bg-white text-gray-800 shadow-sm" : "text-gray-600 hover:text-gray-800")}")">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <!-- Sort Controls -->
+                            <div class="flex items-center gap-2">
+                                <label class="text-sm font-medium text-gray-700">Sort by:</label>
+                                <select @bind="sortBy" @bind:after="() => StateHasChanged()"
+                                        class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm">
+                                    <option value="newest">Newest</option>
+                                    <option value="popular">Most Popular</option>
+                                    <option value="rating">Highest Rated</option>
+                                    <option value="duration">Duration</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Count -->
+                <div class="mb-6">
+                    <p class="text-gray-600">
+                        Showing @(startIndex + 1)-@Math.Min(endIndex, filteredVideos.Count) of @filteredVideos.Count videos
+                        @if (!string.IsNullOrEmpty(selectedCategory))
+                        {
+                            <span class="ml-2 px-2 py-1 bg-primary-100 text-primary-800 text-sm rounded">
+                                @(char.ToUpper(selectedCategory[0]) + selectedCategory.Substring(1)) Wise
+                            </span>
+                        }
+                    </p>
+                </div>
+
+                <!-- Videos Display -->
+                @if (currentVideos.Any())
+                {
+                    @if (viewMode == "grid")
+                    {
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+                            @foreach (var video in currentVideos)
+                            {
+                                <VideoCard Video="video" OnView="@(() => HandleViewVideo(video))" OnDownload="@(() => HandleDownloadVideo(video))" />
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="space-y-4 mb-8">
+                            @foreach (var video in currentVideos)
+                            {
+                                <VideosListView Video="video" OnView="@(() => HandleViewVideo(video))" OnDownload="@(() => HandleDownloadVideo(video))" />
+                            }
+                        </div>
+                    }
+
+                    <!-- Pagination -->
+                    @if (totalPages > 1)
+                    {
+                        <div class="flex items-center justify-center gap-2 mt-8">
+                            <button @onclick="() => HandlePageChange(currentPage - 1)"
+                                    disabled="@(currentPage == 1)"
+                                    class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                                Previous
+                            </button>
+
+                            <div class="flex items-center gap-1">
+                                @foreach (var page in GetPageNumbers())
+                                {
+                                    @if (page == "...")
+                                    {
+                                        <span class="px-3 py-2 text-gray-500">...</span>
+                                    }
+                                    else
+                                    {
+                                        <button @onclick="() => HandlePageChange((int)page)"
+                                                class="@($"px-3 py-2 rounded-lg transition-colors {(currentPage == (int)page ? "bg-primary-600 text-white" : "hover:bg-gray-100 text-gray-700")}")">
+                                            @((int)page)
+                                        </button>
+                                    }
+                                }
+                            </div>
+
+                            <button @onclick="() => HandlePageChange(currentPage + 1)"
+                                    disabled="@(currentPage == totalPages)"
+                                    class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                                Next
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-12">
+                        <div class="text-gray-400 mb-4">
+                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No videos found</h3>
+                        <p class="text-gray-600 mb-4">
+                            Try adjusting your search terms or filters to find what you"re looking for.
+                        </p>
+                        @if (filters.Any(f => !string.IsNullOrEmpty(f.Value)))
+                        {
+                            <button @onclick="ClearFilters"
+                                    class="text-primary-600 hover:text-primary-700 font-medium">
+                                Clear all filters
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string selectedCategory = "";
+    private string searchQuery = "";
+    private string viewMode = "grid";
+    private string sortBy = "newest";
+    private int currentPage = 1;
+    private const int itemsPerPage = 12;
+
+    private Dictionary<string, string> filters = new()
+    {
+        ["subject"] = "",
+        ["instructor"] = "",
+        ["level"] = "",
+        ["duration"] = "",
+        ["language"] = "",
+        ["quality"] = "",
+        ["verified"] = "",
+        ["premium"] = ""
+    };
+
+    private readonly Dictionary<string, List<string>> filterOptions = new()
+    {
+        ["subject"] = new List<string> { "Physics", "Chemistry", "Mathematics", "Biology", "Computer Science", "English", "History", "Geography" },
+        ["instructor"] = new List<string> { "Dr. Sarah Johnson", "Prof. Michael Chen", "Dr. Priya Sharma", "Prof. Rajesh Kumar", "Dr. Alex Thompson" },
+        ["level"] = new List<string> { "Beginner", "Intermediate", "Advanced", "Expert" },
+        ["duration"] = new List<string> { "Short (< 10 min)", "Medium (10-30 min)", "Long (30+ min)" },
+        ["language"] = new List<string> { "English", "Hindi", "Tamil", "Telugu", "Bengali" },
+        ["quality"] = new List<string> { "HD", "Full HD", "4K" }
+    };
+
+    private List<Video> videos = new()
+    {
+        new Video
+        {
+            Id = "1",
+            Title = "Complete Physics Class 12 - Mechanics",
+            Subject = "Physics",
+            Instructor = "Dr. Sarah Johnson",
+            Description = "Comprehensive video lecture covering all mechanics topics for Class 12 including Newton's laws, momentum, and energy conservation.",
+            Duration = "45:30",
+            Views = 15420,
+            Rating = 4.8f,
+            TotalRatings = 342,
+            Thumbnail = "https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg",
+            VideoUrl = "https://example.com/video1.mp4",
+            Category = "physics",
+            Level = "Intermediate",
+            Language = "English",
+            Quality = "HD",
+            IsVerified = true,
+            IsPremium = false,
+            UploadDate = "2024-01-15"
+        },
+        new Video
+        {
+            Id = "2",
+            Title = "Data Structures and Algorithms - Part 1",
+            Subject = "Computer Science",
+            Instructor = "Prof. Michael Chen",
+            Description = "Introduction to fundamental data structures including arrays, linked lists, and basic algorithms.",
+            Duration = "32:15",
+            Views = 8920,
+            Rating = 4.9f,
+            TotalRatings = 156,
+            Thumbnail = "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
+            VideoUrl = "https://example.com/video2.mp4",
+            Category = "computer-science",
+            Level = "Advanced",
+            Language = "English",
+            Quality = "Full HD",
+            IsVerified = true,
+            IsPremium = true,
+            UploadDate = "2024-01-10"
+        }
+    };
+
+    // Add more sample videos
+    protected override void OnInitialized()
+    {
+        for (int i = 3; i <= 25; i++)
+        {
+            var subjects = new[] { "Physics", "Chemistry", "Mathematics", "Biology", "Computer Science" };
+            var instructors = new[] { "Dr. Sarah Johnson", "Prof. Michael Chen", "Dr. Priya Sharma", "Prof. Rajesh Kumar" };
+            var levels = new[] { "Beginner", "Intermediate", "Advanced" };
+            var languages = new[] { "English", "Hindi" };
+            var qualities = new[] { "HD", "Full HD" };
+
+            videos.Add(new Video
+            {
+                Id = i.ToString(),
+                Title = $"Sample Video {i}",
+                Subject = subjects[i % subjects.Length],
+                Instructor = instructors[i % instructors.Length],
+                Description = $"Sample description for video {i}",
+                Duration = $"{Random.Shared.Next(10, 60)}:{Random.Shared.Next(0, 59):D2}",
+                Views = Random.Shared.Next(1000, 20000),
+                Rating = 4.0f + (float)Random.Shared.NextDouble(),
+                TotalRatings = Random.Shared.Next(50, 300),
+                Thumbnail = "https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg",
+                VideoUrl = $"https://example.com/video{i}.mp4",
+                Category = "sample",
+                Level = levels[i % levels.Length],
+                Language = languages[i % languages.Length],
+                Quality = qualities[i % qualities.Length],
+                IsVerified = Random.Shared.Next(2) == 1,
+                IsPremium = Random.Shared.Next(10) > 7,
+                UploadDate = "2024-01-01"
+            });
+        }
+    }
+
+    private List<Video> filteredVideos => videos.Where(video =>
+    {
+        var matchesSearch = string.IsNullOrEmpty(searchQuery) ||
+                           video.Title.ToLower().Contains(searchQuery.ToLower()) ||
+                           video.Description.ToLower().Contains(searchQuery.ToLower()) ||
+                           video.Instructor.ToLower().Contains(searchQuery.ToLower());
+
+        var matchesCategory = string.IsNullOrEmpty(selectedCategory) || video.Category == selectedCategory;
+
+        var matchesFilters = filters.All(filter =>
+        {
+            if (string.IsNullOrEmpty(filter.Value)) return true;
+
+            return filter.Key switch
+            {
+                "verified" => !bool.Parse(filter.Value) || video.IsVerified,
+                "premium" => !bool.Parse(filter.Value) || video.IsPremium,
+                _ => (GetVideoValue(video, filter.Key) ?? "") == (filter.Value ?? "")
+            };
+        });
+
+        return matchesSearch && matchesCategory && matchesFilters;
+    }).ToList();
+
+    private string GetVideoValue(Video video, string filterKey)
+    {
+        return filterKey switch
+        {
+            "subject" => video.Subject,
+            "instructor" => video.Instructor,
+            "level" => video.Level,
+            "duration" => video.Duration,
+            "language" => video.Language,
+            "quality" => video.Quality,
+            _ => ""
+        };
+    }
+
+    private List<Video> sortedVideos
+    {
+        get
+        {
+            return sortBy switch
+            {
+                "newest" => filteredVideos
+                    .OrderByDescending(video => DateTime.Parse(video.UploadDate))
+                    .ThenBy(video => video.Title)
+                    .ToList(),
+
+                "popular" => filteredVideos
+                    .OrderByDescending(video => video.Views)
+                    .ThenBy(video => video.Title)
+                    .ToList(),
+
+                "rating" => filteredVideos
+                    .OrderByDescending(video => video.Rating)
+                    .ThenBy(video => video.Title)
+                    .ToList(),
+
+                "duration" => filteredVideos
+                    .OrderBy(video => ParseDuration(video.Duration))
+                    .ThenBy(video => video.Title)
+                    .ToList(),
+
+                _ => filteredVideos
+                    .OrderByDescending(video => DateTime.Parse(video.UploadDate))
+                    .ThenBy(video => video.Title)
+                    .ToList(),
+            };
+        }
+    }
+
+    private int ParseDuration(string duration)
+    {
+        var parts = duration.Split(":");
+        if (parts.Length == 2 && int.TryParse(parts[0], out int minutes) && int.TryParse(parts[1], out int seconds))
+        {
+            return minutes * 60 + seconds;
+        }
+        return 0;
+    }
+
+    private int totalPages => (int)Math.Ceiling((double)filteredVideos.Count / itemsPerPage);
+    private int startIndex => (currentPage - 1) * itemsPerPage;
+    private int endIndex => startIndex + itemsPerPage;
+    private List<Video> currentVideos => sortedVideos.Skip(startIndex).Take(itemsPerPage).ToList();
+
+    private void SelectCategory(string category)
+    {
+        selectedCategory = (selectedCategory == category ? "" : category);
+        ClearFilters();
+        currentPage = 1;
+    }
+
+    private void SetViewMode(string mode)
+    {
+        viewMode = mode;
+    }
+
+    private void ClearFilters()
+    {
+        filters = new Dictionary<string, string>
+        {
+            ["subject"] = "",
+            ["instructor"] = "",
+            ["level"] = "",
+            ["duration"] = "",
+            ["language"] = "",
+            ["quality"] = "",
+            ["verified"] = "",
+            ["premium"] = ""
+        };
+    }
+
+    private void HandleFilterChange(string filterType, string value)
+    {
+        if (filters.ContainsKey(filterType))
+        {
+            filters[filterType] = value;
+        }
+        currentPage = 1;
+    }
+
+    private void HandlePageChange(int page)
+    {
+        if (page >= 1 && page <= totalPages)
+        {
+            currentPage = page;
+        }
+    }
+
+    private List<object> GetPageNumbers()
+    {
+        var pages = new List<object>();
+        var maxVisible = 5;
+
+        if (totalPages <= maxVisible)
+        {
+            for (int i = 1; i <= totalPages; i++)
+            {
+                pages.Add(i);
+            }
+        }
+        else
+        {
+            if (currentPage <= 3)
+            {
+                for (int i = 1; i <= 4; i++)
+                {
+                    pages.Add(i);
+                }
+                pages.Add("...");
+                pages.Add(totalPages);
+            }
+            else if (currentPage >= totalPages - 2)
+            {
+                pages.Add(1);
+                pages.Add("...");
+                for (int i = totalPages - 3; i <= totalPages; i++)
+                {
+                    pages.Add(i);
+                }
+            }
+            else
+            {
+                pages.Add(1);
+                pages.Add("...");
+                for (int i = currentPage - 1; i <= currentPage + 1; i++)
+                {
+                    pages.Add(i);
+                }
+                pages.Add("...");
+                pages.Add(totalPages);
+            }
+        }
+
+        return pages;
+    }
+
+    private void HandleViewVideo(Video video)
+    {
+        NavigationManager.NavigateTo($"/videos/{video.Id}");
+    }
+
+    private void HandleDownloadVideo(Video video)
+    {
+        Console.WriteLine($"Downloading video: {video.Id}");
+        // In a real app, this would trigger the download
+    }
+
+
+} 

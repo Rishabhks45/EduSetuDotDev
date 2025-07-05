@@ -1,0 +1,418 @@
+@page "/pyqs"
+@using System.ComponentModel.DataAnnotations
+@using EduSetu.Components.Shared
+@inject NavigationManager NavigationManager
+
+<div class="min-h-screen bg-gray-50 pt-16">
+    <div class="container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
+        <!-- Sidebar -->
+        <div class="w-full lg:w-64 bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">
+                Browse Categories
+            </h2>
+
+            <div class="space-y-3">
+                @foreach (var category in categories)
+                {
+                    <button @onclick="() => SelectCategory(category.Id)"
+                            class="@($"w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors {(selectedCategory == category.Id ? "bg-primary-50 text-primary-700 border border-primary-200" : "hover:bg-gray-50 text-gray-700 border border-transparent")}")">
+                        @if (category.Id == "board")
+                        {
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        }
+                        else if (category.Id == "university")
+                        {
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        }
+                        else if (category.Id == "exam")
+                        {
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                            </svg>
+                        }
+                        else if (category.Id == "state")
+                        {
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        }
+                        <span class="font-medium">@category.Name</span>
+                    </button>
+                }
+            </div>
+
+            @if (!string.IsNullOrEmpty(selectedCategory))
+            {
+                <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-700 mb-2">
+                        Selected Category
+                    </h3>
+                    <div class="flex items-center gap-2">
+                        @if (selectedCategory == "board")
+                        {
+                            <svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        }
+                        else if (selectedCategory == "university")
+                        {
+                            <svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        }
+                        else if (selectedCategory == "exam")
+                        {
+                            <svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                            </svg>
+                        }
+                        else if (selectedCategory == "state")
+                        {
+                            <svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        }
+                        <span class="text-sm text-primary-700 font-medium">
+                            @categories.FirstOrDefault(c => c.Id == selectedCategory)?.Name
+                        </span>
+                    </div>
+                    <button @onclick="ClearCategorySelection"
+                            class="mt-2 text-xs text-gray-500 hover:text-gray-700">
+                        Clear selection
+                    </button>
+                </div>
+            }
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1">
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h1 class="text-2xl font-bold text-gray-800 mb-6">
+                    Previous Year Questions
+                </h1>
+
+                <!-- Search Bar and Filters -->
+                <div class="space-y-4 mb-8">
+                    <!-- Search Bar -->
+                    <div class="relative">
+                        <input type="text" placeholder="Search subjects..."
+                               @bind-value="searchQuery" @bind-value:event="oninput"
+                               class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors" />
+                        <svg class="absolute left-3 top-3.5 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+
+                    <!-- Dynamic Filters -->
+                    @if (!string.IsNullOrEmpty(selectedCategory) && GetActiveFilters().Any())
+                    {
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
+                                    </svg>
+                                    <h3 class="font-medium text-gray-800">Filters</h3>
+                                </div>
+                                <button @onclick="ClearFilters"
+                                        class="text-sm text-primary-600 hover:text-primary-700 font-medium">
+                                    Clear All
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                @foreach (var filterType in GetActiveFilters())
+                                {
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            @GetFilterLabel(filterType)
+                                        </label>
+                                        <select @bind="filters[filterType]" @bind:after="() => StateHasChanged()"
+                                                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm">
+                                            <option value="">All @GetFilterLabel(filterType)s</option>
+                                            @if (filterOptions.ContainsKey(filterType))
+                                            {
+                                                @foreach (var option in filterOptions[filterType])
+                                                {
+                                                    <option value="@option">@option</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Active Filters Display -->
+                            @if (filters.Any(f => !string.IsNullOrEmpty(f.Value)))
+                            {
+                                <div class="mt-4 pt-4 border-t border-gray-200">
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach (var filter in filters)
+                                        {
+                                            @if (!string.IsNullOrEmpty(filter.Value))
+                                            {
+                                                <span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 text-primary-800 text-sm rounded-full">
+                                                    @GetFilterLabel(filter.Key): @filter.Value
+                                                    <button @onclick="() => ClearFilter(filter.Key)"
+                                                            class="ml-1 hover:text-primary-900">
+                                                        ×
+                                                    </button>
+                                                </span>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <!-- Results Count -->
+                <div class="mb-6">
+                    <p class="text-gray-600">
+                        @filteredSubjects.Count @(filteredSubjects.Count == 1 ? "result" : "results") found
+                        @if (!string.IsNullOrEmpty(selectedCategory))
+                        {
+                            <span class="ml-2 px-2 py-1 bg-primary-100 text-primary-800 text-sm rounded">
+                                @(char.ToUpper(selectedCategory[0]) + selectedCategory.Substring(1)) Wise
+                            </span>
+                        }
+                    </p>
+                </div>
+
+                <!-- Subjects Grid -->
+                @if (filteredSubjects.Any())
+                {
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @foreach (var subject in filteredSubjects)
+                        {
+                            <SubjectCard Subject="subject" OnViewPapers="HandleViewPapers" />
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-12">
+                        <div class="text-gray-400 mb-4">
+                            <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No results found</h3>
+                        <p class="text-gray-600 mb-4">
+                            Try adjusting your search terms or filters to find what you"re looking for.
+                        </p>
+                        @if (filters.Any(f => !string.IsNullOrEmpty(f.Value)))
+                        {
+                            <button @onclick="ClearFilters"
+                                    class="text-primary-600 hover:text-primary-700 font-medium">
+                                Clear all filters
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string selectedCategory = "";
+    private string searchQuery = "";
+    private Dictionary<string, string> filters = new()
+    {
+        ["board"] = "",
+        ["university"] = "",
+        ["exam"] = "",
+        ["state"] = "",
+        ["class"] = "",
+        ["course"] = "",
+        ["year"] = ""
+    };
+
+    private readonly List<Category> categories = new()
+    {
+        new Category { Id = "board", Name = "Board Wise" },
+        new Category { Id = "university", Name = "University Wise" },
+        new Category { Id = "exam", Name = "Exam Wise" },
+        new Category { Id = "state", Name = "State Wise" }
+    };
+
+    private readonly Dictionary<string, List<string>> filterOptions = new()
+    {
+        ["board"] = new List<string> { "CBSE", "ICSE", "State Board", "NIOS", "IB" },
+        ["university"] = new List<string> { "Delhi University", "Mumbai University", "Bangalore University", "Pune University", "Chennai University" },
+        ["exam"] = new List<string> { "JEE Main", "JEE Advanced", "NEET", "GATE", "CAT", "UPSC", "SSC" },
+        ["state"] = new List<string> { "Delhi", "Maharashtra", "Karnataka", "Tamil Nadu", "Gujarat", "Rajasthan" },
+        ["class"] = new List<string> { "Class 10", "Class 11", "Class 12" },
+        ["course"] = new List<string> { "Engineering", "Medical", "Arts", "Commerce", "Science" },
+        ["year"] = new List<string> { "2024", "2023", "2022", "2021", "2020", "2019" }
+    };
+
+    private readonly List<Subject> subjects = new()
+    {
+        new Subject
+        {
+            Code = "CS101",
+            Name = "Introduction to Computer Science",
+            University = "Delhi University",
+            Years = new List<string> { "2023", "2022", "2021" },
+            Category = "university",
+            Board = "",
+            Exam = "",
+            State = "Delhi"
+        },
+        new Subject
+        {
+            Code = "MTH201",
+            Name = "Advanced Mathematics",
+            University = "Mumbai University",
+            Years = new List<string> { "2023", "2022", "2021", "2020" },
+            Category = "university",
+            Board = "",
+            Exam = "",
+            State = "Maharashtra"
+        },
+        new Subject
+        {
+            Code = "PHY301",
+            Name = "Quantum Physics",
+            University = "IIT Bombay",
+            Years = new List<string> { "2023", "2022" },
+            Category = "university",
+            Board = "",
+            Exam = "JEE Advanced",
+            State = "Maharashtra"
+        },
+        new Subject
+        {
+            Code = "CBSE-PHY-12",
+            Name = "Physics Class 12",
+            University = "",
+            Years = new List<string> { "2024", "2023", "2022" },
+            Category = "board",
+            Board = "CBSE",
+            Exam = "",
+            State = ""
+        },
+        new Subject
+        {
+            Code = "NEET-BIO",
+            Name = "Biology for NEET",
+            University = "",
+            Years = new List<string> { "2024", "2023", "2022", "2021" },
+            Category = "exam",
+            Board = "",
+            Exam = "NEET",
+            State = ""
+        }
+    };
+
+    private List<Subject> filteredSubjects => subjects.Where(subject =>
+    {
+        var matchesSearch = string.IsNullOrEmpty(searchQuery) ||
+                           subject.Name.ToLower().Contains(searchQuery.ToLower()) ||
+                           subject.Code.ToLower().Contains(searchQuery.ToLower());
+
+        var matchesCategory = string.IsNullOrEmpty(selectedCategory) || subject.Category == selectedCategory;
+
+        var matchesFilters = filters.All(filter =>
+        {
+            if (string.IsNullOrEmpty(filter.Value)) return true;
+            return GetSubjectValue(subject, filter.Key) == filter.Value;
+        });
+
+        return matchesSearch && matchesCategory && matchesFilters;
+    }).ToList();
+
+    private string GetSubjectValue(Subject subject, string filterKey)
+    {
+        return filterKey switch
+        {
+            "board" => subject.Board,
+            "university" => subject.University,
+            "exam" => subject.Exam,
+            "state" => subject.State,
+            _ => ""
+        };
+    }
+
+    private void SelectCategory(string category)
+    {
+        selectedCategory = selectedCategory == category ? "" : category;
+        ClearFilters();
+    }
+
+    private void ClearCategorySelection()
+    {
+        selectedCategory = "";
+        ClearFilters();
+    }
+
+    private void ClearFilters()
+    {
+        filters = new Dictionary<string, string>
+        {
+            ["board"] = "",
+            ["university"] = "",
+            ["exam"] = "",
+            ["state"] = "",
+            ["class"] = "",
+            ["course"] = "",
+            ["year"] = ""
+        };
+    }
+
+    private void ClearFilter(string filterType)
+    {
+        if (filters.ContainsKey(filterType))
+        {
+            filters[filterType] = "";
+        }
+    }
+
+    private List<string> GetActiveFilters()
+    {
+        return selectedCategory switch
+        {
+            "board" => new List<string> { "board", "class", "year" },
+            "university" => new List<string> { "university", "course", "year" },
+            "exam" => new List<string> { "exam", "year" },
+            "state" => new List<string> { "state", "year" },
+            _ => new List<string>()
+        };
+    }
+
+    private string GetFilterLabel(string filterType)
+    {
+        return filterType switch
+        {
+            "board" => "Board",
+            "university" => "University",
+            "exam" => "Exam",
+            "state" => "State",
+            "class" => "Class",
+            "course" => "Course",
+            "year" => "Year",
+            _ => filterType
+        };
+    }
+
+    private void HandleViewPapers(Subject subject)
+    {
+        var paperId = $"{subject.Code.ToLower()}-2023-{subject.Category}";
+        NavigationManager.NavigateTo($"/papers/{paperId}");
+    }
+
+    public class Category
+    {
+        public string Id { get; set; } = "";
+        public string Name { get; set; } = "";
+    }
+} 
