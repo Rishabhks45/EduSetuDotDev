@@ -26,11 +26,11 @@ public enum UserRole
     [Display(Name = "Super Admin")]
     SuperAdmin = 1,
 
-    [Display(Name = "Teacher Manager")]
-    PortfolioManager = 2,
+    [Display(Name = "Teacher")]
+    Teacher = 2,
 
     [Display(Name = "Student")]
-    HotelStaff = 3,
+    Student = 3,
 
 }
 

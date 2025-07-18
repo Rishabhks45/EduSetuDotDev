@@ -19,7 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
 //Register all services in your DI container.
-builder.Services.AddScoped<EduSetu.Infrastructure.Services.IPasswordEncryptionService, PasswordEncryptionService>();
+builder.Services.AddScoped<EduSetu.Application.Common.Interfaces.IPasswordEncryptionService, PasswordEncryptionService>();
 
 
 // Add Cookie Authentication with enhanced session management
