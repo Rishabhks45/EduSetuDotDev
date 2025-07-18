@@ -1,4 +1,8 @@
+using EduSetu.Application.Common.Interfaces;
 using EduSetu.Components;
+using EduSetu.Infrastructure.Data.Contexts;
+using EduSetu.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +10,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-var app = builder.Build();
+// register connection string from appsettings.json
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register the interface for dependency injection
+builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+
+//Register all services in your DI container.
+
+
+
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
