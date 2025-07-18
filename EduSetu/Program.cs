@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using MediatR;
 using EduSetu.Application.Common.Settings;
 using EduSetu.Infrastructure.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,58 +32,69 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(EduSe
 // Register HttpContextAccessor for accessing HttpContext in components
 builder.Services.AddHttpContextAccessor();
 
-// Add Cookie Authentication with enhanced session management
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+// Add Authentication with Cookie and Google support
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = "Google";
+})
+.AddCookie(options =>
+{
+    options.LoginPath = "/login";
+    options.LogoutPath = "/logout";
+    options.AccessDeniedPath = "/access-denied";
+
+    // Default session timeout (30 minutes of inactivity)
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    options.SlidingExpiration = true; // Reset timeout on activity
+
+    // Cookie security settings
+    options.Cookie.Name = "EduSetuAuth";
+    options.Cookie.HttpOnly = true; // Prevent XSS attacks
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // Use HTTPS in production
+    options.Cookie.SameSite = SameSiteMode.Lax; // Less restrictive for development
+    options.Cookie.IsEssential = true; // Required for GDPR compliance
+    options.Cookie.Path = "/"; // Ensure cookie is available for all paths
+
+    // Enhanced event handlers for Blazor Server
+    options.Events.OnSignedIn = context =>
     {
-        options.LoginPath = "/login";
-        options.LogoutPath = "/logout";
-        options.AccessDeniedPath = "/access-denied";
+        return Task.CompletedTask;
+    };
 
-        // Default session timeout (30 minutes of inactivity)
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-        options.SlidingExpiration = true; // Reset timeout on activity
+    options.Events.OnValidatePrincipal = context =>
+    {
+        return Task.CompletedTask;
+    };
 
-        // Cookie security settings
-        options.Cookie.Name = "EduSetuAuth";
-        options.Cookie.HttpOnly = true; // Prevent XSS attacks
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // Use HTTPS in production
-        options.Cookie.SameSite = SameSiteMode.Lax; // Less restrictive for development
-        options.Cookie.IsEssential = true; // Required for GDPR compliance
-        options.Cookie.Path = "/"; // Ensure cookie is available for all paths
-
-        // Enhanced event handlers for Blazor Server
-        options.Events.OnSignedIn = context =>
+    // Handle session expiration - IMPORTANT: Don't auto-redirect for Blazor
+    options.Events.OnRedirectToLogin = context =>
+    {
+        if (context.Request.Path.StartsWithSegments("/api"))
         {
+            context.Response.StatusCode = 401;
             return Task.CompletedTask;
-        };
+        }
 
-        options.Events.OnValidatePrincipal = context =>
+        // For Blazor Server SignalR connections, don't auto-redirect
+        if (context.Request.Headers.ContainsKey("Connection") &&
+            context.Request.Headers["Connection"].ToString().Contains("Upgrade"))
         {
+            context.Response.StatusCode = 401;
             return Task.CompletedTask;
-        };
+        }
 
-        // Handle session expiration - IMPORTANT: Don't auto-redirect for Blazor
-        options.Events.OnRedirectToLogin = context =>
-        {
-            if (context.Request.Path.StartsWithSegments("/api"))
-            {
-                context.Response.StatusCode = 401;
-                return Task.CompletedTask;
-            }
-
-            // For Blazor Server SignalR connections, don't auto-redirect
-            if (context.Request.Headers.ContainsKey("Connection") &&
-                context.Request.Headers["Connection"].ToString().Contains("Upgrade"))
-            {
-                context.Response.StatusCode = 401;
-                return Task.CompletedTask;
-            }
-
-            context.Response.Redirect(context.RedirectUri);
-            return Task.CompletedTask;
-        };
-    });
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
+    };
+})
+.AddGoogle("Google", options =>
+{
+    options.ClientId = "367131133436-9ulnv933benc9d4cl4v85ddiaps28ped.apps.googleusercontent.com"; //367131133436 - 9ulnv933benc9d4cl4v85ddiaps28ped.apps.googleusercontent.com
+    options.ClientSecret = "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"; //GOCSPX - nQG4iWlck3QvPysxIS5tCSdiJ8IJ
+    options.CallbackPath = "/profile";
+    options.SaveTokens = true;    
+});
 
 builder.Services.Configure<EncryptionSettings>(
     builder.Configuration.GetSection("EncryptionSettings"));

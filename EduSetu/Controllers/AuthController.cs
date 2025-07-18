@@ -1,12 +1,16 @@
 ﻿using EduSetu.Application.Common.Helpers;
+using EduSetu.Application.Common.Interfaces;
+using EduSetu.Application.Common.Settings;
 using EduSetu.Application.Features.Authentication;
 using EduSetu.Application.Features.Authentication.Request;
 using EduSetu.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 namespace EduSetu.Controllers
@@ -19,10 +23,14 @@ namespace EduSetu.Controllers
     public class AuthController : ControllerBase
     {
         public IMediator _mediator { get; }
+        public IPasswordEncryptionService _PasswordEncryptionService { get; }
+        public IOptions<EncryptionSettings> _EncryptionSettings { get; }
 
-        public AuthController(IMediator mediator)
+        public AuthController(IMediator mediator, IPasswordEncryptionService passwordEncryptionService, IOptions<EncryptionSettings> encryptionSettings)
         {
             _mediator = mediator;
+            _PasswordEncryptionService = passwordEncryptionService;
+            _EncryptionSettings = encryptionSettings;
         }
 
         /// <summary>
@@ -140,6 +148,114 @@ namespace EduSetu.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return Redirect("/login");
+        }
+
+        /// <summary>
+        /// Initiates the Google login process
+        /// </summary>
+        /// <param name="returnUrl">Optional return URL to redirect to after successful login</param>
+        /// <returns>Challenge for Google authentication</returns>
+        [HttpGet("google-login")]
+        [AllowAnonymous]
+        public IActionResult GoogleLogin(string? returnUrl = null)
+        {
+            var redirectUrl = Url.Action("GoogleResponse", "Auth", new { returnUrl });
+            var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        /// <summary>
+        /// Handles the response from Google after authentication
+        /// </summary>
+        /// <param name="returnUrl">Optional return URL to redirect to after successful login</param>
+        /// <returns>Redirect to dashboard or error page</returns>
+        [HttpGet("GoogleResponse")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GoogleResponse(string? returnUrl = null)
+        {
+            var authenticateResult = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+            if (!authenticateResult.Succeeded)
+                return Redirect("/login?error=Google authentication failed");
+
+            // Extract user info from Google
+            var email = authenticateResult.Principal.FindFirst(ClaimTypes.Email)?.Value;
+            var name = authenticateResult.Principal.Identity?.Name;
+            var firstName = authenticateResult.Principal.FindFirst(ClaimTypes.GivenName)?.Value;
+            var lastName = authenticateResult.Principal.FindFirst(ClaimTypes.Surname)?.Value;
+
+            if (string.IsNullOrEmpty(email))
+                return Redirect("/login?error=No email from Google");
+
+            // Lookup user in your DB using CQRS
+
+            string tempPassword = CommonHelper.GenerateTemporaryPassword();
+            string hashedPassword = await _PasswordEncryptionService.EncryptPasswordAsync(tempPassword, _EncryptionSettings.Value.MasterKey);
+
+            var getUserRequest = new GetCurrentUserRequest(new GetCurrentUserDto { Email = email });
+            var getUserResponse = await _mediator.Send(getUserRequest);
+            if (getUserResponse.HasError || getUserResponse.Payload == null)
+            {
+                // Register the user automatically
+                var registerRequest = new RegisterUserRequest(new RegisterUserDto {
+                    Email = email,
+                    FirstName = firstName ?? string.Empty,
+                    LastName = lastName ?? string.Empty,
+                    Role = UserRole.Student, // Default role
+                    Password = hashedPassword // Random password for Google
+                });
+                var registerResponse = await _mediator.Send(registerRequest);
+                if (registerResponse.HasError)
+                    return Redirect("/login?error=Google registration failed");
+                // Try to get the user again
+                getUserResponse = await _mediator.Send(new GetCurrentUserRequest(new GetCurrentUserDto { Email = email }));
+                if (getUserResponse.HasError || getUserResponse.Payload == null)
+                    return Redirect("/login?error=Google registration failed");
+            }
+
+            // Create claims for the authenticated user
+            var claims = new List<Claim>
+    {
+        new(ClaimTypes.NameIdentifier, getUserResponse.Payload.UserId ?? ""),
+        new(ClaimTypes.Name, getUserResponse.Payload.FullName ?? name ?? ""),
+        new(ClaimTypes.Email, getUserResponse.Payload.Email ?? email),
+        new(ClaimTypes.GivenName, getUserResponse.Payload.FirstName ?? firstName ?? ""),
+        new(ClaimTypes.Surname, getUserResponse.Payload.LastName ?? lastName ?? ""),
+        new(ClaimTypes.Role, string.IsNullOrWhiteSpace(getUserResponse.Payload.Role) ? UserRole.Student.ToString() : getUserResponse.Payload.Role)
+    };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            var authProperties = new AuthenticationProperties
+            {
+                AllowRefresh = true,
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
+            };
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                claimsPrincipal,
+                authProperties);
+
+            // Redirect to dashboard or returnUrl
+            string dashboardUrl;
+            string roleString = getUserResponse.Payload.Role;
+            if (string.IsNullOrWhiteSpace(roleString))
+                roleString = UserRole.Student.ToString();
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                dashboardUrl = returnUrl;
+            }
+            else if (!CommonHelper.TryParseEnum<UserRole>(roleString, out UserRole role))
+            {
+                dashboardUrl = "/not-authorized";
+            }
+            else
+            {
+                dashboardUrl = CommonHelper.GetDashboardUrlByRole(role);
+            }
+            return Redirect(dashboardUrl);
         }
     }
 }
