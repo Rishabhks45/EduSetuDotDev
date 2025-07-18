@@ -26,8 +26,8 @@ public static class CommonHelper
         return role switch
         {
             UserRole.SuperAdmin => "/dashboard",
-            //UserRole.PortfolioManager => "/portfolio-dashboard",
-            //UserRole.HotelStaff => "/staff-dashboard",
+            UserRole.Teacher => "/profile",
+            UserRole.Student => "/",
             _ => "/not-authorized" // Unauthorized users
         };
     }

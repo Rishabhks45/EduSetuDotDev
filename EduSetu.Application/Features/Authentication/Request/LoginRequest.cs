@@ -31,7 +31,7 @@ internal sealed class LoginRequestHandler(
             u.RowStatus != RowStatus.Deleted &&
                             (u.Role == UserRole.SuperAdmin ||
         u.Role == UserRole.Teacher ||
-        u.Role == UserRole.Student), cancellationToken);
+        u.Role == UserRole.Student), cancellationToken); 
 
         if (user == null)
         {

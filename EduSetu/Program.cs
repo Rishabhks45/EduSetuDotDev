@@ -4,12 +4,16 @@ using EduSetu.Infrastructure.Data.Contexts;
 using EduSetu.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
+using EduSetu.Application.Common.Settings;
+using EduSetu.Infrastructure.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents()
+    .AddCircuitOptions(options => { options.DetailedErrors = true; });
 
 // register connection string from appsettings.json
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -21,6 +25,11 @@ builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredServic
 //Register all services in your DI container.
 builder.Services.AddScoped<EduSetu.Application.Common.Interfaces.IPasswordEncryptionService, PasswordEncryptionService>();
 
+// Register MediatR for CQRS pattern
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(EduSetu.Application.Features.Authentication.Request.LoginRequest).Assembly));
+
+// Register HttpContextAccessor for accessing HttpContext in components
+builder.Services.AddHttpContextAccessor();
 
 // Add Cookie Authentication with enhanced session management
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -41,16 +50,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SameSite = SameSiteMode.Lax; // Less restrictive for development
         options.Cookie.IsEssential = true; // Required for GDPR compliance
         options.Cookie.Path = "/"; // Ensure cookie is available for all paths
-
-        // Handle authentication events for remember me functionality
-        options.Events.OnSigningIn = context =>
-        {
-            // Standard 30-minute session
-            context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30);
-            context.Properties.IsPersistent = false;
-
-            return Task.CompletedTask;
-        };
 
         // Enhanced event handlers for Blazor Server
         options.Events.OnSignedIn = context =>
@@ -85,6 +84,16 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         };
     });
 
+builder.Services.Configure<EncryptionSettings>(
+    builder.Configuration.GetSection("EncryptionSettings"));
+
+// Add infrastructure and application services
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplicationServices();
+
+// Add controllers for API endpoints
+builder.Services.AddControllers();
+
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -103,6 +112,9 @@ app.UseAntiforgery();
 // Add Authentication and Authorization middleware
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Map API controllers
+app.MapControllers();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

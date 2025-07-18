@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
+using EduSetu.Application.Features.Authentication.Request;
 
 namespace EduSetu.Infrastructure.DependencyInjection;
 
@@ -69,7 +70,7 @@ public static class DependencyRegistrar
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
         // Register application services
-        services.AddScoped<EduSetu.Application.Common.Interfaces.IPasswordEncryptionService, PasswordEncryptionService>();
+        services.AddScoped<IPasswordEncryptionService, PasswordEncryptionService>();
 
         return services;
     }
@@ -77,7 +78,7 @@ public static class DependencyRegistrar
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         // Get Application assembly reference for automatic service registration
-        Assembly applicationAssembly = typeof(EduSetu.Application.Features.Authentication.Request.LoginRequest).Assembly;
+        Assembly applicationAssembly = typeof(LoginRequest).Assembly;
 
         // Automatically register all MediatR handlers from Application assembly
         // This will find all Command, Query, and Request handlers across all Features folders

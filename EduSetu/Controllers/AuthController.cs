@@ -74,8 +74,10 @@ namespace EduSetu.Controllers
             AuthenticationProperties authProperties = new AuthenticationProperties
             {
                 AllowRefresh = true,
-                IsPersistent = false,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                IsPersistent = rememberMe,
+                ExpiresUtc = rememberMe
+                    ? DateTimeOffset.UtcNow.AddDays(7)
+                    : DateTimeOffset.UtcNow.AddMinutes(30)
             };
 
             if (rememberMe)

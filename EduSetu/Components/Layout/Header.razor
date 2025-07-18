@@ -1,6 +1,12 @@
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager Navigation
+
 @using Microsoft.JSInterop
 @inject IJSRuntime JSRuntime
 @implements IAsyncDisposable
+
+@using System.Security.Claims
 
 <header class="fixed w-full z-50 transition-all duration-300" style="@GetHeaderStyle() ">
     <div class="container mx-auto px-4">
@@ -23,21 +29,48 @@
                 <a href="/contact" class="nav-link">Contact</a>
             </nav>
 
-            <!-- Auth Buttons -->
+            <!-- Auth/User Buttons -->
             <div class="hidden md:flex items-center gap-4">
-                <a href="/login" class="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                    </svg>
-                    <span>Sign In</span>
-                </a>
-                
-                <a href="/register" class="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
-                    <span>Get Started</span>
-                </a>
+                @if (!isAuthenticated)
+                {
+                    <a href="/login" class="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                        </svg>
+                        <span>Sign In</span>
+                    </a>
+                    <a href="/register" class="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span>Get Started</span>
+                    </a>
+                }
+                else
+                {
+                    <div class="relative">
+                        <button class="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors focus:outline-none" @onclick="ToggleUserDropdown">
+                            <svg class="w-7 h-7 rounded-full bg-primary-100 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            <span class="font-medium">@userName</span>
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        @if (showUserDropdown)
+                        {
+                            <div class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                                <div class="px-4 py-3 border-b border-gray-100">
+                                    <div class="font-semibold">@userName</div>
+                                    <div class="text-xs text-gray-500 truncate">@userEmail</div>
+                                </div>
+                                <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                                <button class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100" @onclick="Logout">Logout</button>
+                            </div>
+                        }
+                    </div>
+                }
             </div>
 
             <!-- Mobile Menu Button -->
@@ -67,21 +100,31 @@
                     <a href="/notes" class="nav-link">Notes</a>
                     <a href="/videos" class="nav-link">Videos</a>
                     <a href="/contact" class="nav-link">Contact</a>
-                    
                     <div class="pt-4 border-t border-gray-200 space-y-3">
-                        <a href="/login" class="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                            </svg>
-                            Sign In
-                        </a>
-                        
-                        <a href="/register" class="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors w-fit">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                            Get Started
-                        </a>
+                        @if (!isAuthenticated)
+                        {
+                            <a href="/login" class="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                                </svg>
+                                Sign In
+                            </a>
+                            <a href="/register" class="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors w-fit">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                Get Started
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="border-b border-gray-100 px-4 py-2">
+                                <div class="font-semibold">@userName</div>
+                                <div class="text-xs text-gray-500 truncate">@userEmail</div>
+                            </div>
+                            <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                            <button class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100" @onclick="Logout">Logout</button>
+                        }
                     </div>
                 </nav>
             </div>
@@ -89,13 +132,28 @@
     </div>
 </header>
 
-
-
 @code {
     private bool isScrolled = false;
     private bool isMenuOpen = false;
-
+    private ClaimsPrincipal? user;
+    private string? userName;
+    private string? userEmail;
+    private bool isAuthenticated;
+    private bool showUserDropdown = false;
     private DotNetObjectReference<Header>? objRef;
+
+    protected override async Task OnInitializedAsync()
+    {
+        GetHeaderStyle();
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        user = authState.User;
+        isAuthenticated = user.Identity?.IsAuthenticated == true;
+        if (isAuthenticated)
+        {
+            userName = user.Identity?.Name ?? user.FindFirst("name")?.Value ?? user.FindFirst("given_name")?.Value;
+            userEmail = user.FindFirst(c => c.Type == "email" || c.Type == System.Security.Claims.ClaimTypes.Email)?.Value;
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -113,17 +171,11 @@
         StateHasChanged();
     }
 
-    protected override void OnInitialized()
-    {
-        GetHeaderStyle();        
-    }
-
     private string GetHeaderStyle()
     {
         var backgroundColor = isScrolled ? "white" : "transparent";
         var padding = isScrolled ? "0.5rem 0" : "1rem 0";
         var boxShadow = isScrolled ? "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" : "none";
-        
         var style = $"background-color: {backgroundColor}; padding: {padding}; box-shadow: {boxShadow};";
         Console.WriteLine($"Header style: {style}");
         return style;
@@ -132,6 +184,16 @@
     private void ToggleMenu()
     {
         isMenuOpen = !isMenuOpen;
+    }
+
+    private void ToggleUserDropdown()
+    {
+        showUserDropdown = !showUserDropdown;
+    }
+
+    private void Logout()
+    {
+        Navigation.NavigateTo("/api/auth/logout", forceLoad: true);
     }
 
     public async ValueTask DisposeAsync()
