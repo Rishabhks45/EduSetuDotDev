@@ -1,0 +1,655 @@
+@page "/teacher/dashboard/resources"
+@layout TeacherLayout
+
+<PageTitle>Teaching Resources - Teacher Dashboard</PageTitle>
+
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Teaching Resources</h2>
+                <p class="text-gray-600 mt-1">Discover and share educational content with your students</p>
+            </div>
+            <button class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Upload Resource
+            </button>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <!-- Search Bar -->
+        <div class="relative mb-6">
+            <input type="text" placeholder="Search resources by title, description, or tags..."
+                   @bind="searchQuery"
+                   class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+            <svg class="absolute left-4 top-3.5 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
+
+        <!-- Filters -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <select @bind="selectedType" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">All Types</option>
+                <option value="notes">Notes</option>
+                <option value="video">Videos</option>
+                <option value="pyq">Previous Year Questions</option>
+                <option value="assignment">Assignments</option>
+                <option value="reference">References</option>
+            </select>
+
+            <select @bind="selectedSubject" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">All Subjects</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+            </select>
+
+            <select @bind="selectedDifficulty" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">All Levels</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+            </select>
+
+            <div class="flex items-center gap-2">
+                <select @bind="sortBy" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="newest">Newest</option>
+                    <option value="popular">Most Popular</option>
+                    <option value="rating">Highest Rated</option>
+                    <option value="downloads">Most Downloaded</option>
+                </select>
+                <button @onclick="@(() => sortOrder = sortOrder == "asc" ? "desc" : "asc")" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    @if (sortOrder == "asc")
+                    {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path>
+                        </svg>
+                    }
+                    else
+                    {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path>
+                        </svg>
+                    }
+                </button>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                    <button @onclick="@(() => viewMode = "grid")"
+                            class="p-2 rounded-md transition-colors @(viewMode == "grid" ? "bg-white text-gray-800 shadow-sm" : "text-gray-600 hover:text-gray-800")">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                        </svg>
+                    </button>
+                    <button @onclick="@(() => viewMode = "list")"
+                            class="p-2 rounded-md transition-colors @(viewMode == "list" ? "bg-white text-gray-800 shadow-sm" : "text-gray-600 hover:text-gray-800")">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <p class="text-gray-600">
+                Showing @(startIndex + 1)-@(Math.Min(endIndex, filteredResources.Count)) of @filteredResources.Count resources
+            </p>
+        </div>
+    </div>
+
+    <!-- Resources Display -->
+    @if (currentResources.Any())
+    {
+        @if (viewMode == "grid")
+        {
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach (var resource in currentResources)
+                {
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-200 group">
+                        <!-- Thumbnail -->
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="@resource.Thumbnail" alt="@resource.Title" class="w-full h-full object-cover" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+
+                            <!-- Badges -->
+                            <div class="absolute top-3 left-3 flex gap-2">
+                                @if (resource.Category == "premium")
+                                {
+                                    <span class="bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                        </svg>
+                                        PREMIUM
+                                    </span>
+                                }
+                                @if (resource.IsVerified)
+                                {
+                                    <span class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        VERIFIED
+                                    </span>
+                                }
+                            </div>
+
+                            <!-- Type Badge -->
+                            <div class="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium border @GetTypeColor(resource.Type)">
+                                <div class="flex items-center gap-1">
+                                    @GetTypeIcon(resource.Type)
+                                    <span class="capitalize">@resource.Type</span>
+                                </div>
+                            </div>
+
+                            <!-- Duration for videos -->
+                            @if (!string.IsNullOrEmpty(resource.Duration))
+                            {
+                                <div class="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                    @resource.Duration
+                                </div>
+                            }
+
+                            <!-- Quick Actions -->
+                            <div class="absolute bottom-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button @onclick="@(() => ToggleBookmark(resource.Id))"
+                                        class="p-2 rounded-full backdrop-blur-sm transition-colors @(bookmarkedItems.Contains(resource.Id) ? "bg-yellow-500 text-white" : "bg-white/90 text-gray-700 hover:bg-white")">
+                                    <svg class="w-4 h-4 @(bookmarkedItems.Contains(resource.Id) ? "fill-current" : "")" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                    </svg>
+                                </button>
+                                <button @onclick="@(() => ShareResource(resource))"
+                                        class="p-2 bg-white/90 hover:bg-white text-gray-700 rounded-full backdrop-blur-sm transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-6">
+                            <!-- Header -->
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center gap-3 text-sm text-gray-500">
+                                    <span class="flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                        @resource.Views.ToString("N0")
+                                    </span>
+                                    @if (resource.Downloads > 0)
+                                    {
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                            </svg>
+                                            @resource.Downloads.ToString("N0")
+                                        </span>
+                                    }
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                    </svg>
+                                    <span class="text-sm font-medium text-gray-900">@resource.Rating.ToString("F1")</span>
+                                    <span class="text-xs text-gray-500">(@resource.TotalRatings)</span>
+                                </div>
+                            </div>
+
+                            <!-- Title and Description -->
+                            <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">@resource.Title</h3>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-2">@resource.Description</p>
+
+                            <!-- Meta Info -->
+                            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    @resource.Author
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    @FormatDate(resource.UploadDate)
+                                </span>
+                            </div>
+
+                            <!-- Tags and Difficulty -->
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex flex-wrap gap-1">
+                                    @foreach (var tag in resource.Tags.Take(2))
+                                    {
+                                        <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">@tag</span>
+                                    }
+                                    @if (resource.Tags.Count > 2)
+                                    {
+                                        <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">+@(resource.Tags.Count - 2)</span>
+                                    }
+                                </div>
+                                <span class="px-2 py-1 text-xs font-medium rounded-full @GetDifficultyColor(resource.Difficulty)">
+                                    @resource.Difficulty
+                                </span>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-sm text-gray-500">
+                                    <span class="flex items-center gap-1">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        @resource.FileSize
+                                    </span>
+                                </div>
+                                <button class="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- List View -->
+            <div class="space-y-4">
+                @foreach (var resource in currentResources)
+                {
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+                        <div class="flex items-start gap-4">
+                            <!-- Thumbnail -->
+                            <div class="relative w-24 h-24 flex-shrink-0">
+                                <img src="@resource.Thumbnail" alt="@resource.Title" class="w-full h-full object-cover rounded-lg" />
+                                <div class="absolute top-1 right-1">
+                                    @GetTypeIcon(resource.Type)
+                                </div>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900 mb-1">@resource.Title</h3>
+                                        <p class="text-sm text-gray-600 line-clamp-2">@resource.Description</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        @if (resource.Category == "premium")
+                                        {
+                                            <span class="bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full">PREMIUM</span>
+                                        }
+                                        @if (resource.IsVerified)
+                                        {
+                                            <span class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">VERIFIED</span>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                                    <span class="flex items-center gap-1">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                        </svg>
+                                        @resource.Author
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                        @resource.Views.ToString("N0") views
+                                    </span>
+                                    @if (resource.Downloads > 0)
+                                    {
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                            </svg>
+                                            @resource.Downloads.ToString("N0") downloads
+                                        </span>
+                                    }
+                                    <span class="flex items-center gap-1">
+                                        <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                        </svg>
+                                        @resource.Rating.ToString("F1") (@resource.TotalRatings)
+                                    </span>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-4">
+                                        <div class="flex flex-wrap gap-1">
+                                            @foreach (var tag in resource.Tags.Take(3))
+                                            {
+                                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">@tag</span>
+                                            }
+                                        </div>
+                                        <span class="px-2 py-1 text-xs font-medium rounded-full @GetDifficultyColor(resource.Difficulty)">
+                                            @resource.Difficulty
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button @onclick="@(() => ToggleBookmark(resource.Id))"
+                                                class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                                            <svg class="w-4 h-4 @(bookmarkedItems.Contains(resource.Id) ? "fill-current text-yellow-500" : "")" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                                            View Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+            <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">No resources found</h3>
+            <p class="text-gray-600">Try adjusting your search criteria or filters</p>
+        </div>
+    }
+
+    <!-- Pagination -->
+    @if (totalPages > 1)
+    {
+        <div class="flex justify-center">
+            <nav class="flex items-center gap-2">
+                <button @onclick="@(() => ChangePage(currentPage - 1))"
+                        disabled="@(currentPage == 1)"
+                        class="px-3 py-2 text-gray-500 hover:text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Previous
+                </button>
+                @foreach (var page in GetPageNumbers())
+                {
+                    @if (page.ToString() == "...")
+                    {
+                        <span class="px-3 py-2 text-gray-500">...</span>
+                    }
+                    else
+                    {
+                        <button @onclick="@(() => ChangePage(int.Parse(page.ToString())))"
+                                class="px-3 py-2 @(currentPage == int.Parse(page.ToString()) ? "bg-blue-600 text-white border border-blue-600" : "text-gray-700 hover:text-gray-900 border border-gray-300 hover:bg-gray-50") rounded-lg">
+                            @(page)
+                            @using EduSetu.Components.Layout
+            </button>
+                        }
+                }
+                <button @onclick="@(() => ChangePage(currentPage + 1))"
+                        disabled="@(currentPage == totalPages)"
+                        class="px-3 py-2 text-gray-500 hover:text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next
+                </button>
+            </nav>
+        </div>
+    }
+</div>
+
+@code {
+    private string searchQuery = "";
+    private string selectedType = "";
+    private string selectedSubject = "";
+    private string selectedDifficulty = "";
+    private string viewMode = "grid";
+    private string sortBy = "newest";
+    private string sortOrder = "desc";
+    private int currentPage = 1;
+    private int itemsPerPage = 12;
+    private List<string> bookmarkedItems = new() { "1", "3", "5" };
+
+    private List<ResourceItem> resources = new()
+    {
+        new ResourceItem {
+            Id = "1",
+            Title = "Advanced Data Structures and Algorithms",
+            Type = "notes",
+            Subject = "Computer Science",
+            Topic = "Data Structures",
+            Description = "Comprehensive notes covering advanced data structures including B-trees, Red-Black trees, and graph algorithms with detailed examples.",
+            Thumbnail = "https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg",
+            Author = "Dr. Sarah Johnson",
+            UploadDate = "2024-01-20",
+            Views = 2847,
+            Downloads = 1234,
+            Rating = 4.8f,
+            TotalRatings = 156,
+            FileSize = "15.2 MB",
+            Tags = new List<string> { "Data Structures", "Algorithms", "Trees", "Graphs" },
+            Category = "free",
+            Difficulty = "advanced",
+            IsVerified = true
+        },
+        new ResourceItem {
+            Id = "2",
+            Title = "Machine Learning Fundamentals Video Series",
+            Type = "video",
+            Subject = "Computer Science",
+            Topic = "Machine Learning",
+            Description = "Complete video series covering ML basics, supervised learning, unsupervised learning, and neural networks.",
+            Thumbnail = "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
+            Author = "Prof. Michael Chen",
+            UploadDate = "2024-01-18",
+            Views = 5420,
+            Downloads = 0,
+            Rating = 4.9f,
+            TotalRatings = 203,
+            FileSize = "2.1 GB",
+            Duration = "8:45:30",
+            Tags = new List<string> { "Machine Learning", "AI", "Neural Networks", "Python" },
+            Category = "premium",
+            Difficulty = "intermediate",
+            IsVerified = true
+        },
+        new ResourceItem {
+            Id = "3",
+            Title = "Database Management Systems PYQ Collection",
+            Type = "pyq",
+            Subject = "Computer Science",
+            Topic = "Database Systems",
+            Description = "Previous year questions from top universities covering SQL, normalization, transactions, and database design.",
+            Thumbnail = "https://images.pexels.com/photos/4778611/pexels-photo-4778611.jpeg",
+            Author = "University Board",
+            UploadDate = "2024-01-15",
+            Views = 3890,
+            Downloads = 2156,
+            Rating = 4.7f,
+            TotalRatings = 89,
+            FileSize = "8.5 MB",
+            Tags = new List<string> { "Database", "SQL", "DBMS", "Previous Year" },
+            Category = "free",
+            Difficulty = "intermediate",
+            IsVerified = true
+        }
+    };
+
+    @code {  
+        private List<ResourceItem> filteredResources => resources.Where(r =>  
+        {  
+            var matchesSearch = string.IsNullOrEmpty(searchQuery) ||  
+                               r.Title.ToLower().Contains(searchQuery.ToLower()) ||  
+                               r.Description.ToLower().Contains(searchQuery.ToLower()) ||  
+                               r.Tags.Any(tag => tag.ToLower().Contains(searchQuery.ToLower()));  
+      
+            var matchesType = string.IsNullOrEmpty(selectedType) || r.Type == selectedType;  
+            var matchesSubject = string.IsNullOrEmpty(selectedSubject) || r.Subject == selectedSubject;  
+            var matchesDifficulty = string.IsNullOrEmpty(selectedDifficulty) || r.Difficulty == selectedDifficulty;  
+      
+            return matchesSearch && matchesType && matchesSubject && matchesDifficulty;  
+        }).OrderBy<ResourceItem, object>(r =>  
+        {  
+            return sortBy switch  
+            {  
+                "newest" => DateTime.Parse(r.UploadDate),  
+                "popular" => r.Views,  
+                "rating" => r.Rating,  
+                "downloads" => r.Downloads,  
+                _ => DateTime.Parse(r.UploadDate)  
+            };  
+        }).ThenBy(r => sortOrder == "asc" ? r.Title : "").ToList();  
+    }
+
+    private int totalPages => (int)Math.Ceiling((double)filteredResources.Count / itemsPerPage);
+    private int startIndex => (currentPage - 1) * itemsPerPage;
+    private int endIndex => startIndex + itemsPerPage;
+    private List<ResourceItem> currentResources => filteredResources.Skip(startIndex).Take(itemsPerPage).ToList();
+
+    private void ToggleBookmark(string id)
+    {
+        if (bookmarkedItems.Contains(id))
+            bookmarkedItems.Remove(id);
+        else
+            bookmarkedItems.Add(id);
+    }
+
+    private void ShareResource(ResourceItem resource)
+    {
+        // Implement share functionality
+    }
+
+    private void ChangePage(int page)
+    {
+        if (page >= 1 && page <= totalPages)
+        {
+            currentPage = page;
+        }
+    }
+
+    private List<object> GetPageNumbers()
+    {
+        var pages = new List<object>();
+        var maxVisiblePages = 5;
+
+        if (totalPages <= maxVisiblePages)
+        {
+            for (int i = 1; i <= totalPages; i++)
+                pages.Add(i);
+        }
+        else
+        {
+            var startPage = Math.Max(1, currentPage - 2);
+            var endPage = Math.Min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (startPage > 1)
+            {
+                pages.Add(1);
+                if (startPage > 2) pages.Add("...");
+            }
+
+            for (int i = startPage; i <= endPage; i++)
+                pages.Add(i);
+
+            if (endPage < totalPages)
+            {
+                if (endPage < totalPages - 1) pages.Add("...");
+                pages.Add(totalPages);
+            }
+        }
+
+        return pages;
+    }
+
+    private RenderFragment GetTypeIcon(string type)
+    {
+        return type switch
+        {
+            "notes" => @<svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+</svg>,
+            "video" => @<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+</svg>,
+            "pyq" => @<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+</svg>,
+            "assignment" => @<svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+</svg>,
+            "reference" => @<svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+</svg>,
+            _ => @<svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+</svg>
+        };
+    }
+
+    private string GetTypeColor(string type)
+    {
+        return type switch
+        {
+            "notes" => "bg-blue-50 text-blue-700 border-blue-200",
+            "video" => "bg-red-50 text-red-700 border-red-200",
+            "pyq" => "bg-green-50 text-green-700 border-green-200",
+            "assignment" => "bg-purple-50 text-purple-700 border-purple-200",
+            "reference" => "bg-orange-50 text-orange-700 border-orange-200",
+            _ => "bg-gray-50 text-gray-700 border-gray-200"
+        };
+    }
+
+    private string GetDifficultyColor(string difficulty)
+    {
+        return difficulty switch
+        {
+            "beginner" => "bg-green-100 text-green-800",
+            "intermediate" => "bg-yellow-100 text-yellow-800",
+            "advanced" => "bg-red-100 text-red-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+
+    private string FormatDate(string dateString)
+    {
+        var date = DateTime.Parse(dateString);
+        var now = DateTime.Now;
+        var diffTime = Math.Abs(now.Ticks - date.Ticks);
+        var diffDays = Math.Ceiling(diffTime / (1000 * 60 * 60 * 24 * 10000.0));
+
+        if (diffDays == 1) return "1 day ago";
+        if (diffDays < 7) return $"{(int)diffDays} days ago";
+        if (diffDays < 30) return $"{(int)Math.Ceiling(diffDays / 7)} weeks ago";
+        return date.ToShortDateString();
+    }
+
+    public class ResourceItem
+    {
+        public string Id { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Subject { get; set; } = "";
+        public string Topic { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Thumbnail { get; set; } = "";
+        public string Author { get; set; } = "";
+        public string UploadDate { get; set; } = "";
+        public int Views { get; set; }
+        public int Downloads { get; set; }
+        public float Rating { get; set; }
+        public int TotalRatings { get; set; }
+        public string FileSize { get; set; } = "";
+        public string? Duration { get; set; }
+        public List<string> Tags { get; set; } = new();
+        public string Category { get; set; } = "";
+        public string Difficulty { get; set; } = "";
+        public bool IsVerified { get; set; }
+    }
+}

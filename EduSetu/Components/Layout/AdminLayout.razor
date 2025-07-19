@@ -47,9 +47,44 @@
         <nav class="flex-1 p-4 space-y-2">
             @foreach (var item in sidebarItems)
             {
-                <a href="@item.Url"
-                   class="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-colors text-left @(IsActiveTab(item.Id) ? "bg-red-50 text-red-700 border border-red-200" : "text-gray-600 hover:bg-gray-50 hover:text-gray-800")">
-                    <item.Icon class="w-5 h-5" />
+                <button @onclick="@(() => NavigateToPage(item.Url))"
+                        class="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-colors text-left @(IsActiveTab(item.Id) ? "bg-red-50 text-red-700 border border-red-200" : "text-gray-600 hover:bg-gray-50 hover:text-gray-800")">
+                    @if (item.Icon == "home")
+                    {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                    }
+                    else if (item.Icon == "users")
+                    {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
+                    }
+                    else if (item.Icon == "file-text")
+                    {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    }
+                    else if (item.Icon == "bar-chart")
+                    {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    }
+                    else if (item.Icon == "activity")
+                    {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    }
+                    else
+                    {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    }
                     @if (sidebarOpen)
                     {
                         <span class="font-medium">@item.Label</span>
@@ -60,7 +95,7 @@
                             </span>
                         }
                     }
-                </a>
+                </button>
             }
         </nav>
 
@@ -100,7 +135,7 @@
                         <input type="text" placeholder="Search..."
                                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 w-64" />
                     </div>
-                    <button class="relative p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                    <button @onclick="@(() => showNotifications = !showNotifications)" class="relative p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
@@ -112,6 +147,47 @@
                             </span>
                         }
                     </button>
+                    
+                    <!-- Notifications Dropdown -->
+                    @if (showNotifications)
+                    {
+                        <div class="absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                            <div class="p-4 border-b border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-semibold text-gray-900">Notifications</h3>
+                                    <button @onclick="@(() => showNotifications = false)" class="text-gray-400 hover:text-gray-600">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="max-h-96 overflow-y-auto">
+                                @foreach (var notification in notificationItems)
+                                {
+                                    <div class="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                        <div class="flex items-start gap-3">
+                                            <div class="p-2 bg-red-100 rounded-full">
+                                                <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium text-gray-900">@notification.Title</p>
+                                                <p class="text-sm text-gray-600 mt-1">@notification.Message</p>
+                                                <p class="text-xs text-gray-500 mt-2">@notification.Time</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="p-4 border-t border-gray-200">
+                                <button class="w-full text-center text-sm text-red-600 hover:text-red-700 font-medium">
+                                    View All Notifications
+                                </button>
+                            </div>
+                        </div>
+                    }
                     <button @onclick="@HandleLogout"
                             class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                         Logout
@@ -129,8 +205,18 @@
 
 @code {
     private bool sidebarOpen = true;
+    private bool showNotifications = false;
     private int notifications = 8;
     private User? currentUser;
+
+    private List<NotificationItem> notificationItems = new()
+    {
+        new NotificationItem { Title = "New User Registration", Message = "5 new users have registered today", Time = "2 minutes ago" },
+        new NotificationItem { Title = "System Alert", Message = "High CPU usage detected on server", Time = "15 minutes ago" },
+        new NotificationItem { Title = "Content Report", Message = "3 new content reports require review", Time = "1 hour ago" },
+        new NotificationItem { Title = "Backup Complete", Message = "Daily backup completed successfully", Time = "2 hours ago" },
+        new NotificationItem { Title = "Security Update", Message = "New security patch available", Time = "3 hours ago" }
+    };
 
     // Sidebar items
     private List<AdminSidebarItem> sidebarItems = new()
@@ -163,15 +249,22 @@
         sidebarOpen = !sidebarOpen;
     }
 
-    // Navigation is now handled by anchor tags
+    private void NavigateToPage(string url)
+    {
+        NavigationManager.NavigateTo(url);
+    }
 
     private bool IsActiveTab(string tabId)
     {
         var currentUri = NavigationManager.Uri;
+        var baseUri = NavigationManager.BaseUri;
+        var relativePath = currentUri.Replace(baseUri, "").TrimStart('/');
+        
         var item = sidebarItems.FirstOrDefault(x => x.Id == tabId);
         if (item != null)
         {
-            return currentUri.StartsWith(item.Url);
+            var itemPath = item.Url.TrimStart('/');
+            return relativePath.StartsWith(itemPath, StringComparison.OrdinalIgnoreCase);
         }
         return false;
     }
@@ -179,15 +272,20 @@
     private string GetCurrentPageTitle()
     {
         var currentUri = NavigationManager.Uri;
-        var item = sidebarItems.FirstOrDefault(x => currentUri.StartsWith(x.Url));
+        var baseUri = NavigationManager.BaseUri;
+        var relativePath = currentUri.Replace(baseUri, "").TrimStart('/');
+        
+        var item = sidebarItems.FirstOrDefault(x => {
+            var itemPath = x.Url.TrimStart('/');
+            return relativePath.StartsWith(itemPath, StringComparison.OrdinalIgnoreCase);
+        });
         return item?.Label ?? "Dashboard";
     }
 
     private void HandleLogout()
     {
-        NavigationManager.NavigateTo("/logout", true);
+        NavigationManager.NavigateTo("/api/auth/logout", forceLoad: true);
     }
-
 
     // Data model for Admin Sidebar
     public class AdminSidebarItem
@@ -197,5 +295,12 @@
         public string Icon { get; set; } = "";
         public string Url { get; set; } = "";
         public string? Badge { get; set; }
+    }
+
+    public class NotificationItem
+    {
+        public string Title { get; set; } = "";
+        public string Message { get; set; } = "";
+        public string Time { get; set; } = "";
     }
 }

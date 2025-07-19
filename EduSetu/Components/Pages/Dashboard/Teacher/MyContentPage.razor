@@ -218,7 +218,16 @@
             {
                 <button @onclick="@(() => currentPage = page)"
                         class="px-3 py-2 text-sm @(currentPage == page ? "bg-blue-600 text-white" : "border border-gray-300 hover:bg-gray-50") rounded-lg">
-                    @(page)
+                    @(page)PS D:\EduSetu\RealEduSetu\EduSetu\EduSetu> npm run build:css
+
+                    > edusetu@1.0.0 build:css
+                    > tailwindcss -i ./wwwroot/css/app.css -o ./wwwroot/css/app.min.css --watch
+
+
+                    Rebuilding...
+
+                    Done in 723ms.
+
                 </button>
             }
             <button @onclick="@(() => currentPage = Math.Min(GetTotalPages(), currentPage + 1))"
