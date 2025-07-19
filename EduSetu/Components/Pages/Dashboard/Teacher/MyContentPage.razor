@@ -1,0 +1,467 @@
+@page "/teacher/dashboard/my-content"
+@using EduSetu.Components.Layout
+@using EduSetu.Domain.Enums
+@using EduSetu.Domain.Entities
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Teacher")]
+@layout TeacherLayout
+
+<PageTitle>My Content - Teacher Dashboard</PageTitle>
+
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">My Content</h1>
+            <p class="text-gray-600">Manage your uploaded content and materials</p>
+        </div>
+        <div class="flex space-x-2">
+            <button @onclick="@(() => showUploadModal = true)" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                Upload Content
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters and Controls -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <svg class="absolute left-3 top-3 text-gray-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text" @bind="searchQuery" placeholder="Search content..."
+                           class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64" />
+                </div>
+                <select @bind="selectedType" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All Types</option>
+                    <option value="notes">Notes</option>
+                    <option value="video">Video</option>
+                    <option value="pyq">PYQ</option>
+                    <option value="assignment">Assignment</option>
+                </select>
+                <select @bind="selectedStatus" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All Status</option>
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button @onclick="@(() => viewMode = "grid")"
+                        class="p-2 @(viewMode == "grid" ? "bg-blue-100 text-blue-600" : "text-gray-400 hover:text-gray-600") rounded-lg hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                    </svg>
+                </button>
+                <button @onclick="@(() => viewMode = "list")"
+                        class="p-2 @(viewMode == "list" ? "bg-blue-100 text-blue-600" : "text-gray-400 hover:text-gray-600") rounded-lg hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <select @bind="sortBy" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                    <option value="newest">Newest</option>
+                    <option value="popular">Popular</option>
+                    <option value="rating">Rating</option>
+                    <option value="title">Title</option>
+                </select>
+            </div>
+        </div>
+
+        @if (viewMode == "grid")
+        {
+            <!-- Grid View -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                @foreach (var content in GetFilteredContent())
+                {
+                    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                        <div class="relative">
+                            <img src="@content.Thumbnail" alt="@content.Title" class="w-full h-48 object-cover" />
+                            <div class="absolute top-2 right-2 flex space-x-1">
+                                @if (content.IsVerified)
+                                {
+                                    <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">✓</span>
+                                }
+                                @if (content.IsFeatured)
+                                {
+                                    <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">⭐</span>
+                                }
+                            </div>
+                            <div class="absolute bottom-2 left-2">
+                                <span class="bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">@GetTypeIcon(content.Type)</span>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-medium text-gray-900 truncate">@content.Title</h3>
+                                <div class="flex items-center space-x-1">
+                                    <span class="text-yellow-500">★</span>
+                                    <span class="text-sm text-gray-600">@content.Rating</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3 line-clamp-2">@content.Description</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500 mb-3">
+                                <span>@content.Subject</span>
+                                <span>@content.Difficulty</span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs text-gray-500 mb-3">
+                                <span>@content.Views views</span>
+                                <span>@content.Downloads downloads</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex space-x-1">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetStatusColor(content.Status)">
+                                        @content.Status
+                                    </span>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetVisibilityColor(content.Visibility)">
+                                        @content.Visibility
+                                    </span>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <button @onclick="@(() => EditContent(content))" class="p-1 text-blue-600 hover:text-blue-700">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </button>
+                                    <button @onclick="@(() => ViewAnalytics(content))" class="p-1 text-green-600 hover:text-green-700">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                        </svg>
+                                    </button>
+                                    <button @onclick="@(() => DeleteContent(content))" class="p-1 text-red-600 hover:text-red-700">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- List View -->
+            <div class="space-y-4">
+                @foreach (var content in GetFilteredContent())
+                {
+                    <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <img src="@content.Thumbnail" alt="@content.Title" class="w-16 h-16 rounded-lg object-cover" />
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center space-x-2">
+                                    <h3 class="font-medium text-gray-900">@content.Title</h3>
+                                    @if (content.IsVerified)
+                                    {
+                                        <span class="bg-blue-500 text-white text-xs px-1 py-0.5 rounded">✓</span>
+                                    }
+                                    @if (content.IsFeatured)
+                                    {
+                                        <span class="bg-yellow-500 text-white text-xs px-1 py-0.5 rounded">⭐</span>
+                                    }
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetStatusColor(content.Status)">
+                                        @content.Status
+                                    </span>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetVisibilityColor(content.Visibility)">
+                                        @content.Visibility
+                                    </span>
+                                </div>
+                                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                    <span>@FormatDate(content.UploadDate)</span>
+                                    <span>@content.Views views</span>
+                                    <span>@content.Downloads downloads</span>
+                                    <span>★ @content.Rating</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">@content.Description</p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                    <span>@content.Subject</span>
+                                    <span>@content.Difficulty</span>
+                                    <span>@content.FileSize</span>
+                                    @if (!string.IsNullOrEmpty(content.Duration))
+                                    {
+                                        <span>@content.Duration</span>
+                                    }
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button @onclick="@(() => EditContent(content))" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Edit</button>
+                                    <button @onclick="@(() => ViewAnalytics(content))" class="text-xs text-green-600 hover:text-green-700 font-medium">Analytics</button>
+                                    <button @onclick="@(() => DeleteContent(content))" class="text-xs text-red-600 hover:text-red-700 font-medium">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex items-center justify-between">
+        <div class="text-sm text-gray-500">
+            Showing @((currentPage - 1) * itemsPerPage + 1) to @Math.Min(currentPage * itemsPerPage, GetFilteredContent().Count) of @GetFilteredContent().Count results
+        </div>
+        <div class="flex items-center space-x-2">
+            <button @onclick="@(() => currentPage = Math.Max(1, currentPage - 1))"
+                    disabled="@(currentPage == 1)"
+                    class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Previous
+            </button>
+            @foreach (var page in GetPageNumbers())
+            {
+                <button @onclick="@(() => currentPage = page)"
+                        class="px-3 py-2 text-sm @(currentPage == page ? "bg-blue-600 text-white" : "border border-gray-300 hover:bg-gray-50") rounded-lg">
+                    @(page)
+                </button>
+            }
+            <button @onclick="@(() => currentPage = Math.Min(GetTotalPages(), currentPage + 1))"
+                    disabled="@(currentPage == GetTotalPages())"
+                    class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Next
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string searchQuery = "";
+    private string selectedType = "";
+    private string selectedStatus = "";
+    private string viewMode = "grid";
+    private string sortBy = "newest";
+    private string sortOrder = "desc";
+    private int currentPage = 1;
+    private int itemsPerPage = 12;
+    private bool showUploadModal = false;
+    private bool showEditModal = false;
+    private bool showAnalyticsModal = false;
+    private ContentItem? editingItem = null;
+    private ContentItem? analyticsItem = null;
+
+    private List<ContentItem> contentItems = new()
+    {
+        new ContentItem
+        {
+            Id = "1",
+            Title = "Advanced Data Structures and Algorithms",
+            Type = "notes",
+            Subject = "Computer Science",
+            Topic = "Data Structures",
+            Description = "Comprehensive notes covering advanced data structures including B-trees, Red-Black trees, and graph algorithms.",
+            Thumbnail = "https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg",
+            Status = "published",
+            Visibility = "public",
+            UploadDate = "2024-01-20",
+            LastModified = "2024-01-22",
+            Views = 5420,
+            Downloads = 2340,
+            Rating = 4.8,
+            TotalRatings = 156,
+            Comments = 23,
+            FileSize = "15.2 MB",
+            Tags = new List<string> { "Data Structures", "Algorithms", "Trees", "Graphs" },
+            Category = "free",
+            Difficulty = "advanced",
+            IsVerified = true,
+            IsFeatured = true
+        },
+        new ContentItem
+        {
+            Id = "2",
+            Title = "Machine Learning Fundamentals Video Series",
+            Type = "video",
+            Subject = "Computer Science",
+            Topic = "Machine Learning",
+            Description = "Complete video series covering ML basics, supervised learning, and neural networks.",
+            Thumbnail = "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
+            Status = "published",
+            Visibility = "public",
+            UploadDate = "2024-01-18",
+            LastModified = "2024-01-19",
+            Views = 8930,
+            Downloads = 0,
+            Rating = 4.9,
+            TotalRatings = 203,
+            Comments = 45,
+            FileSize = "2.1 GB",
+            Duration = "8:45:30",
+            Tags = new List<string> { "Machine Learning", "AI", "Neural Networks", "Python" },
+            Category = "premium",
+            Difficulty = "intermediate",
+            IsVerified = true,
+            IsFeatured = false
+        },
+        new ContentItem
+        {
+            Id = "3",
+            Title = "Database Management Systems Assignment",
+            Type = "assignment",
+            Subject = "Computer Science",
+            Topic = "Database Systems",
+            Description = "Practical assignment on database design and SQL queries.",
+            Thumbnail = "https://images.pexels.com/photos/4778611/pexels-photo-4778611.jpeg",
+            Status = "draft",
+            Visibility = "private",
+            UploadDate = "2024-01-15",
+            LastModified = "2024-01-21",
+            Views = 0,
+            Downloads = 0,
+            Rating = 0,
+            TotalRatings = 0,
+            Comments = 0,
+            FileSize = "8.5 MB",
+            Tags = new List<string> { "Database", "SQL", "Assignment" },
+            Category = "free",
+            Difficulty = "intermediate",
+            IsVerified = false,
+            IsFeatured = false
+        }
+    };
+
+    private List<ContentItem> GetFilteredContent()
+    {
+        var filtered = contentItems.Where(content =>
+        {
+            var matchesSearch = string.IsNullOrEmpty(searchQuery) ||
+                               content.Title.ToLower().Contains(searchQuery.ToLower()) ||
+                               content.Description.ToLower().Contains(searchQuery.ToLower()) ||
+                               content.Subject.ToLower().Contains(searchQuery.ToLower());
+
+            var matchesType = string.IsNullOrEmpty(selectedType) || content.Type == selectedType;
+            var matchesStatus = string.IsNullOrEmpty(selectedStatus) || content.Status == selectedStatus;
+
+            return matchesSearch && matchesType && matchesStatus;
+        }).ToList();
+
+        // Sort content
+        filtered = sortBy switch
+        {
+            "newest" => filtered.OrderByDescending(c => DateTime.Parse(c.UploadDate)).ToList(),
+            "popular" => filtered.OrderByDescending(c => c.Views).ToList(),
+            "rating" => filtered.OrderByDescending(c => c.Rating).ToList(),
+            "title" => filtered.OrderBy(c => c.Title).ToList(),
+            _ => filtered
+        };
+
+        if (sortOrder == "asc")
+        {
+            filtered.Reverse();
+        }
+
+        return filtered;
+    }
+
+    private string GetTypeIcon(string type)
+    {
+        return type switch
+        {
+            "notes" => "📚",
+            "video" => "🎥",
+            "pyq" => "📝",
+            "assignment" => "📋",
+            _ => "📄"
+        };
+    }
+
+    private string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "published" => "bg-green-100 text-green-800",
+            "draft" => "bg-gray-100 text-gray-800",
+            "pending" => "bg-yellow-100 text-yellow-800",
+            "rejected" => "bg-red-100 text-red-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+
+    private string GetVisibilityColor(string visibility)
+    {
+        return visibility switch
+        {
+            "public" => "bg-blue-100 text-blue-800",
+            "private" => "bg-gray-100 text-gray-800",
+            "unlisted" => "bg-orange-100 text-orange-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+
+    private string FormatDate(string dateString)
+    {
+        var date = DateTime.Parse(dateString);
+        return date.ToString("MMM d, yyyy");
+    }
+
+    private void EditContent(ContentItem content)
+    {
+        editingItem = content;
+        showEditModal = true;
+    }
+
+    private void ViewAnalytics(ContentItem content)
+    {
+        analyticsItem = content;
+        showAnalyticsModal = true;
+    }
+
+    private void DeleteContent(ContentItem content)
+    {
+        // In a real app, this would show a confirmation dialog
+        contentItems.Remove(content);
+    }
+
+    private List<int> GetPageNumbers()
+    {
+        var totalPages = GetTotalPages();
+        var pages = new List<int>();
+        var start = Math.Max(1, currentPage - 2);
+        var end = Math.Min(totalPages, currentPage + 2);
+
+        for (int i = start; i <= end; i++)
+        {
+            pages.Add(i);
+        }
+
+        return pages;
+    }
+
+    private int GetTotalPages()
+    {
+        return (int)Math.Ceiling((double)GetFilteredContent().Count / itemsPerPage);
+    }
+
+
+    public class ContentItem
+    {
+        public string Id { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Subject { get; set; } = "";
+        public string Topic { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Thumbnail { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string Visibility { get; set; } = "";
+        public string UploadDate { get; set; } = "";
+        public string LastModified { get; set; } = "";
+        public int Views { get; set; }
+        public int Downloads { get; set; }
+        public double Rating { get; set; }
+        public int TotalRatings { get; set; }
+        public int Comments { get; set; }
+        public string FileSize { get; set; } = "";
+        public string? Duration { get; set; }
+        public List<string> Tags { get; set; } = new();
+        public string Category { get; set; } = "";
+        public string Difficulty { get; set; } = "";
+        public bool IsVerified { get; set; }
+        public bool IsFeatured { get; set; }
+    }
+}

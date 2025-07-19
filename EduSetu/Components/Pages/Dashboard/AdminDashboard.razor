@@ -1,261 +1,253 @@
 @page "/admin/dashboard"
+@using EduSetu.Components.Layout
 @using EduSetu.Domain.Enums
 @using EduSetu.Domain.Entities
 @using Microsoft.AspNetCore.Authorization
-
+@inject NavigationManager NavigationManager
 @attribute [Authorize(Roles = "SuperAdmin")]
+@layout AdminLayout
 
 <PageTitle>Admin Dashboard - EduSetu</PageTitle>
 
-<div class="min-h-screen bg-gray-50 flex">
-    <!-- Sidebar -->
-    <div class="@(sidebarOpen ? "w-64" : "w-16") bg-white shadow-lg border-r border-gray-200 transition-all duration-300 flex flex-col">
-        <!-- Sidebar Header -->
-        <div class="p-4 border-b border-gray-200">
-            <div class="flex items-center justify-between">
-                @if (sidebarOpen)
+<div class="space-y-6">
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        @foreach (var stat in stats)
+        {
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 rounded-lg @stat.BgColor">
+                        <stat.Icon class="w-6 h-6 @stat.Color" />
+                    </div>
+                    <span class="text-sm @(stat.ChangeType == "positive" ? "text-green-600" : "text-red-600") font-medium">@stat.Change</span>
+                </div>
+                <div class="text-2xl font-bold text-gray-900 mb-1">@stat.Value</div>
+                <div class="text-sm text-gray-600">@stat.Label</div>
+            </div>
+        }
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Users -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Users</h3>
+                <button @onclick="@(() => NavigateToTab("users"))" 
+                        class="text-sm text-red-600 hover:text-red-700 font-medium">
+                    View All
+                </button>
+            </div>
+            <div class="space-y-4">
+                @foreach (var user in recentUsers)
                 {
-                    <div class="flex items-center gap-2">
-                        <div class="p-2 bg-red-100 rounded-lg">
-                            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                            </svg>
+                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <img src="@user.Avatar" alt="@user.Name" class="w-10 h-10 rounded-full border border-gray-300" />
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-900">@user.Name</h4>
+                            <p class="text-sm text-gray-600">@user.Email</p>
                         </div>
-                        <div>
-                            <h2 class="font-semibold text-gray-800">Admin Portal</h2>
-                            <p class="text-xs text-gray-500">System Management</p>
+                        <div class="text-right">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetRoleColor(user.Role)">
+                                @user.Role
+                            </span>
+                            <p class="text-xs text-gray-500 mt-1">@user.LastLogin</p>
                         </div>
                     </div>
                 }
-                <button @onclick="ToggleSidebar" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                    @if (sidebarOpen)
-                    {
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    }
-                    else
-                    {
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    }
-                </button>
             </div>
         </div>
 
-        <!-- Navigation -->
-        <nav class="flex-1 p-4 space-y-2">
-            @foreach (var item in sidebarItems)
-            {
-                <button @onclick="() => SetActiveTab(item.Id)" 
-                        class="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-colors text-left @(activeTab == item.Id ? "bg-red-50 text-red-700 border border-red-200" : "text-gray-600 hover:bg-gray-50 hover:text-gray-800")">
-                    <item.Icon class="w-5 h-5" />
-                    @if (sidebarOpen)
-                    {
-                        <span class="font-medium">@item.Label</span>
-                        @if (!string.IsNullOrEmpty(item.Badge))
-                        {
-                            <span class="ml-auto bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full">
-                                @item.Badge
-                            </span>
-                        }
-                    }
+        <!-- Recent Content -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Content</h3>
+                <button @onclick="@(() => NavigateToTab("content"))" 
+                        class="text-sm text-red-600 hover:text-red-700 font-medium">
+                    View All
                 </button>
-            }
-        </nav>
-
-        <!-- User Profile -->
-        <div class="p-4 border-t border-gray-200">
-            <div class="flex items-center gap-3">
-                <img src="@(currentUser?.ProfilePictureUrl ?? "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2")" 
-                     alt="@currentUser?.FullName" 
-                     class="w-10 h-10 rounded-full border border-gray-300" />
-                @if (sidebarOpen)
+            </div>
+            <div class="space-y-4">
+                @foreach (var content in recentContent)
                 {
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-800 truncate">@currentUser?.FullName</p>
-                        <p class="text-xs text-gray-500 truncate">@currentUser?.Email</p>
+                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <div class="p-2 @GetContentTypeColor(content.Type) rounded-lg">
+                            <content.TypeIcon class="w-5 h-5" />
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-900">@content.Title</h4>
+                            <p class="text-sm text-gray-600">@content.Author</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetStatusColor(content.Status)">
+                                @content.Status
+                            </span>
+                            <p class="text-xs text-gray-500 mt-1">@content.UploadDate</p>
+                        </div>
                     </div>
                 }
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col">
-        <!-- Header -->
-        <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
-            <div class="flex justify-between items-center">
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <button @onclick="@(() => NavigateToTab("users"))" 
+                    class="flex items-center gap-3 p-4 bg-red-50 hover:bg-red-100 rounded-lg transition-colors text-left">
+                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                </svg>
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">
-                        @(sidebarItems.FirstOrDefault(x => x.Id == activeTab)?.Label ?? "Dashboard")
-                    </h1>
-                    <p class="text-gray-600">Welcome back, @currentUser?.FullName</p>
+                    <p class="font-medium text-gray-900">Manage Users</p>
+                    <p class="text-sm text-gray-600">User administration</p>
                 </div>
-                <div class="flex items-center gap-4">
-                    <div class="relative">
-                        <svg class="absolute left-3 top-3 text-gray-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <input type="text" placeholder="Search..." 
-                               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 w-64" />
-                    </div>
-                    <button class="relative p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                        </svg>
-                        @if (notifications > 0)
-                        {
-                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                @notifications
-                            </span>
-                        }
-                    </button>
-                    <button @onclick="HandleLogout" 
-                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                        Logout
-                    </button>
+            </button>
+            
+            <button @onclick="@(() => NavigateToTab("content"))" 
+                    class="flex items-center gap-3 p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors text-left">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <div>
+                    <p class="font-medium text-gray-900">Moderate Content</p>
+                    <p class="text-sm text-gray-600">Review submissions</p>
                 </div>
-            </div>
-        </header>
-
-        <!-- Content Area -->
-        <main class="flex-1 p-6 overflow-auto">
-            @if (activeTab == "overview")
-            {
-                <div class="space-y-6">
-                    <!-- Stats Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        @foreach (var stat in stats)
-                        {
-                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div class="p-3 rounded-lg @stat.BgColor">
-                                        <stat.Icon class="w-6 h-6 @stat.Color" />
-                                    </div>
-                                    <span class="text-sm @(stat.ChangeType == "positive" ? "text-green-600" : "text-red-600") font-medium">@stat.Change</span>
-                                </div>
-                                <div class="text-2xl font-bold text-gray-900 mb-1">@stat.Value</div>
-                                <div class="text-sm text-gray-600">@stat.Label</div>
-                            </div>
-                        }
-                    </div>
-
-                    <!-- Main Content Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Recent Users -->
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                            <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-lg font-semibold text-gray-900">Recent Users</h3>
-                                <button @onclick="@(() => SetActiveTab("users"))" 
-                                        class="text-sm text-red-600 hover:text-red-700 font-medium">
-                                    View All
-                                </button>
-                            </div>
-                            <div class="space-y-4">
-                                @foreach (var user in recentUsers)
-                                {
-                                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                                        <img src="@user.Avatar" alt="@user.Name" class="w-10 h-10 rounded-full border border-gray-300" />
-                                        <div class="flex-1">
-                                            <h4 class="font-medium text-gray-900">@user.Name</h4>
-                                            <p class="text-sm text-gray-600">@user.Email</p>
-                                        </div>
-                                        <div class="text-right">
-                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetRoleColor(user.Role)">
-                                                @user.Role
-                                            </span>
-                                            <p class="text-xs text-gray-500 mt-1">@user.LastLogin</p>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-
-                        <!-- Recent Content -->
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                            <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-lg font-semibold text-gray-900">Recent Content</h3>
-                                <button @onclick="@(() => SetActiveTab("content"))" 
-                                        class="text-sm text-red-600 hover:text-red-700 font-medium">
-                                    View All
-                                </button>
-                            </div>
-                            <div class="space-y-4">
-                                @foreach (var content in recentContent)
-                                {
-                                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                                        <div class="p-2 @GetContentTypeColor(content.Type) rounded-lg">
-                                            <content.TypeIcon class="w-5 h-5" />
-                                        </div>
-                                        <div class="flex-1">
-                                            <h4 class="font-medium text-gray-900">@content.Title</h4>
-                                            <p class="text-sm text-gray-600">@content.Author</p>
-                                        </div>
-                                        <div class="text-right">
-                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetStatusColor(content.Status)">
-                                                @content.Status
-                                            </span>
-                                            <p class="text-xs text-gray-500 mt-1">@content.UploadDate</p>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
+            </button>
+            
+            <button @onclick="@(() => NavigateToTab("analytics"))" 
+                    class="flex items-center gap-3 p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-left">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                <div>
+                    <p class="font-medium text-gray-900">View Analytics</p>
+                    <p class="text-sm text-gray-600">Platform insights</p>
                 </div>
-            }
-            else if (activeTab == "users")
-            {
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-6">User Management</h3>
-                    <p class="text-gray-600">User management interface will be implemented here.</p>
+            </button>
+            
+            <button @onclick="@(() => NavigateToTab("system"))" 
+                    class="flex items-center gap-3 p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors text-left">
+                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                    <p class="font-medium text-gray-900">System Health</p>
+                    <p class="text-sm text-gray-600">Monitor status</p>
                 </div>
-            }
-            else if (activeTab == "content")
-            {
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Content Moderation</h3>
-                    <p class="text-gray-600">Content moderation interface will be implemented here.</p>
-                </div>
-            }
-            else if (activeTab == "analytics")
-            {
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Analytics</h3>
-                    <p class="text-gray-600">Analytics dashboard will be implemented here.</p>
-                </div>
-            }
-            else if (activeTab == "system")
-            {
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-6">System Health</h3>
-                    <p class="text-gray-600">System health monitoring will be implemented here.</p>
-                </div>
-            }
-            else if (activeTab == "security")
-            {
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Security</h3>
-                    <p class="text-gray-600">Security monitoring will be implemented here.</p>
-                </div>
-            }
-            else if (activeTab == "reports")
-            {
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Reports</h3>
-                    <p class="text-gray-600">Reports generation will be implemented here.</p>
-                </div>
-            }
-            else if (activeTab == "settings")
-            {
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Settings</h3>
-                    <p class="text-gray-600">System settings will be implemented here.</p>
-                </div>
-            }
-        </main>
+            </button>
+        </div>
     </div>
-</div> 
+</div>
+
+@code {
+    // Stats data
+    private List<StatItem> stats = new()
+    {
+        new StatItem { Label = "Total Users", Value = "12,847", Change = "+12%", ChangeType = "positive", Icon = "users", Color = "text-blue-600", BgColor = "bg-blue-100" },
+        new StatItem { Label = "Content Items", Value = "8,392", Change = "+8%", ChangeType = "positive", Icon = "file-text", Color = "text-green-600", BgColor = "bg-green-100" },
+        new StatItem { Label = "Video Hours", Value = "2,847", Change = "+15%", ChangeType = "positive", Icon = "video", Color = "text-purple-600", BgColor = "bg-purple-100" },
+        new StatItem { Label = "Monthly Revenue", Value = "$24,891", Change = "+23%", ChangeType = "positive", Icon = "dollar-sign", Color = "text-yellow-600", BgColor = "bg-yellow-100" },
+        new StatItem { Label = "Server Uptime", Value = "99.9%", Change = "+0.1%", ChangeType = "positive", Icon = "server", Color = "text-indigo-600", BgColor = "bg-indigo-100" },
+        new StatItem { Label = "Support Tickets", Value = "23", Change = "-15%", ChangeType = "negative", Icon = "message-square", Color = "text-red-600", BgColor = "bg-red-100" }
+    };
+
+    // Recent users data
+    private List<UserItem> recentUsers = new()
+    {
+        new UserItem { Id = "1", Name = "John Doe", Email = "john@example.com", Role = "user", Status = "active", LastLogin = "2 hours ago", Avatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2" },
+        new UserItem { Id = "2", Name = "Jane Smith", Email = "jane@example.com", Role = "teacher", Status = "active", LastLogin = "1 day ago", Avatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2" },
+        new UserItem { Id = "3", Name = "Bob Wilson", Email = "bob@example.com", Role = "user", Status = "pending", LastLogin = "Never", Avatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2" },
+        new UserItem { Id = "4", Name = "Alice Johnson", Email = "alice@example.com", Role = "teacher", Status = "active", LastLogin = "3 hours ago", Avatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2" }
+    };
+
+    // Recent content data
+    private List<ContentItem> recentContent = new()
+    {
+        new ContentItem { Id = "1", Title = "Advanced Physics Notes", Author = "Dr. Smith", Type = "notes", Status = "published", UploadDate = "2024-01-20", TypeIcon = "file-text" },
+        new ContentItem { Id = "2", Title = "Chemistry Lab Video", Author = "Prof. Johnson", Type = "video", Status = "pending", UploadDate = "2024-01-19", TypeIcon = "video" },
+        new ContentItem { Id = "3", Title = "Math PYQ 2024", Author = "Admin", Type = "pyq", Status = "published", UploadDate = "2024-01-18", TypeIcon = "file-text" },
+        new ContentItem { Id = "4", Title = "Inappropriate Content Report", Author = "User123", Type = "notes", Status = "flagged", UploadDate = "2024-01-17", TypeIcon = "file-text" }
+    };
+
+    private void NavigateToTab(string tabId)
+    {
+        var basePath = "/admin/dashboard";
+        if (tabId == "overview")
+        {
+            NavigationManager.NavigateTo(basePath);
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"{basePath}?tab={tabId}");
+        }
+    }
+
+    private string GetRoleColor(string role)
+    {
+        return role switch
+        {
+            "admin" => "text-red-600 bg-red-100",
+            "teacher" => "text-blue-600 bg-blue-100",
+            _ => "text-green-600 bg-green-100"
+        };
+    }
+
+    private string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "active" => "text-green-600 bg-green-100",
+            "pending" => "text-yellow-600 bg-yellow-100",
+            "flagged" => "text-red-600 bg-red-100",
+            _ => "text-gray-600 bg-gray-100"
+        };
+    }
+
+    private string GetContentTypeColor(string type)
+    {
+        return type switch
+        {
+            "notes" => "bg-blue-100 text-blue-600",
+            "video" => "bg-red-100 text-red-600",
+            "pyq" => "bg-green-100 text-green-600",
+            _ => "bg-gray-100 text-gray-600"
+        };
+    }
+
+
+// Data models
+public class StatItem
+{
+    public string Label { get; set; } = "";
+    public string Value { get; set; } = "";
+    public string Change { get; set; } = "";
+    public string ChangeType { get; set; } = "";
+    public string Icon { get; set; } = "";
+    public string Color { get; set; } = "";
+    public string BgColor { get; set; } = "";
+}
+
+public class UserItem
+{
+    public string Id { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string Email { get; set; } = "";
+    public string Role { get; set; } = "";
+    public string Status { get; set; } = "";
+    public string LastLogin { get; set; } = "";
+    public string Avatar { get; set; } = "";
+}
+
+public class ContentItem
+{
+    public string Id { get; set; } = "";
+    public string Title { get; set; } = "";
+    public string Author { get; set; } = "";
+    public string Type { get; set; } = "";
+    public string Status { get; set; } = "";
+    public string UploadDate { get; set; } = "";
+    public string TypeIcon { get; set; } = "";
+} 
+}

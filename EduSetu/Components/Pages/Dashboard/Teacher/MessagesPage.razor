@@ -1,0 +1,504 @@
+@page "/teacher/dashboard/messages"
+@using EduSetu.Components.Layout
+@using EduSetu.Domain.Enums
+@using EduSetu.Domain.Entities
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Teacher")]
+@layout TeacherLayout
+
+<PageTitle>Messages - Teacher Dashboard</PageTitle>
+
+<div class="h-[calc(100vh-200px)] bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="flex h-full">
+        <!-- Conversations Sidebar -->
+        <div class="w-80 border-r border-gray-200 flex flex-col">
+            <!-- Header -->
+            <div class="p-4 border-b border-gray-200">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Messages</h2>
+                    <div class="flex items-center gap-2">
+                        <button @onclick="@(() => showNewMessageModal = true)"
+                                class="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                        </button>
+                        <button @onclick="@(() => showGroupModal = true)"
+                                class="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="relative mb-4">
+                    <svg class="absolute left-3 top-3 text-gray-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text"
+                           placeholder="Search conversations..."
+                           @bind="searchQuery"
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                </div>
+
+                <!-- Filters -->
+                <div class="flex items-center gap-2">
+                    <select @bind="filterType"
+                            class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        <option value="">All</option>
+                        <option value="individual">Individual</option>
+                        <option value="group">Groups</option>
+                        <option value="announcement">Announcements</option>
+                    </select>
+                    <select @bind="sortBy"
+                            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        <option value="recent">Recent</option>
+                        <option value="unread">Unread</option>
+                        <option value="name">Name</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Conversations List -->
+            <div class="flex-1 overflow-y-auto">
+                @foreach (var conversation in GetFilteredConversations())
+                {
+                    <div @onclick="@(() => selectedConversation = conversation.Id)"
+                         class="p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors @(selectedConversation == conversation.Id ? "bg-blue-50 border-blue-200" : "")">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <img src="@conversation.Avatar" alt="@conversation.Name"
+                                     class="w-12 h-12 rounded-full object-cover" />
+                                @if (conversation.IsOnline && conversation.Type == "individual")
+                                {
+                                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                                }
+                            </div>
+
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-1">
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="font-medium text-gray-900 truncate">@conversation.Name</h3>
+                                        @if (conversation.IsPinned)
+                                        {
+                                            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                            </svg>
+                                        }
+                                        @if (conversation.IsMuted)
+                                        {
+                                            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 7H4a1 1 0 00-1 1v6a1 1 0 001 1h1.586l4.707 4.707c.39.39 1.023.39 1.414 0L15.414 15H20a1 1 0 001-1V8a1 1 0 00-1-1h-4.586l-4.707-4.707c-.39-.39-1.023-.39-1.414 0L5.586 7z"></path>
+                                            </svg>
+                                        }
+                                        @if (conversation.Type == "group")
+                                        {
+                                            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                            </svg>
+                                        }
+                                    </div>
+                                    <span class="text-xs text-gray-500">@FormatTime(conversation.LastMessageTime)</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <p class="text-sm text-gray-600 truncate">@conversation.LastMessage</p>
+                                    @if (conversation.UnreadCount > 0)
+                                    {
+                                        <span class="bg-blue-600 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
+                                            @conversation.UnreadCount
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="flex-1 flex flex-col">
+            @if (currentConversation != null)
+            {
+                <!-- Chat Header -->
+                <div class="p-4 border-b border-gray-200 bg-white">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <img src="@currentConversation.Avatar" alt="@currentConversation.Name"
+                                     class="w-10 h-10 rounded-full object-cover" />
+                                @if (currentConversation.IsOnline && currentConversation.Type == "individual")
+                                {
+                                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                                }
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-gray-900">@currentConversation.Name</h3>
+                                <p class="text-sm text-gray-600">
+                                    @if (currentConversation.Type == "individual")
+                                    {
+                                        @(currentConversation.IsOnline ? "Online" : "Last seen recently")
+                                    }
+                                    else
+                                    {
+                                        @($"{currentConversation.Participants.Count} participants")
+                                    }
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            @if (currentConversation.Type == "individual")
+                            {
+                                <button class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                    </svg>
+                                </button>
+                                <button class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                </button>
+                            }
+                            <button @onclick="@(() => showConversationInfo = !showConversationInfo)"
+                                    class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </button>
+                            <div class="relative">
+                                <button class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-4">
+                    @foreach (var message in currentConversation.Messages)
+                    {
+                        <div class="flex gap-3 @(message.SenderId == "teacher" ? "justify-end" : "justify-start")">
+                            @if (message.SenderId != "teacher")
+                            {
+                                <img src="@message.SenderAvatar" alt="@message.SenderName"
+                                     class="w-8 h-8 rounded-full object-cover" />
+                            }
+
+                            <div class="max-w-xs lg:max-w-md @(message.SenderId == "teacher" ? "order-1" : "")">
+                                @if (currentConversation.Type == "group" && message.SenderId != "teacher")
+                                {
+                                    <p class="text-xs text-gray-500 mb-1">@message.SenderName</p>
+                                }
+
+                                <div class="@(message.SenderId == "teacher" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-900") rounded-lg px-4 py-2">
+                                    <p class="text-sm">@message.Content</p>
+                                    @if (message.Attachments != null && message.Attachments.Any())
+                                    {
+                                        <div class="mt-2 space-y-1">
+                                            @foreach (var attachment in message.Attachments)
+                                            {
+                                                <div class="flex items-center gap-2 p-2 bg-white bg-opacity-20 rounded">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                                                    </svg>
+                                                    <span class="text-xs">@attachment.Name</span>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="flex items-center gap-1 mt-1 @(message.SenderId == "teacher" ? "justify-end" : "justify-start")">
+                                    <span class="text-xs text-gray-500">@FormatMessageTime(message.Timestamp)</span>
+                                    @if (message.SenderId == "teacher")
+                                    {
+                                        <span class="text-xs @(message.Status == "read" ? "text-blue-500" : "text-gray-400")">
+                                            @GetStatusIcon(message.Status)
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Message Input -->
+                <div class="p-4 border-t border-gray-200">
+                    <div class="flex items-center gap-2">
+                        <button class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                            </svg>
+                        </button>
+                        <div class="flex-1 relative">
+                            <input type="text"
+                                   @bind="messageInput"
+                                   @onkeypress="@HandleKeyPress"
+                                   placeholder="Type a message..."
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                        </div>
+                        <button @onclick="SendMessage"
+                                class="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <!-- Empty State -->
+                <div class="flex-1 flex items-center justify-center">
+                    <div class="text-center">
+                        <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No conversation selected</h3>
+                        <p class="text-gray-500">Choose a conversation from the sidebar to start messaging</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private string selectedConversation = "1";
+    private string messageInput = "";
+    private string searchQuery = "";
+    private string filterType = "";
+    private string sortBy = "recent";
+    private bool showNewMessageModal = false;
+    private bool showGroupModal = false;
+    private bool showConversationInfo = false;
+    private bool isTyping = false;
+
+    private List<ConversationItem> conversations = new()
+    {
+        new ConversationItem
+        {
+            Id = "1",
+            Type = "individual",
+            Name = "John Smith",
+            Avatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2",
+            LastMessage = "Thank you for the assignment feedback!",
+            LastMessageTime = "2024-01-22T14:30:00Z",
+            UnreadCount = 2,
+            IsOnline = true,
+            IsPinned = false,
+            IsMuted = false,
+            Participants = new List<ParticipantItem>
+            {
+                new ParticipantItem { Id = "1", Name = "John Smith", Avatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg", Role = "student" }
+            },
+            Messages = new List<MessageItem>
+            {
+                new MessageItem { Id = "1", SenderId = "1", SenderName = "John Smith", SenderAvatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg", Content = "Hi Professor, I have a question about the assignment.", Timestamp = "2024-01-22T14:00:00Z", Type = "text", Status = "read" },
+                new MessageItem { Id = "2", SenderId = "teacher", SenderName = "Dr. Sarah Johnson", SenderAvatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg", Content = "Sure! What specific part are you having trouble with?", Timestamp = "2024-01-22T14:15:00Z", Type = "text", Status = "read" },
+                new MessageItem { Id = "3", SenderId = "1", SenderName = "John Smith", SenderAvatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg", Content = "Thank you for the assignment feedback!", Timestamp = "2024-01-22T14:30:00Z", Type = "text", Status = "delivered" }
+            }
+        },
+        new ConversationItem
+        {
+            Id = "2",
+            Type = "group",
+            Name = "CS101 - Data Structures",
+            Avatar = "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
+            LastMessage = "Assignment deadline extended to Friday",
+            LastMessageTime = "2024-01-22T12:00:00Z",
+            UnreadCount = 0,
+            IsOnline = false,
+            IsPinned = true,
+            IsMuted = false,
+            Participants = new List<ParticipantItem>
+            {
+                new ParticipantItem { Id = "1", Name = "John Smith", Avatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg", Role = "student" },
+                new ParticipantItem { Id = "2", Name = "Jane Doe", Avatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg", Role = "student" },
+                new ParticipantItem { Id = "3", Name = "Bob Wilson", Avatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg", Role = "student" }
+            },
+            Messages = new List<MessageItem>
+            {
+                new MessageItem { Id = "1", SenderId = "teacher", SenderName = "Dr. Sarah Johnson", SenderAvatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg", Content = "Assignment deadline extended to Friday", Timestamp = "2024-01-22T12:00:00Z", Type = "text", Status = "read" }
+            }
+        },
+        new ConversationItem
+        {
+            Id = "3",
+            Type = "individual",
+            Name = "Emily Davis",
+            Avatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg",
+            LastMessage = "Could you please review my project proposal?",
+            LastMessageTime = "2024-01-21T16:45:00Z",
+            UnreadCount = 1,
+            IsOnline = false,
+            IsPinned = false,
+            IsMuted = false,
+            Participants = new List<ParticipantItem>
+            {
+                new ParticipantItem { Id = "3", Name = "Emily Davis", Avatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg", Role = "student" }
+            },
+            Messages = new List<MessageItem>
+            {
+                new MessageItem
+                {
+                    Id = "1",
+                    SenderId = "3",
+                    SenderName = "Emily Davis",
+                    SenderAvatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg",
+                    Content = "Could you please review my project proposal?",
+                    Timestamp = "2024-01-21T16:45:00Z",
+                    Type = "text",
+                    Status = "delivered",
+                    Attachments = new List<AttachmentItem>
+                    {
+                        new AttachmentItem { Name = "Project_Proposal.pdf", Url = "/files/proposal.pdf", Type = "pdf", Size = "2.4 MB" }
+                    }
+                }
+            }
+        }
+    };
+
+    private ConversationItem? currentConversation => conversations.FirstOrDefault(c => c.Id == selectedConversation);
+
+    private List<ConversationItem> GetFilteredConversations()
+    {
+        var filtered = conversations.Where(c =>
+        {
+            var matchesSearch = string.IsNullOrEmpty(searchQuery) ||
+                               c.Name.ToLower().Contains(searchQuery.ToLower()) ||
+                               c.LastMessage.ToLower().Contains(searchQuery.ToLower());
+
+            var matchesType = string.IsNullOrEmpty(filterType) || c.Type == filterType;
+
+            return matchesSearch && matchesType;
+        }).ToList();
+
+        // Sort conversations
+        filtered = sortBy switch
+        {
+            "recent" => filtered.OrderByDescending(c => DateTime.Parse(c.LastMessageTime)).ToList(),
+            "unread" => filtered.OrderByDescending(c => c.UnreadCount).ToList(),
+            "name" => filtered.OrderBy(c => c.Name).ToList(),
+            _ => filtered
+        };
+
+        // Pinned conversations first
+        return filtered.OrderByDescending(c => c.IsPinned).ToList();
+    }
+
+    private string FormatTime(string timestamp)
+    {
+        var date = DateTime.Parse(timestamp);
+        var now = DateTime.Now;
+        var diffTime = Math.Abs((now - date).TotalDays);
+
+        if (diffTime < 1) return "Today";
+        if (diffTime < 2) return "Yesterday";
+        if (diffTime < 7) return date.ToString("ddd");
+        return date.ToString("MMM d");
+    }
+
+    private string FormatMessageTime(string timestamp)
+    {
+        var date = DateTime.Parse(timestamp);
+        return date.ToString("HH:mm");
+    }
+
+    private string GetStatusIcon(string status)
+    {
+        return status switch
+        {
+            "sent" => "✓",
+            "delivered" => "✓✓",
+            "read" => "✓✓",
+            _ => "⏱"
+        };
+    }
+
+    private void SendMessage()
+    {
+        if (string.IsNullOrWhiteSpace(messageInput) || currentConversation == null) return;
+
+        var newMessage = new MessageItem
+        {
+            Id = Guid.NewGuid().ToString(),
+            SenderId = "teacher",
+            SenderName = "Dr. Sarah Johnson",
+            SenderAvatar = "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg",
+            Content = messageInput,
+            Timestamp = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+            Type = "text",
+            Status = "sent"
+        };
+
+        currentConversation.Messages.Add(newMessage);
+        currentConversation.LastMessage = messageInput;
+        currentConversation.LastMessageTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        messageInput = "";
+        StateHasChanged();
+    }
+
+    private void HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            SendMessage();
+        }
+    }
+
+
+    public class ConversationItem
+    {
+        public string Id { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Name { get; set; } = "";
+        public string Avatar { get; set; } = "";
+        public string LastMessage { get; set; } = "";
+        public string LastMessageTime { get; set; } = "";
+        public int UnreadCount { get; set; }
+        public bool IsOnline { get; set; }
+        public bool IsPinned { get; set; }
+        public bool IsMuted { get; set; }
+        public List<ParticipantItem> Participants { get; set; } = new();
+        public List<MessageItem> Messages { get; set; } = new();
+    }
+
+    public class ParticipantItem
+    {
+        public string Id { get; set; } = "";
+        public string Name { get; set; } = "";
+        public string Avatar { get; set; } = "";
+        public string Role { get; set; } = "";
+    }
+
+    public class MessageItem
+    {
+        public string Id { get; set; } = "";
+        public string SenderId { get; set; } = "";
+        public string SenderName { get; set; } = "";
+        public string SenderAvatar { get; set; } = "";
+        public string Content { get; set; } = "";
+        public string Timestamp { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Status { get; set; } = "";
+        public List<AttachmentItem>? Attachments { get; set; }
+        public string? ReplyTo { get; set; }
+    }
+
+    public class AttachmentItem
+    {
+        public string Name { get; set; } = "";
+        public string Url { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Size { get; set; } = "";
+    }
+}

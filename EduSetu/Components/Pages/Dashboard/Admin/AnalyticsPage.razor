@@ -1,0 +1,179 @@
+@page "/admin/dashboard/analytics"
+@using EduSetu.Components.Layout
+@using EduSetu.Domain.Enums
+@using EduSetu.Domain.Entities
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "SuperAdmin")]
+@layout AdminLayout
+
+<PageTitle>Analytics - Admin Dashboard</PageTitle>
+
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Analytics</h1>
+            <p class="text-gray-600">Platform insights and performance metrics</p>
+        </div>
+        <div class="flex space-x-2">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Export Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 bg-blue-100 rounded-lg">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </div>
+                <span class="text-sm text-green-600 font-medium">+12%</span>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1">12,847</div>
+            <div class="text-sm text-gray-600">Total Users</div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 bg-green-100 rounded-lg">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <span class="text-sm text-green-600 font-medium">+8%</span>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1">8,392</div>
+            <div class="text-sm text-gray-600">Content Items</div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 bg-purple-100 rounded-lg">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <span class="text-sm text-green-600 font-medium">+15%</span>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1">2,847</div>
+            <div class="text-sm text-gray-600">Video Hours</div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 bg-yellow-100 rounded-lg">
+                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                    </svg>
+                </div>
+                <span class="text-sm text-green-600 font-medium">+23%</span>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1">$24,891</div>
+            <div class="text-sm text-gray-600">Monthly Revenue</div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- User Growth Chart -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">User Growth</h3>
+            <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+                <div class="text-center text-gray-500">
+                    <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <p>Chart placeholder</p>
+                    <p class="text-sm">User growth over time</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Distribution -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Content Distribution</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 bg-blue-500 rounded-full mr-3"></div>
+                        <span class="text-sm font-medium">Notes</span>
+                    </div>
+                    <span class="text-sm text-gray-600">45%</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 bg-red-500 rounded-full mr-3"></div>
+                        <span class="text-sm font-medium">Videos</span>
+                    </div>
+                    <span class="text-sm text-gray-600">35%</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                        <span class="text-sm font-medium">PYQs</span>
+                    </div>
+                    <span class="text-sm text-gray-600">20%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+        <div class="space-y-4">
+            @foreach (var activity in recentActivities)
+            {
+                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                    <div class="p-2 @GetActivityTypeColor(activity.Type) rounded-lg">
+                        <activity.TypeIcon class="w-4 h-4" />
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-900">@activity.Message</p>
+                        <p class="text-xs text-gray-500">@activity.Time</p>
+                    </div>
+                    <span class="text-xs text-gray-400">@activity.User</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<ActivityItem> recentActivities = new()
+    {
+        new ActivityItem { Type = "user", Message = "New user registration: john.doe@example.com", Time = "2 minutes ago", User = "System", TypeIcon = "user" },
+        new ActivityItem { Type = "content", Message = "Content approved: Advanced Physics Notes", Time = "5 minutes ago", User = "Admin", TypeIcon = "file-text" },
+        new ActivityItem { Type = "system", Message = "System backup completed successfully", Time = "1 hour ago", User = "System", TypeIcon = "server" },
+        new ActivityItem { Type = "alert", Message = "High server load detected", Time = "2 hours ago", User = "System", TypeIcon = "alert-triangle" }
+    };
+
+    private string GetActivityTypeColor(string type)
+    {
+        return type switch
+        {
+            "user" => "bg-blue-100 text-blue-600",
+            "content" => "bg-green-100 text-green-600",
+            "system" => "bg-purple-100 text-purple-600",
+            "alert" => "bg-red-100 text-red-600",
+            _ => "bg-gray-100 text-gray-600"
+        };
+    }
+
+
+    public class ActivityItem
+    {
+        public string Type { get; set; } = "";
+        public string Message { get; set; } = "";
+        public string Time { get; set; } = "";
+        public string User { get; set; } = "";
+        public string TypeIcon { get; set; } = "";
+    }
+}

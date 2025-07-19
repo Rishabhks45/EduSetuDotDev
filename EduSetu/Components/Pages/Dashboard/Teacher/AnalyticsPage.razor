@@ -1,0 +1,297 @@
+@page "/teacher/dashboard/analytics"
+@using EduSetu.Components.Layout
+@using EduSetu.Domain.Enums
+@using EduSetu.Domain.Entities
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Teacher")]
+@layout TeacherLayout
+
+<PageTitle>Performance Analytics - Teacher Dashboard</PageTitle>
+
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Performance Analytics</h1>
+            <p class="text-gray-600">Track your teaching performance and student engagement</p>
+        </div>
+        <div class="flex space-x-2">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                Export Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 bg-blue-100 rounded-lg">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </div>
+                <span class="text-sm text-green-600 font-medium">+15%</span>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1">247</div>
+            <div class="text-sm text-gray-600">Total Students</div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 bg-green-100 rounded-lg">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                </div>
+                <span class="text-sm text-green-600 font-medium">+18%</span>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1">15,420</div>
+            <div class="text-sm text-gray-600">Content Views</div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 bg-purple-100 rounded-lg">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                </div>
+                <span class="text-sm text-green-600 font-medium">+25%</span>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1">2,845</div>
+            <div class="text-sm text-gray-600">Downloads</div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 bg-yellow-100 rounded-lg">
+                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                    </svg>
+                </div>
+                <span class="text-sm text-green-600 font-medium">+0.2</span>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1">4.8</div>
+            <div class="text-sm text-gray-600">Avg Rating</div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Student Engagement Chart -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Student Engagement</h3>
+            <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+                <div class="text-center text-gray-500">
+                    <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <p>Chart placeholder</p>
+                    <p class="text-sm">Student engagement over time</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Performance -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Content Performance</h3>
+            <div class="space-y-4">
+                @foreach (var content in topContent)
+                {
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 @GetContentTypeColor(content.Type) rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    @if (content.Type == "video")
+                                    {
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    }
+                                    else
+                                    {
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    }
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">@content.Title</p>
+                                <p class="text-xs text-gray-500">@content.Views views</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm font-medium text-gray-900">@content.Rating</div>
+                            <div class="text-xs text-gray-500">@content.Downloads downloads</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Analytics -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Student Demographics -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Student Demographics</h3>
+            <div class="space-y-4">
+                @foreach (var demo in studentDemographics)
+                {
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-4 h-4 @demo.Color rounded-full"></div>
+                            <span class="text-sm font-medium text-gray-900">@demo.Category</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-32 bg-gray-200 rounded-full h-2">
+                                <div class="@demo.Color h-2 rounded-full" style="width: @(demo.Percentage)%"></div>
+                            </div>
+                            <span class="text-sm text-gray-600 w-12 text-right">@demo.Percentage%</span>
+                            <span class="text-sm text-gray-500 w-16 text-right">(@demo.Count)</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Activity Timeline -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+            <div class="space-y-4">
+                @foreach (var activity in recentActivity)
+                {
+                    <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+                        <div class="p-2 @GetActivityTypeColor(activity.Type) rounded-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                @if (activity.Type == "upload")
+                                {
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                }
+                                else if (activity.Type == "rating")
+                                {
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                }
+                                else
+                                {
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                }
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-900">@activity.Message</p>
+                            <p class="text-xs text-gray-500">@activity.Time</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Insights -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Performance Insights</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            @foreach (var insight in performanceInsights)
+            {
+                <div class="text-center p-4 @insight.BgColor rounded-lg">
+                    <div class="text-2xl font-bold @insight.TextColor mb-2">@insight.Value</div>
+                    <div class="text-sm @insight.TextColor font-medium mb-1">@insight.Title</div>
+                    <div class="text-xs @insight.TextColor opacity-75">@insight.Description</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<TopContentItem> topContent = new()
+    {
+        new TopContentItem { Title = "Advanced Data Structures", Type = "notes", Views = 5420, Downloads = 2340, Rating = 4.8 },
+        new TopContentItem { Title = "Machine Learning Basics", Type = "video", Views = 8930, Downloads = 0, Rating = 4.9 },
+        new TopContentItem { Title = "Database Systems Guide", Type = "notes", Views = 3450, Downloads = 1560, Rating = 4.7 },
+        new TopContentItem { Title = "Python Programming", Type = "video", Views = 6780, Downloads = 0, Rating = 4.6 }
+    };
+
+    private List<StudentDemographicItem> studentDemographics = new()
+    {
+        new StudentDemographicItem { Category = "Computer Science", Percentage = 45, Count = 111, Color = "bg-blue-500" },
+        new StudentDemographicItem { Category = "Mathematics", Percentage = 30, Count = 74, Color = "bg-green-500" },
+        new StudentDemographicItem { Category = "Physics", Percentage = 15, Count = 37, Color = "bg-purple-500" },
+        new StudentDemographicItem { Category = "Other", Percentage = 10, Count = 25, Color = "bg-yellow-500" }
+    };
+
+    private List<ActivityItem> recentActivity = new()
+    {
+        new ActivityItem { Type = "upload", Message = "New video lecture uploaded: \"Advanced Algorithms\"", Time = "2 hours ago" },
+        new ActivityItem { Type = "rating", Message = "Received 5-star rating on \"Machine Learning Basics\"", Time = "4 hours ago" },
+        new ActivityItem { Type = "download", Message = "25 new downloads on \"Database Systems Guide\"", Time = "6 hours ago" },
+        new ActivityItem { Type = "comment", Message = "Student commented on \"Data Structures Notes\"", Time = "1 day ago" }
+    };
+
+    private List<PerformanceInsightItem> performanceInsights = new()
+    {
+        new PerformanceInsightItem { Title = "Engagement Rate", Value = "87%", Description = "Above average", BgColor = "bg-green-50", TextColor = "text-green-600" },
+        new PerformanceInsightItem { Title = "Response Time", Value = "2.3h", Description = "Excellent", BgColor = "bg-blue-50", TextColor = "text-blue-600" },
+        new PerformanceInsightItem { Title = "Student Satisfaction", Value = "4.8/5", Description = "Very high", BgColor = "bg-yellow-50", TextColor = "text-yellow-600" }
+    };
+
+    private string GetContentTypeColor(string type)
+    {
+        return type switch
+        {
+            "notes" => "bg-blue-100 text-blue-600",
+            "video" => "bg-red-100 text-red-600",
+            "pyq" => "bg-green-100 text-green-600",
+            _ => "bg-gray-100 text-gray-600"
+        };
+    }
+
+    private string GetActivityTypeColor(string type)
+    {
+        return type switch
+        {
+            "upload" => "bg-blue-100 text-blue-600",
+            "rating" => "bg-yellow-100 text-yellow-600",
+            "download" => "bg-green-100 text-green-600",
+            "comment" => "bg-purple-100 text-purple-600",
+            _ => "bg-gray-100 text-gray-600"
+        };
+    }
+
+
+    public class TopContentItem
+    {
+        public string Title { get; set; } = "";
+        public string Type { get; set; } = "";
+        public int Views { get; set; }
+        public int Downloads { get; set; }
+        public double Rating { get; set; }
+    }
+
+    public class StudentDemographicItem
+    {
+        public string Category { get; set; } = "";
+        public int Percentage { get; set; }
+        public int Count { get; set; }
+        public string Color { get; set; } = "";
+    }
+
+    public class ActivityItem
+    {
+        public string Type { get; set; } = "";
+        public string Message { get; set; } = "";
+        public string Time { get; set; } = "";
+    }
+
+    public class PerformanceInsightItem
+    {
+        public string Title { get; set; } = "";
+        public string Value { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string BgColor { get; set; } = "";
+        public string TextColor { get; set; } = "";
+    }
+}

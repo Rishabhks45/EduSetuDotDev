@@ -1,0 +1,201 @@
+@inherits LayoutComponentBase
+@using EduSetu.Domain.Enums
+@using EduSetu.Domain.Entities
+@inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager NavigationManager
+
+<PageTitle>Admin Dashboard - EduSetu</PageTitle>
+
+<div class="min-h-screen bg-gray-50 flex">
+    <!-- Sidebar -->
+    <div class="@(sidebarOpen ? "w-64" : "w-16") bg-white shadow-lg border-r border-gray-200 transition-all duration-300 flex flex-col">
+        <!-- Sidebar Header -->
+        <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                @if (sidebarOpen)
+                {
+                    <div class="flex items-center gap-2">
+                        <div class="p-2 bg-red-100 rounded-lg">
+                            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="font-semibold text-gray-800">Admin Portal</h2>
+                            <p class="text-xs text-gray-500">System Management</p>
+                        </div>
+                    </div>
+                }
+                <button @onclick="@ToggleSidebar" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    @if (sidebarOpen)
+                    {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    }
+                    else
+                    {
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    }
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 p-4 space-y-2">
+            @foreach (var item in sidebarItems)
+            {
+                <a href="@item.Url"
+                   class="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-colors text-left @(IsActiveTab(item.Id) ? "bg-red-50 text-red-700 border border-red-200" : "text-gray-600 hover:bg-gray-50 hover:text-gray-800")">
+                    <item.Icon class="w-5 h-5" />
+                    @if (sidebarOpen)
+                    {
+                        <span class="font-medium">@item.Label</span>
+                        @if (!string.IsNullOrEmpty(item.Badge))
+                        {
+                            <span class="ml-auto bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full">
+                                @item.Badge
+                            </span>
+                        }
+                    }
+                </a>
+            }
+        </nav>
+
+        <!-- User Profile -->
+        <div class="p-4 border-t border-gray-200">
+            <div class="flex items-center gap-3">
+                <img src="@(currentUser?.ProfilePictureUrl ?? "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2")"
+                     alt="@currentUser?.FullName"
+                     class="w-10 h-10 rounded-full border border-gray-300" />
+                @if (sidebarOpen)
+                {
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-800 truncate">@currentUser?.FullName</p>
+                        <p class="text-xs text-gray-500 truncate">@currentUser?.Email</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">
+                        @(GetCurrentPageTitle())
+                    </h1>
+                    <p class="text-gray-600">Welcome back, @currentUser?.FullName</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <svg class="absolute left-3 top-3 text-gray-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" placeholder="Search..."
+                               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 w-64" />
+                    </div>
+                    <button class="relative p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        @if (notifications > 0)
+                        {
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                @notifications
+                            </span>
+                        }
+                    </button>
+                    <button @onclick="@HandleLogout"
+                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="flex-1 p-6 overflow-auto">
+            @Body
+        </main>
+    </div>
+</div>
+
+@code {
+    private bool sidebarOpen = true;
+    private int notifications = 8;
+    private User? currentUser;
+
+    // Sidebar items
+    private List<AdminSidebarItem> sidebarItems = new()
+    {
+        new AdminSidebarItem { Id = "overview", Label = "Overview", Icon = "home", Url = "/admin/dashboard", Badge = null },
+        new AdminSidebarItem { Id = "users", Label = "User Management", Icon = "users", Url = "/admin/dashboard/users", Badge = "12" },
+        new AdminSidebarItem { Id = "content", Label = "Content Moderation", Icon = "file-text", Url = "/admin/dashboard/content", Badge = "5" },
+        new AdminSidebarItem { Id = "analytics", Label = "Analytics", Icon = "bar-chart", Url = "/admin/dashboard/analytics", Badge = null },
+        new AdminSidebarItem { Id = "system", Label = "System Health", Icon = "activity", Url = "/admin/dashboard/system", Badge = "2" }
+    };
+
+    protected override void OnInitialized()
+    {
+        // Get current user from claims
+        var user = HttpContextAccessor.HttpContext?.User;
+        if (user?.Identity?.IsAuthenticated == true)
+        {
+            currentUser = new User
+            {
+                FirstName = user.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value ?? "",
+                LastName = user.FindFirst(System.Security.Claims.ClaimTypes.Surname)?.Value ?? "",
+                Email = user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "",
+                Role = UserRole.SuperAdmin
+            };
+        }
+    }
+
+    private void ToggleSidebar()
+    {
+        sidebarOpen = !sidebarOpen;
+    }
+
+    // Navigation is now handled by anchor tags
+
+    private bool IsActiveTab(string tabId)
+    {
+        var currentUri = NavigationManager.Uri;
+        var item = sidebarItems.FirstOrDefault(x => x.Id == tabId);
+        if (item != null)
+        {
+            return currentUri.StartsWith(item.Url);
+        }
+        return false;
+    }
+
+    private string GetCurrentPageTitle()
+    {
+        var currentUri = NavigationManager.Uri;
+        var item = sidebarItems.FirstOrDefault(x => currentUri.StartsWith(x.Url));
+        return item?.Label ?? "Dashboard";
+    }
+
+    private void HandleLogout()
+    {
+        NavigationManager.NavigateTo("/logout", true);
+    }
+
+
+    // Data model for Admin Sidebar
+    public class AdminSidebarItem
+    {
+        public string Id { get; set; } = "";
+        public string Label { get; set; } = "";
+        public string Icon { get; set; } = "";
+        public string Url { get; set; } = "";
+        public string? Badge { get; set; }
+    }
+}

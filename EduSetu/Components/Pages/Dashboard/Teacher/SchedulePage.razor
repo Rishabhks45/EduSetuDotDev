@@ -1,0 +1,191 @@
+@page "/teacher/dashboard/schedule"
+@using EduSetu.Components.Layout
+@using EduSetu.Domain.Enums
+@using EduSetu.Domain.Entities
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Teacher")]
+@layout TeacherLayout
+
+<PageTitle>Schedule - Teacher Dashboard</PageTitle>
+
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Schedule</h1>
+            <p class="text-gray-600">Manage your classes and teaching schedule</p>
+        </div>
+        <div class="flex space-x-2">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Class
+            </button>
+        </div>
+    </div>
+
+    <!-- Today's Schedule -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Today's Classes</h3>
+        <div class="space-y-4">
+            @foreach (var classItem in todaysClasses)
+            {
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-4">
+                        <div class="p-3 @GetClassTypeColor(classItem.Type) rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-900">@classItem.Subject</h4>
+                            <p class="text-sm text-gray-600">@classItem.Time - @classItem.Duration</p>
+                            <p class="text-sm text-gray-500">@classItem.Students students</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetStatusColor(classItem.Status)">
+                            @classItem.Status
+                        </span>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                            Start
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Weekly Schedule -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Weekly Schedule</h3>
+        <div class="grid grid-cols-7 gap-4">
+            @foreach (var day in weekDays)
+            {
+                <div class="text-center">
+                    <div class="text-sm font-medium text-gray-900 mb-2">@day.Name</div>
+                    <div class="space-y-2">
+                        @foreach (var classItem in GetClassesForDay(day.Name))
+                        {
+                            <div class="p-2 bg-blue-50 rounded text-xs">
+                                <div class="font-medium text-blue-900">@classItem.Subject</div>
+                                <div class="text-blue-600">@classItem.Time</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Upcoming Classes -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Upcoming Classes</h3>
+        <div class="space-y-4">
+            @foreach (var classItem in upcomingClasses)
+            {
+                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                    <div class="flex items-center space-x-4">
+                        <div class="p-3 @GetClassTypeColor(classItem.Type) rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-900">@classItem.Subject</h4>
+                            <p class="text-sm text-gray-600">@classItem.Date at @classItem.Time</p>
+                            <p class="text-sm text-gray-500">@classItem.Students students</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                            Edit
+                        </button>
+                        <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<ClassItem> todaysClasses = new()
+    {
+        new ClassItem { Id = "1", Subject = "Physics", Time = "09:00 AM", Duration = "1 hour", Students = 25, Type = "lecture", Status = "upcoming" },
+        new ClassItem { Id = "2", Subject = "Chemistry Lab", Time = "11:00 AM", Duration = "2 hours", Students = 15, Type = "lab", Status = "in-progress" },
+        new ClassItem { Id = "3", Subject = "Mathematics", Time = "02:00 PM", Duration = "1.5 hours", Students = 30, Type = "tutorial", Status = "completed" }
+    };
+
+    private List<ClassItem> upcomingClasses = new()
+    {
+        new ClassItem { Id = "4", Subject = "Biology", Date = "2024-01-22", Time = "10:00 AM", Duration = "1 hour", Students = 28, Type = "lecture", Status = "scheduled" },
+        new ClassItem { Id = "5", Subject = "Physics Lab", Date = "2024-01-23", Time = "09:00 AM", Duration = "2 hours", Students = 20, Type = "lab", Status = "scheduled" },
+        new ClassItem { Id = "6", Subject = "Chemistry", Date = "2024-01-24", Time = "11:00 AM", Duration = "1 hour", Students = 32, Type = "lecture", Status = "scheduled" }
+    };
+
+    private List<DayItem> weekDays = new()
+    {
+        new DayItem { Name = "Mon" },
+        new DayItem { Name = "Tue" },
+        new DayItem { Name = "Wed" },
+        new DayItem { Name = "Thu" },
+        new DayItem { Name = "Fri" },
+        new DayItem { Name = "Sat" },
+        new DayItem { Name = "Sun" }
+    };
+
+    private List<ClassItem> GetClassesForDay(string dayName)
+    {
+        // Mock data for weekly schedule
+        return new List<ClassItem>
+        {
+            new ClassItem { Subject = "Physics", Time = "09:00" },
+            new ClassItem { Subject = "Chemistry", Time = "11:00" }
+        };
+    }
+
+    private string GetClassTypeColor(string type)
+    {
+        return type switch
+        {
+            "lecture" => "bg-blue-100 text-blue-600",
+            "lab" => "bg-green-100 text-green-600",
+            "tutorial" => "bg-purple-100 text-purple-600",
+            _ => "bg-gray-100 text-gray-600"
+        };
+    }
+
+    private string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "upcoming" => "text-blue-600 bg-blue-100",
+            "in-progress" => "text-green-600 bg-green-100",
+            "completed" => "text-gray-600 bg-gray-100",
+            "scheduled" => "text-yellow-600 bg-yellow-100",
+            _ => "text-gray-600 bg-gray-100"
+        };
+    }
+
+
+    public class ClassItem
+    {
+        public string Id { get; set; } = "";
+        public string Subject { get; set; } = "";
+        public string Time { get; set; } = "";
+        public string Date { get; set; } = "";
+        public string Duration { get; set; } = "";
+        public int Students { get; set; }
+        public string Type { get; set; } = "";
+        public string Status { get; set; } = "";
+    }
+
+    public class DayItem
+    {
+        public string Name { get; set; } = "";
+    }
+}
