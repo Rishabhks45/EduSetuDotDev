@@ -41,7 +41,7 @@
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                     <h3 class="text-xl font-semibold mb-4">Get Started in Seconds</h3>
                     <div class="flex justify-center">
-                        <button class="inline-flex items-center justify-center gap-3 bg-white text-gray-800 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors duration-200">
+                        <button @onclick="HandleGoogleLogin" class="inline-flex items-center justify-center gap-3 bg-white text-gray-800 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors duration-200">
                             <svg class="w-5 h-5" viewBox="0 0 24 24">
                                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -1053,6 +1053,17 @@
     private readonly string[] universities = { "Delhi University", "Mumbai University", "Bangalore University" };
     private readonly string[] classes = { "Class 10", "Class 11", "Class 12" };
     private readonly string[] semesters = { "Semester 1", "Semester 2", "Semester 3", "Semester 4", "Semester 5", "Semester 6", "Semester 7", "Semester 8" };
+
+    // Navigation manager for handling redirects
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+
+
+
+    //Login by Google
+    private void HandleGoogleLogin()
+    {
+        Navigation.NavigateTo("/api/auth/google-login", forceLoad: true);
+    }
 
     private readonly Dictionary<string, string[]> schoolSubjects = new()
     {

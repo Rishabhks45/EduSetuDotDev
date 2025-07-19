@@ -25,8 +25,8 @@ public static class CommonHelper
     {
         return role switch
         {
-            UserRole.SuperAdmin => "/dashboard",
-            UserRole.Teacher => "/profile",
+            UserRole.SuperAdmin => "/admin/dashboard",
+            UserRole.Teacher => "/teacher/dashboard",
             UserRole.Student => "/",
             _ => "/not-authorized" // Unauthorized users
         };
