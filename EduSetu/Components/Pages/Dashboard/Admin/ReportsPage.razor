@@ -1,0 +1,687 @@
+@page "/admin/dashboard/reports"
+@using EduSetu.Components.Layout
+@using EduSetu.Domain.Enums
+@using EduSetu.Domain.Entities
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "SuperAdmin")]
+@layout AdminLayout
+
+<PageTitle>Reports - Admin Dashboard</PageTitle>
+
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Reports</h2>
+                <p class="text-gray-600 mt-1">Generate, manage, and schedule comprehensive platform reports</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button @onclick="ShowCreateModal" class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Create Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+        <div class="border-b border-gray-200">
+            <nav class="flex space-x-8 px-6">
+                <button @onclick="@(() => activeTab = "reports")"
+                        class="py-4 px-1 border-b-2 font-medium text-sm @(activeTab == "reports" ? "border-red-500 text-red-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300")">
+                    Reports
+                </button>
+                <button @onclick="@(() => activeTab = "templates")"
+                        class="py-4 px-1 border-b-2 font-medium text-sm @(activeTab == "templates" ? "border-red-500 text-red-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300")">
+                    Templates
+                </button>
+                <button @onclick="@(() => activeTab = "scheduled")"
+                        class="py-4 px-1 border-b-2 font-medium text-sm @(activeTab == "scheduled" ? "border-red-500 text-red-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300")">
+                    Scheduled
+                </button>
+            </nav>
+        </div>
+
+        <div class="p-6">
+            @if (activeTab == "reports")
+            {
+                <!-- Reports Tab -->
+                <div class="space-y-6">
+                    <!-- Search and Filters -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="relative md:col-span-2">
+                            <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <input type="text" placeholder="Search reports..."
+                                   @bind="searchQuery" @bind:after="OnSearchChanged"
+                                   class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500" />
+                        </div>
+                        <div>
+                            <select @bind="selectedType" @bind:after="OnFilterChanged"
+                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                                <option value="">All Types</option>
+                                <option value="user_analytics">User Analytics</option>
+                                <option value="content_performance">Content Performance</option>
+                                <option value="system_health">System Health</option>
+                                <option value="security_audit">Security Audit</option>
+                                <option value="financial">Financial</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select @bind="selectedStatus" @bind:after="OnFilterChanged"
+                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                                <option value="">All Status</option>
+                                <option value="ready">Ready</option>
+                                <option value="generating">Generating</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Reports List -->
+                    <div class="space-y-4">
+                        @foreach (var report in GetFilteredReports())
+                        {
+                            <div class="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start gap-4">
+                                        <div class="p-3 bg-white rounded-lg shadow-sm">
+                                            @GetReportTypeIcon(report.Type)
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-3 mb-2">
+                                                <h3 class="text-lg font-semibold text-gray-900">@report.Name</h3>
+                                                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium @GetStatusColor(report.Status)">
+                                                    @GetStatusIcon(report.Status)
+                                                    @report.Status
+                                                </span>
+                                                @if (report.IsScheduled)
+                                                {
+                                                    <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                        </svg>
+                                                        Scheduled
+                                                    </span>
+                                                }
+                                            </div>
+                                            <p class="text-gray-600 mb-3">@report.Description</p>
+                                            <div class="flex items-center gap-6 text-sm text-gray-500">
+                                                <span>Generated: @FormatDate(report.LastGenerated)</span>
+                                                <span>By: @report.GeneratedBy</span>
+                                                <span>Size: @report.FileSize</span>
+                                                <span>Downloads: @report.DownloadCount</span>
+                                                @if (report.IsScheduled && !string.IsNullOrEmpty(report.Schedule))
+                                                {
+                                                    <span>Schedule: @report.Schedule</span>
+                                                }
+                                            </div>
+                                            @if (report.Recipients.Any())
+                                            {
+                                                <div class="mt-3">
+                                                    <span class="text-xs text-gray-500">Recipients: @string.Join(", ", report.Recipients)</span>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        @if (report.Status == "ready")
+                                        {
+                                            <button @onclick="@(() => DownloadReport(report.Id))" 
+                                                    class="flex items-center gap-2 text-blue-600 hover:text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors text-sm">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                                Download
+                                            </button>
+                                        }
+                                        <button @onclick="@(() => EditReport(report.Id))" 
+                                                class="flex items-center gap-2 text-gray-600 hover:text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                            Edit
+                                        </button>
+                                        <button @onclick="@(() => DeleteReport(report.Id))" 
+                                                class="flex items-center gap-2 text-red-600 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors text-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else if (activeTab == "templates")
+            {
+                <!-- Templates Tab -->
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @foreach (var template in reportTemplates)
+                        {
+                            <div class="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors">
+                                <div class="flex items-start gap-4 mb-4">
+                                    <div class="p-3 bg-white rounded-lg shadow-sm">
+                                        @GetReportTypeIcon(template.Type)
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-semibold text-gray-900 mb-2">@template.Name</h3>
+                                        <p class="text-gray-600 text-sm mb-3">@template.Description</p>
+                                        <div class="space-y-2">
+                                            <div class="text-xs text-gray-500">
+                                                <strong>Metrics:</strong> @string.Join(", ", template.Metrics)
+                                            </div>
+                                            <div class="text-xs text-gray-500">
+                                                <strong>Estimated Time:</strong> @template.EstimatedTime
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button @onclick="@(() => GenerateReport(template.Id))" 
+                                            class="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                        Generate Report
+                                    </button>
+                                    <button @onclick="@(() => ScheduleReport(template.Id))" 
+                                            class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                        Schedule
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else if (activeTab == "scheduled")
+            {
+                <!-- Scheduled Tab -->
+                <div class="space-y-6">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <h3 class="font-medium text-blue-900">Scheduled Reports</h3>
+                                <p class="text-sm text-blue-700">Manage automated report generation and delivery</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        @foreach (var report in GetScheduledReports())
+                        {
+                            <div class="bg-gray-50 rounded-xl p-6">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start gap-4">
+                                        <div class="p-3 bg-white rounded-lg shadow-sm">
+                                            @GetReportTypeIcon(report.Type)
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-3 mb-2">
+                                                <h3 class="text-lg font-semibold text-gray-900">@report.Name</h3>
+                                                <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                    </svg>
+                                                    Scheduled
+                                                </span>
+                                            </div>
+                                            <p class="text-gray-600 mb-3">@report.Description</p>
+                                            <div class="flex items-center gap-6 text-sm text-gray-500">
+                                                <span>Schedule: @report.Schedule</span>
+                                                <span>Next Run: @GetNextRunDate(report.Schedule)</span>
+                                                <span>Recipients: @string.Join(", ", report.Recipients)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button @onclick="@(() => EditSchedule(report.Id))" 
+                                                class="flex items-center gap-2 text-gray-600 hover:text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                            Edit
+                                        </button>
+                                        <button @onclick="@(() => DeleteSchedule(report.Id))" 
+                                                class="flex items-center gap-2 text-red-600 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors text-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Create Report Modal -->
+@if (showCreateModal)
+{
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" @onclick="CloseCreateModal">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" @onclick:stopPropagation="true">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-gray-900">Create New Report</h3>
+                    <button @onclick="CloseCreateModal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Report Name</label>
+                            <input type="text" @bind="newReport.Name" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                   placeholder="Enter report name" />
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Report Type</label>
+                            <select @bind="newReport.Type" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                                <option value="">Select Type</option>
+                                <option value="user_analytics">User Analytics</option>
+                                <option value="content_performance">Content Performance</option>
+                                <option value="system_health">System Health</option>
+                                <option value="security_audit">Security Audit</option>
+                                <option value="financial">Financial</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea @bind="newReport.Description" rows="3"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                  placeholder="Enter report description"></textarea>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" @bind="newReport.IsScheduled" id="scheduled" class="w-4 h-4 text-red-600 focus:ring-red-500 border-gray-300 rounded" />
+                        <label for="scheduled" class="text-sm text-gray-700">Schedule this report</label>
+                    </div>
+                    
+                    @if (newReport.IsScheduled)
+                    {
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Schedule</label>
+                                <select @bind="newReport.Schedule"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                                    <option value="">Select Schedule</option>
+                                    <option value="Daily">Daily</option>
+                                    <option value="Weekly">Weekly</option>
+                                    <option value="Monthly">Monthly</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Recipients (comma-separated)</label>
+                                <input type="text" @bind="newReport.RecipientsInput"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                       placeholder="email1@example.com, email2@example.com" />
+                            </div>
+                        </div>
+                    }
+                </div>
+                
+                <div class="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
+                    <button type="button" @onclick="CloseCreateModal"
+                            class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors">
+                        Cancel
+                    </button>
+                    <button @onclick="CreateReport"
+                            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
+                        Create Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private string activeTab = "reports";
+    private string searchQuery = "";
+    private string selectedType = "";
+    private string selectedStatus = "";
+    private bool showCreateModal = false;
+    private NewReportForm newReport = new();
+
+    private List<Report> reports = new()
+    {
+        new Report 
+        { 
+            Id = "1", 
+            Name = "Monthly User Analytics Report", 
+            Type = "user_analytics", 
+            Description = "Comprehensive analysis of user behavior, growth, and engagement metrics",
+            LastGenerated = "2024-01-22T08:00:00Z",
+            GeneratedBy = "System Scheduler",
+            Status = "ready",
+            FileSize = "2.4 MB",
+            DownloadCount = 15,
+            IsScheduled = true,
+            Schedule = "Monthly on 1st",
+            Recipients = new List<string> { "admin@edunotes.com", "analytics@edunotes.com" }
+        },
+        new Report 
+        { 
+            Id = "2", 
+            Name = "Content Performance Dashboard", 
+            Type = "content_performance", 
+            Description = "Analysis of content views, downloads, ratings, and user engagement",
+            LastGenerated = "2024-01-21T18:30:00Z",
+            GeneratedBy = "Admin User",
+            Status = "ready",
+            FileSize = "1.8 MB",
+            DownloadCount = 8,
+            IsScheduled = false,
+            Recipients = new List<string> { "content@edunotes.com" }
+        },
+        new Report 
+        { 
+            Id = "3", 
+            Name = "System Health Report", 
+            Type = "system_health", 
+            Description = "Server performance, uptime, and infrastructure metrics",
+            LastGenerated = "2024-01-22T06:00:00Z",
+            GeneratedBy = "System Monitor",
+            Status = "ready",
+            FileSize = "956 KB",
+            DownloadCount = 23,
+            IsScheduled = true,
+            Schedule = "Daily at 6:00 AM",
+            Recipients = new List<string> { "devops@edunotes.com", "admin@edunotes.com" }
+        },
+        new Report 
+        { 
+            Id = "4", 
+            Name = "Security Audit Report", 
+            Type = "security_audit", 
+            Description = "Security events, vulnerabilities, and threat analysis",
+            LastGenerated = "2024-01-20T12:00:00Z",
+            GeneratedBy = "Security Scanner",
+            Status = "ready",
+            FileSize = "3.2 MB",
+            DownloadCount = 5,
+            IsScheduled = true,
+            Schedule = "Weekly on Monday",
+            Recipients = new List<string> { "security@edunotes.com" }
+        },
+        new Report 
+        { 
+            Id = "5", 
+            Name = "Financial Summary", 
+            Type = "financial", 
+            Description = "Revenue, subscriptions, and financial performance metrics",
+            LastGenerated = "2024-01-19T09:00:00Z",
+            GeneratedBy = "Finance Team",
+            Status = "generating",
+            FileSize = "-",
+            DownloadCount = 0,
+            IsScheduled = false,
+            Recipients = new List<string> { "finance@edunotes.com", "admin@edunotes.com" }
+        }
+    };
+
+    private List<ReportTemplate> reportTemplates = new()
+    {
+        new ReportTemplate 
+        { 
+            Id = "1", 
+            Name = "User Growth Analysis", 
+            Type = "user_analytics", 
+            Description = "Track user registration, activation, and retention rates",
+            Metrics = new List<string> { "New Users", "Active Users", "Retention Rate", "Churn Rate" },
+            EstimatedTime = "5-10 minutes"
+        },
+        new ReportTemplate 
+        { 
+            Id = "2", 
+            Name = "Content Engagement Report", 
+            Type = "content_performance", 
+            Description = "Analyze content views, downloads, and user interactions",
+            Metrics = new List<string> { "Views", "Downloads", "Ratings", "Comments", "Shares" },
+            EstimatedTime = "3-7 minutes"
+        },
+        new ReportTemplate 
+        { 
+            Id = "3", 
+            Name = "System Performance Overview", 
+            Type = "system_health", 
+            Description = "Monitor server performance and infrastructure health",
+            Metrics = new List<string> { "CPU Usage", "Memory Usage", "Disk Space", "Network I/O", "Uptime" },
+            EstimatedTime = "2-5 minutes"
+        },
+        new ReportTemplate 
+        { 
+            Id = "4", 
+            Name = "Security Threat Assessment", 
+            Type = "security_audit", 
+            Description = "Comprehensive security analysis and threat detection",
+            Metrics = new List<string> { "Failed Logins", "Blocked IPs", "Vulnerabilities", "Security Score" },
+            EstimatedTime = "10-15 minutes"
+        }
+    };
+
+    private RenderFragment GetReportTypeIcon(string type)
+    {
+        return type switch
+        {
+            "user_analytics" => @<svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+            </svg>,
+            "content_performance" => @<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>,
+            "system_health" => @<svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
+            </svg>,
+            "security_audit" => @<svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>,
+            "financial" => @<svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+            </svg>,
+            _ => @<svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+        };
+    }
+
+    private string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "ready" => "bg-green-100 text-green-800",
+            "generating" => "bg-yellow-100 text-yellow-800",
+            "failed" => "bg-red-100 text-red-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+
+    private RenderFragment GetStatusIcon(string status)
+    {
+        return status switch
+        {
+            "ready" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>,
+            "generating" => @<svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>,
+            "failed" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>,
+            _ => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        };
+    }
+
+    private List<Report> GetFilteredReports()
+    {
+        return reports.Where(report =>
+        {
+            var matchesSearch = report.Name.ToLower().Contains(searchQuery.ToLower()) ||
+                               report.Description.ToLower().Contains(searchQuery.ToLower());
+            
+            var matchesType = string.IsNullOrEmpty(selectedType) || report.Type == selectedType;
+            var matchesStatus = string.IsNullOrEmpty(selectedStatus) || report.Status == selectedStatus;
+
+            return matchesSearch && matchesType && matchesStatus;
+        }).ToList();
+    }
+
+    private List<Report> GetScheduledReports()
+    {
+        return reports.Where(r => r.IsScheduled).ToList();
+    }
+
+    private string FormatDate(string dateString)
+    {
+        if (DateTime.TryParse(dateString, out var date))
+        {
+            return date.ToString("MMM dd, yyyy 'at' h:mm tt");
+        }
+        return dateString;
+    }
+
+    private string GetNextRunDate(string schedule)
+    {
+        // Simple logic for demo - in real app would calculate actual next run
+        return DateTime.Now.AddDays(1).ToString("MMM dd, yyyy");
+    }
+
+    private void OnSearchChanged()
+    {
+        StateHasChanged();
+    }
+
+    private void OnFilterChanged()
+    {
+        StateHasChanged();
+    }
+
+    private void ShowCreateModal()
+    {
+        newReport = new NewReportForm();
+        showCreateModal = true;
+        StateHasChanged();
+    }
+
+    private void CloseCreateModal()
+    {
+        showCreateModal = false;
+        StateHasChanged();
+    }
+
+    private void CreateReport()
+    {
+        // TODO: Implement create report functionality
+        CloseCreateModal();
+        StateHasChanged();
+    }
+
+    private void DownloadReport(string reportId)
+    {
+        // TODO: Implement download functionality
+        StateHasChanged();
+    }
+
+    private void EditReport(string reportId)
+    {
+        // TODO: Implement edit functionality
+        StateHasChanged();
+    }
+
+    private void DeleteReport(string reportId)
+    {
+        // TODO: Implement delete functionality
+        StateHasChanged();
+    }
+
+    private void GenerateReport(string templateId)
+    {
+        // TODO: Implement generate report functionality
+        StateHasChanged();
+    }
+
+    private void ScheduleReport(string templateId)
+    {
+        // TODO: Implement schedule functionality
+        StateHasChanged();
+    }
+
+    private void EditSchedule(string reportId)
+    {
+        // TODO: Implement edit schedule functionality
+        StateHasChanged();
+    }
+
+    private void DeleteSchedule(string reportId)
+    {
+        // TODO: Implement delete schedule functionality
+        StateHasChanged();
+    }
+
+    public class Report
+    {
+        public string Id { get; set; } = "";
+        public string Name { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string LastGenerated { get; set; } = "";
+        public string GeneratedBy { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string FileSize { get; set; } = "";
+        public int DownloadCount { get; set; }
+        public bool IsScheduled { get; set; }
+        public string? Schedule { get; set; }
+        public List<string> Recipients { get; set; } = new();
+    }
+
+    public class ReportTemplate
+    {
+        public string Id { get; set; } = "";
+        public string Name { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Description { get; set; } = "";
+        public List<string> Metrics { get; set; } = new();
+        public string EstimatedTime { get; set; } = "";
+    }
+
+    public class NewReportForm
+    {
+        public string Name { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Description { get; set; } = "";
+        public bool IsScheduled { get; set; }
+        public string Schedule { get; set; } = "";
+        public string RecipientsInput { get; set; } = "";
+    }
+} 

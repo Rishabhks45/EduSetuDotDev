@@ -6,140 +6,234 @@
 @attribute [Authorize(Roles = "SuperAdmin")]
 @layout AdminLayout
 
-<PageTitle>Analytics - Admin Dashboard</PageTitle>
+<PageTitle>Platform Analytics - Admin Dashboard</PageTitle>
 
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex justify-between items-center">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Analytics</h1>
-            <p class="text-gray-600">Platform insights and performance metrics</p>
-        </div>
-        <div class="flex space-x-2">
-            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-                Export Report
-            </button>
-        </div>
-    </div>
-
-    <!-- Key Metrics -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-3 bg-blue-100 rounded-lg">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                </div>
-                <span class="text-sm text-green-600 font-medium">+12%</span>
-            </div>
-            <div class="text-2xl font-bold text-gray-900 mb-1">12,847</div>
-            <div class="text-sm text-gray-600">Total Users</div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-3 bg-green-100 rounded-lg">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                </div>
-                <span class="text-sm text-green-600 font-medium">+8%</span>
-            </div>
-            <div class="text-2xl font-bold text-gray-900 mb-1">8,392</div>
-            <div class="text-sm text-gray-600">Content Items</div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-3 bg-purple-100 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                    </svg>
-                </div>
-                <span class="text-sm text-green-600 font-medium">+15%</span>
-            </div>
-            <div class="text-2xl font-bold text-gray-900 mb-1">2,847</div>
-            <div class="text-sm text-gray-600">Video Hours</div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="p-3 bg-yellow-100 rounded-lg">
-                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                    </svg>
-                </div>
-                <span class="text-sm text-green-600 font-medium">+23%</span>
-            </div>
-            <div class="text-2xl font-bold text-gray-900 mb-1">$24,891</div>
-            <div class="text-sm text-gray-600">Monthly Revenue</div>
-        </div>
-    </div>
-
-    <!-- Charts Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- User Growth Chart -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">User Growth</h3>
-            <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-                <div class="text-center text-gray-500">
-                    <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                    </svg>
-                    <p>Chart placeholder</p>
-                    <p class="text-sm">User growth over time</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Content Distribution -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Content Distribution</h3>
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <div class="w-4 h-4 bg-blue-500 rounded-full mr-3"></div>
-                        <span class="text-sm font-medium">Notes</span>
-                    </div>
-                    <span class="text-sm text-gray-600">45%</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <div class="w-4 h-4 bg-red-500 rounded-full mr-3"></div>
-                        <span class="text-sm font-medium">Videos</span>
-                    </div>
-                    <span class="text-sm text-gray-600">35%</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <div class="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
-                        <span class="text-sm font-medium">PYQs</span>
-                    </div>
-                    <span class="text-sm text-gray-600">20%</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recent Activity -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
-        <div class="space-y-4">
-            @foreach (var activity in recentActivities)
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Platform Analytics</h2>
+                <p class="text-gray-600 mt-1">Comprehensive insights into platform performance and user behavior</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <select @bind="selectedPeriod" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    <option value="week">Last Week</option>
+                    <option value="month">Last Month</option>
+                    <option value="quarter">Last Quarter</option>
+                    <option value="year">Last Year</option>
+                </select>
+                <button class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                </button>
+                <button @onclick="ExportData"
+                        class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Export
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between cursor-pointer mb-6" @onclick="@(() =>ToggleSection("overview"))">
+            <h3 class="text-lg font-semibold text-gray-900">Overview</h3>
+            @if (expandedSections.Contains("overview"))
             {
-                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                    <div class="p-2 @GetActivityTypeColor(activity.Type) rounded-lg">
-                        <activity.TypeIcon class="w-4 h-4" />
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                </svg>
+            }
+            else
+            {
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            }
+        </div>
+
+        @if (expandedSections.Contains("overview"))
+        {
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-6">
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
+                        <span class="text-green-600 text-sm font-medium">+12%</span>
                     </div>
-                    <div class="flex-1">
-                        <p class="text-sm text-gray-900">@activity.Message</p>
-                        <p class="text-xs text-gray-500">@activity.Time</p>
+                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.TotalUsers.ToString("N0")</div>
+                    <div class="text-sm text-gray-600">Total Users</div>
+                </div>
+
+                <div class="bg-green-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                        </svg>
+                        <span class="text-green-600 text-sm font-medium">+8%</span>
                     </div>
-                    <span class="text-xs text-gray-400">@activity.User</span>
+                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.ActiveUsers.ToString("N0")</div>
+                    <div class="text-sm text-gray-600">Active Users</div>
+                </div>
+
+                <div class="bg-purple-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <span class="text-green-600 text-sm font-medium">+15%</span>
+                    </div>
+                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.TotalContent.ToString("N0")</div>
+                    <div class="text-sm text-gray-600">Content Items</div>
+                </div>
+
+                <div class="bg-yellow-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        <span class="text-green-600 text-sm font-medium">+25%</span>
+                    </div>
+                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.TotalViews.ToString("N0")</div>
+                    <div class="text-sm text-gray-600">Total Views</div>
+                </div>
+
+                <div class="bg-indigo-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <span class="text-green-600 text-sm font-medium">+18%</span>
+                    </div>
+                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.TotalDownloads.ToString("N0")</div>
+                    <div class="text-sm text-gray-600">Downloads</div>
+                </div>
+
+                <div class="bg-pink-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                        </svg>
+                        <span class="text-green-600 text-sm font-medium">+23%</span>
+                    </div>
+                    <div class="text-2xl font-bold text-gray-900">$@analyticsData.Overview.Revenue.ToString("N0")</div>
+                    <div class="text-sm text-gray-600">Revenue</div>
+                </div>
+
+                <div class="bg-orange-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-green-600 text-sm font-medium">+0.3%</span>
+                    </div>
+                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.ConversionRate%</div>
+                    <div class="text-sm text-gray-600">Conversion</div>
+                </div>
+
+                <div class="bg-teal-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-green-600 text-sm font-medium">+2%</span>
+                    </div>
+                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.RetentionRate%</div>
+                    <div class="text-sm text-gray-600">Retention</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Content and Device Analytics -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Content Breakdown -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between cursor-pointer mb-6" @onclick="@(() =>ToggleSection("content"))">
+                <h3 class="text-lg font-semibold text-gray-900">Content Breakdown</h3>
+                @if (expandedSections.Contains("content"))
+                {
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                    </svg>
+                }
+                else
+                {
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                }
+            </div>
+
+            @if (expandedSections.Contains("content"))
+            {
+                <div class="space-y-4">
+                    @foreach (var content in contentStats)
+                    {
+                        var total = contentStats.Sum(c => c.Count);
+                        var percentage = (content.Count / (double)total) * 100;
+                        
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                @GetContentIcon(content.Type)
+                                <span class="font-medium text-gray-900 capitalize">@content.Type</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-24 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-red-600 h-2 rounded-full" style="width: @(percentage)%"></div>
+                                </div>
+                                <span class="text-sm text-gray-600 w-12 text-right">@content.Count.ToString("N0")</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- Device Breakdown -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between cursor-pointer mb-6" @onclick="@(() =>ToggleSection("devices"))">
+                <h3 class="text-lg font-semibold text-gray-900">Device Usage</h3>
+                @if (expandedSections.Contains("devices"))
+                {
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                    </svg>
+                }
+                else
+                {
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                }
+            </div>
+
+            @if (expandedSections.Contains("devices"))
+            {
+                <div class="space-y-4">
+                    @foreach (var device in deviceBreakdown)
+                    {
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                @GetDeviceIcon(device.Device)
+                                <span class="font-medium text-gray-900">@device.Device</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-24 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-red-600 h-2 rounded-full" style="width: @(device.Percentage)%"></div>
+                                </div>
+                                <span class="text-sm text-gray-600 w-12 text-right">@device.Percentage%</span>
+                                <span class="text-sm text-gray-500 w-16 text-right">(@device.Users.ToString("N0"))</span>
+                            </div>
+                        </div>
+                    }
                 </div>
             }
         </div>
@@ -147,33 +241,129 @@
 </div>
 
 @code {
-    private List<ActivityItem> recentActivities = new()
+    private string selectedPeriod = "month";
+    private List<string> expandedSections = new() { "overview", "content", "devices" };
+
+    private AnalyticsData analyticsData = new()
     {
-        new ActivityItem { Type = "user", Message = "New user registration: john.doe@example.com", Time = "2 minutes ago", User = "System", TypeIcon = "user" },
-        new ActivityItem { Type = "content", Message = "Content approved: Advanced Physics Notes", Time = "5 minutes ago", User = "Admin", TypeIcon = "file-text" },
-        new ActivityItem { Type = "system", Message = "System backup completed successfully", Time = "1 hour ago", User = "System", TypeIcon = "server" },
-        new ActivityItem { Type = "alert", Message = "High server load detected", Time = "2 hours ago", User = "System", TypeIcon = "alert-triangle" }
+        Overview = new OverviewData
+        {
+            TotalUsers = 12847,
+            ActiveUsers = 8934,
+            TotalContent = 8392,
+            TotalViews = 245678,
+            TotalDownloads = 89234,
+            Revenue = 24891,
+            ConversionRate = 4.2,
+            RetentionRate = 78.5
+        }
     };
 
-    private string GetActivityTypeColor(string type)
+    private List<ContentStat> contentStats = new()
+    {
+        new ContentStat { Type = "notes", Count = 3456 },
+        new ContentStat { Type = "videos", Count = 2134 },
+        new ContentStat { Type = "pyqs", Count = 1890 },
+        new ContentStat { Type = "assignments", Count = 912 }
+    };
+
+    private List<DeviceBreakdown> deviceBreakdown = new()
+    {
+        new DeviceBreakdown { Device = "Desktop", Percentage = 45, Users = 5781 },
+        new DeviceBreakdown { Device = "Mobile", Percentage = 38, Users = 4881 },
+        new DeviceBreakdown { Device = "Tablet", Percentage = 17, Users = 2185 }
+    };
+
+    private RenderFragment GetContentIcon(string type)
     {
         return type switch
         {
-            "user" => "bg-blue-100 text-blue-600",
-            "content" => "bg-green-100 text-green-600",
-            "system" => "bg-purple-100 text-purple-600",
-            "alert" => "bg-red-100 text-red-600",
-            _ => "bg-gray-100 text-gray-600"
+            "notes" => @<svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>,
+            "videos" => @<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>,
+            "pyqs" => @<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>,
+            _ => @<svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
         };
     }
 
+    private RenderFragment GetDeviceIcon(string device)
+    {
+        return device.ToLower() switch
+        {
+            "desktop" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect width="20" height="14" x="2" y="3" rx="2" ry="2"></rect>
+                <line x1="8" x2="16" y1="21" y2="21"></line>
+                <line x1="12" x2="12" y1="17" y2="21"></line>
+            </svg>,
+            "mobile" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect>
+                <path d="M12 18h.01"></path>
+            </svg>,
+            "tablet" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect width="16" height="20" x="4" y="2" rx="2" ry="2"></rect>
+                <line x1="12" x2="12.01" y1="18" y2="18"></line>
+            </svg>,
+            _ => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect width="20" height="14" x="2" y="3" rx="2" ry="2"></rect>
+                <line x1="8" x2="16" y1="21" y2="21"></line>
+                <line x1="12" x2="12" y1="17" y2="21"></line>
+            </svg>
+        };
+    }
 
-    public class ActivityItem
+    private void ToggleSection(string sectionId)
+    {
+        if (expandedSections.Contains(sectionId))
+        {
+            expandedSections.Remove(sectionId);
+        }
+        else
+        {
+            expandedSections.Add(sectionId);
+        }
+        StateHasChanged();
+    }
+
+    private void ExportData()
+    {
+        // TODO: Implement export functionality
+        StateHasChanged();
+    }
+
+    public class AnalyticsData
+    {
+        public OverviewData Overview { get; set; } = new();
+    }
+
+    public class OverviewData
+    {
+        public int TotalUsers { get; set; }
+        public int ActiveUsers { get; set; }
+        public int TotalContent { get; set; }
+        public int TotalViews { get; set; }
+        public int TotalDownloads { get; set; }
+        public int Revenue { get; set; }
+        public double ConversionRate { get; set; }
+        public double RetentionRate { get; set; }
+    }
+
+    public class ContentStat
     {
         public string Type { get; set; } = "";
-        public string Message { get; set; } = "";
-        public string Time { get; set; } = "";
-        public string User { get; set; } = "";
-        public string TypeIcon { get; set; } = "";
+        public int Count { get; set; }
     }
-}
+
+    public class DeviceBreakdown
+    {
+        public string Device { get; set; } = "";
+        public int Percentage { get; set; }
+        public int Users { get; set; }
+    }
+} 
