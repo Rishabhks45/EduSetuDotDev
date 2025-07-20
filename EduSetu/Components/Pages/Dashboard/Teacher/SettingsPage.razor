@@ -10,399 +10,452 @@
 
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex justify-between items-center">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Settings</h1>
-            <p class="text-gray-600">Manage your account and preferences</p>
-        </div>
-        <div class="flex space-x-2">
-            @if (unsavedChanges)
-            {
-                <button @onclick="HandleSave" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Settings</h2>
+                <p class="text-gray-600 mt-1">Manage your account preferences and profile information</p>
+            </div>
+            <div class="flex items-center gap-3">
+                @if (unsavedChanges)
+                {
+                    <div class="flex items-center gap-2 text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Unsaved changes</span>
+                    </div>
+                }
+                <button @onclick="@(() => isEditing = !isEditing)" class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                     </svg>
-                    Save Changes
+                    @(isEditing ? "Cancel" : "Edit")
                 </button>
-            }
+                @if (isEditing)
+                {
+                    <button @onclick="HandleSave" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                        </svg>
+                        Save Changes
+                    </button>
+                }
+            </div>
         </div>
     </div>
 
-    <!-- Settings Navigation -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-        <div class="border-b border-gray-200">
-            <nav class="flex space-x-8 px-6">
-                @foreach (var tab in tabs)
-                {
-                    <button @onclick="@(() => activeTab = tab.Id)"
-                            class="py-4 px-1 border-b-2 font-medium text-sm @(activeTab == tab.Id ? "border-blue-500 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300")">
-                        <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            @if (tab.Id == "personal")
-                            {
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            }
-                            else if (tab.Id == "professional")
-                            {
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            }
-                            else if (tab.Id == "preferences")
-                            {
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            }
-                            else if (tab.Id == "security")
-                            {
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                            }
-                            else
-                            {
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
-                            }
-                        </svg>
-                        @tab.Label
-                    </button>
-                }
-            </nav>
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Sidebar Navigation -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                <nav class="space-y-2">
+                    @foreach (var tab in tabs)
+                    {
+                        <button @onclick="@(() => activeTab = tab.Id)"
+                                class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left @(activeTab == tab.Id ? "bg-blue-50 text-blue-700 border border-blue-200" : "text-gray-600 hover:bg-gray-50 hover:text-gray-800")">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                @if (tab.Id == "personal")
+                                {
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                }
+                                else if (tab.Id == "professional")
+                                {
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                }
+                                else if (tab.Id == "preferences")
+                                {
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                }
+                                else if (tab.Id == "security")
+                                {
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                }
+                                else
+                                {
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+                                }
+                            </svg>
+                            <span class="font-medium">@tab.Label</span>
+                        </button>
+                    }
+                </nav>
+            </div>
         </div>
 
-        <div class="p-6">
-            @if (activeTab == "personal")
-            {
-                <!-- Personal Info -->
-                <div class="space-y-6">
-                    <div class="flex items-center space-x-4">
-                        <img src="@settings.Personal.Avatar" alt="@settings.Personal.Name" class="w-20 h-20 rounded-full border border-gray-300" />
+        <!-- Main Content -->
+        <div class="lg:col-span-3">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                @if (activeTab == "personal")
+                {
+                    <!-- Personal Information -->
+                    <div class="space-y-6">
                         <div>
-                            <h3 class="text-lg font-medium text-gray-900">@settings.Personal.Name</h3>
-                            <p class="text-sm text-gray-500">@settings.Personal.Email</p>
-                            <button class="mt-2 text-sm text-blue-600 hover:text-blue-700 font-medium">Change Photo</button>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                            <input type="text" @bind="settings.Personal.Name" @bind:after="() => unsavedChanges = true"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" @bind="settings.Personal.Email" @bind:after="() => unsavedChanges = true"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                            <input type="tel" @bind="settings.Personal.Phone" @bind:after="() => unsavedChanges = true"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                            <input type="text" @bind="settings.Personal.Location" @bind:after="() => unsavedChanges = true"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
-                            <select @bind="settings.Personal.Timezone" @bind:after="() => unsavedChanges = true"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="America/New_York">Eastern Time (ET)</option>
-                                <option value="America/Chicago">Central Time (CT)</option>
-                                <option value="America/Denver">Mountain Time (MT)</option>
-                                <option value="America/Los_Angeles">Pacific Time (PT)</option>
-                                <option value="Asia/Kolkata">India Standard Time (IST)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Language</label>
-                            <select @bind="settings.Personal.Language" @bind:after="() => unsavedChanges = true"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="English">English</option>
-                                <option value="Hindi">Hindi</option>
-                                <option value="Spanish">Spanish</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
-                        <textarea rows="4" @bind="settings.Personal.Bio" @bind:after="() => unsavedChanges = true"
-                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">@settings.Personal.Bio</textarea>
-                    </div>
-                </div>
-            }
-            else if (activeTab == "professional")
-            {
-                <!-- Professional Info -->
-                <div class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Institution</label>
-                            <input type="text" @bind="settings.Professional.Institution" @bind:after="() => unsavedChanges = true"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Department</label>
-                            <input type="text" @bind="settings.Professional.Department" @bind:after="() => unsavedChanges = true"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Designation</label>
-                        <input type="text" @bind="settings.Professional.Designation" @bind:after="() => unsavedChanges = true"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
-                            <input type="text" @bind="settings.Professional.EmployeeId" @bind:after="() => unsavedChanges = true"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Experience</label>
-                            <input type="text" @bind="settings.Professional.Experience" @bind:after="() => unsavedChanges = true"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Subjects Taught</label>
-                        <div class="space-y-2">
-                            @foreach (var subject in settings.Professional.Subjects)
-                            {
-                                <div class="flex items-center gap-2">
-                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">@subject</span>
-                                    <button @onclick="@(() => RemoveSubject(subject))" class="text-red-600 hover:text-red-700">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
+                            
+                            <!-- Avatar -->
+                            <div class="flex items-center gap-6 mb-6">
+                                <div class="relative">
+                                    <img src="@settings.Personal.Avatar" alt="Profile" class="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover" />
+                                    @if (isEditing)
+                                    {
+                                        <button class="absolute bottom-0 right-0 p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-lg">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            </svg>
+                                        </button>
+                                    }
                                 </div>
-                            }
-                            <div class="flex gap-2">
-                                <input type="text" @bind="newSubject" placeholder="Add subject"
-                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                                <button @onclick="AddSubject" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Add</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Qualifications</label>
-                        <div class="space-y-2">
-                            @foreach (var qualification in settings.Professional.Qualifications)
-                            {
-                                <div class="flex items-center gap-2">
-                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">@qualification</span>
-                                    <button @onclick="@(() => RemoveQualification(qualification))" class="text-red-600 hover:text-red-700">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900">@settings.Personal.Name</h4>
+                                    <p class="text-gray-600">@settings.Professional.Designation</p>
+                                    <p class="text-sm text-gray-500">@settings.Professional.Institution</p>
                                 </div>
-                            }
-                            <div class="flex gap-2">
-                                <input type="text" @bind="newQualification" placeholder="Add qualification"
-                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                                <button @onclick="AddQualification" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Add</button>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            }
-            else if (activeTab == "preferences")
-            {
-                <!-- Preferences -->
-                <div class="space-y-6">
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Display Preferences</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                                    <input type="text" @bind="settings.Personal.Name" @bind:after="() => unsavedChanges = true"
+                                           disabled="@(!isEditing)"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                                    <input type="email" @bind="settings.Personal.Email" @bind:after="() => unsavedChanges = true"
+                                           disabled="@(!isEditing)"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                                    <input type="tel" @bind="settings.Personal.Phone" @bind:after="() => unsavedChanges = true"
+                                           disabled="@(!isEditing)"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                                    <input type="text" @bind="settings.Personal.Location" @bind:after="() => unsavedChanges = true"
+                                           disabled="@(!isEditing)"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
+                                    <select @bind="settings.Personal.Timezone" @bind:after="() => unsavedChanges = true"
+                                            disabled="@(!isEditing)"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500">
+                                        <option value="America/New_York">Eastern Time (ET)</option>
+                                        <option value="America/Chicago">Central Time (CT)</option>
+                                        <option value="America/Denver">Mountain Time (MT)</option>
+                                        <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                                        <option value="Asia/Kolkata">India Standard Time (IST)</option>
+                                        <option value="Europe/London">Greenwich Mean Time (GMT)</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                                    <select @bind="settings.Personal.Language" @bind:after="() => unsavedChanges = true"
+                                            disabled="@(!isEditing)"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500">
+                                        <option value="English">English</option>
+                                        <option value="Spanish">Spanish</option>
+                                        <option value="French">French</option>
+                                        <option value="German">German</option>
+                                        <option value="Hindi">Hindi</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Theme</label>
-                                <select @bind="settings.Preferences.Theme" @bind:after="() => unsavedChanges = true"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="light">Light</option>
-                                    <option value="dark">Dark</option>
-                                    <option value="auto">Auto</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Language</label>
-                                <select @bind="settings.Preferences.Interface.Language" @bind:after="() => unsavedChanges = true"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="English">English</option>
-                                    <option value="Hindi">Hindi</option>
-                                    <option value="Spanish">Spanish</option>
-                                </select>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                                <textarea @bind="settings.Personal.Bio" @bind:after="() => unsavedChanges = true"
+                                          disabled="@(!isEditing)"
+                                          rows="4"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500 resize-none"
+                                          placeholder="Tell us about yourself..."></textarea>
                             </div>
                         </div>
                     </div>
-
-                    <div class="border-t border-gray-200 pt-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Notifications</h3>
-                        <div class="space-y-4">
-                            @foreach (var notification in notificationSettings)
-                            {
-                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                                    <div>
-                                        <h4 class="text-sm font-medium text-gray-900">@notification.Title</h4>
-                                        <p class="text-sm text-gray-500">@notification.Description</p>
-                                    </div>
-                                    <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" checked="@notification.Enabled" @onchange="@(() => ToggleNotification(notification.Title))" class="sr-only peer">
-                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                    </label>
-                                </div>
-                            }
-                        </div>
-                    </div>
-
-                    <div class="border-t border-gray-200 pt-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Privacy Settings</h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                                <div>
-                                    <h4 class="text-sm font-medium text-gray-900">Profile Visibility</h4>
-                                    <p class="text-sm text-gray-500">Who can see your profile</p>
-                                </div>
-                                <select @bind="settings.Preferences.Privacy.ProfileVisibility" @bind:after="() => unsavedChanges = true"
-                                        class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="public">Public</option>
-                                    <option value="private">Private</option>
-                                    <option value="institution">Institution Only</option>
-                                </select>
-                            </div>
-                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                                <div>
-                                    <h4 class="text-sm font-medium text-gray-900">Show Email</h4>
-                                    <p class="text-sm text-gray-500">Display email to other users</p>
-                                </div>
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" checked="@settings.Preferences.Privacy.ShowEmail" @onchange="@(() => TogglePrivacySetting("ShowEmail"))" class="sr-only peer">
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-            else if (activeTab == "security")
-            {
-                <!-- Security Settings -->
-                <div class="space-y-6">
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <h3 class="text-sm font-medium text-blue-800">Security Tips</h3>
-                                <div class="mt-2 text-sm text-blue-700">
-                                    <p>Use a strong password and enable two-factor authentication for better security.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-4">
+                }
+                else if (activeTab == "professional")
+                {
+                    <!-- Professional Information -->
+                    <div class="space-y-6">
                         <div>
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">Change Password</h3>
-                            <div class="space-y-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Professional Information</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
-                                    <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Institution</label>
+                                    <input type="text" @bind="settings.Professional.Institution" @bind:after="() => unsavedChanges = true"
+                                           disabled="@(!isEditing)"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500" />
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
-                                    <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
-                                    <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-                                </div>
-                                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                                    Update Password
-                                </button>
-                            </div>
-                        </div>
 
-                        <div class="border-t border-gray-200 pt-6">
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">Two-Factor Authentication</h3>
-                            <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-sm font-medium text-gray-900">Two-factor authentication</p>
-                                    <p class="text-sm text-gray-500">Add an extra layer of security to your account</p>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                                    <input type="text" @bind="settings.Professional.Department" @bind:after="() => unsavedChanges = true"
+                                           disabled="@(!isEditing)"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500" />
                                 </div>
-                                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                                    @(settings.Security.TwoFactorEnabled ? "Disable 2FA" : "Enable 2FA")
-                                </button>
-                            </div>
-                        </div>
 
-                        <div class="border-t border-gray-200 pt-6">
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">Login Sessions</h3>
-                            <div class="space-y-3">
-                                @foreach (var session in loginSessions)
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Designation</label>
+                                    <input type="text" @bind="settings.Professional.Designation" @bind:after="() => unsavedChanges = true"
+                                           disabled="@(!isEditing)"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
+                                    <input type="text" @bind="settings.Professional.EmployeeId" @bind:after="() => unsavedChanges = true"
+                                           disabled="@(!isEditing)"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Experience</label>
+                                    <input type="text" @bind="settings.Professional.Experience" @bind:after="() => unsavedChanges = true"
+                                           disabled="@(!isEditing)"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+                                           placeholder="e.g., 10 years" />
+                                </div>
+                            </div>
+
+                            <!-- Subjects -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Subjects Teaching</label>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    @foreach (var subject in settings.Professional.Subjects)
+                                    {
+                                        <span class="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                                            @subject
+                                            @if (isEditing)
+                                            {
+                                                <button @onclick="@(() => RemoveSubject(subject))" class="hover:text-blue-900">×</button>
+                                            }
+                                        </span>
+                                    }
+                                </div>
+                                @if (isEditing)
                                 {
-                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-3 h-3 @(session.IsCurrent ? "bg-green-500" : "bg-gray-400") rounded-full"></div>
-                                            <div>
-                                                <p class="text-sm font-medium text-gray-900">@session.Device</p>
-                                                <p class="text-xs text-gray-500">@session.Location • @session.LastActive</p>
-                                            </div>
-                                        </div>
-                                        @if (!session.IsCurrent)
-                                        {
-                                            <button class="text-sm text-red-600 hover:text-red-700 font-medium">Revoke</button>
-                                        }
+                                    <div class="flex gap-2">
+                                        <input type="text" @bind="newSubject" placeholder="Add subject"
+                                               class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                               @onkeypress="@(e => { if (e.Key == "Enter") { AddSubject(); } })" />
+                                        <button @onclick="AddSubject" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Add</button>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Qualifications -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Qualifications</label>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    @foreach (var qualification in settings.Professional.Qualifications)
+                                    {
+                                        <span class="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                                            @qualification
+                                            @if (isEditing)
+                                            {
+                                                <button @onclick="@(() => RemoveQualification(qualification))" class="hover:text-green-900">×</button>
+                                            }
+                                        </span>
+                                    }
+                                </div>
+                                @if (isEditing)
+                                {
+                                    <div class="flex gap-2">
+                                        <input type="text" @bind="newQualification" placeholder="Add qualification"
+                                               class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                               @onkeypress="@(e => { if (e.Key == "Enter") { AddQualification(); } })" />
+                                        <button @onclick="AddQualification" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">Add</button>
                                     </div>
                                 }
                             </div>
                         </div>
                     </div>
-                </div>
-            }
-            else if (activeTab == "account")
-            {
-                <!-- Account Settings -->
-                <div class="space-y-6">
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                </svg>
+                }
+                else if (activeTab == "preferences")
+                {
+                    <!-- Preferences -->
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Preferences</h3>
+                            
+                            <!-- Theme -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Theme</label>
+                                <div class="flex gap-4">
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="theme" value="light" checked="@(settings.Preferences.Theme == "light")" @onchange="@(e => { settings.Preferences.Theme = "light"; unsavedChanges = true; })"
+                                               disabled="@(!isEditing)"
+                                               class="text-blue-600 focus:ring-blue-500 disabled:opacity-50" />
+                                        <span class="text-sm text-gray-700">Light</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="theme" value="dark" checked="@(settings.Preferences.Theme == "dark")" @onchange="@(e => { settings.Preferences.Theme = "dark"; unsavedChanges = true; })"
+                                               disabled="@(!isEditing)"
+                                               class="text-blue-600 focus:ring-blue-500 disabled:opacity-50" />
+                                        <span class="text-sm text-gray-700">Dark</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="radio" name="theme" value="auto" checked="@(settings.Preferences.Theme == "auto")" @onchange="@(e => { settings.Preferences.Theme = "auto"; unsavedChanges = true; })"
+                                               disabled="@(!isEditing)"
+                                               class="text-blue-600 focus:ring-blue-500 disabled:opacity-50" />
+                                        <span class="text-sm text-gray-700">Auto</span>
+                                    </label>
+                                </div>
                             </div>
-                            <div class="ml-3">
-                                <h3 class="text-sm font-medium text-yellow-800">Account Actions</h3>
-                                <div class="mt-2 text-sm text-yellow-700">
-                                    <p>These actions will affect your account permanently.</p>
+
+                            <!-- Notifications -->
+                            <div class="mb-6">
+                                <h4 class="font-medium text-gray-900 mb-3">Notifications</h4>
+                                <div class="space-y-3">
+                                    @foreach (var notification in GetNotificationSettings())
+                                    {
+                                        <label class="flex items-center justify-between">
+                                            <div>
+                                                <span class="text-sm font-medium text-gray-700">@notification.Label</span>
+                                                <p class="text-xs text-gray-500">@notification.Description</p>
+                                            </div>
+                                            <input type="checkbox" @bind="notification.Value" @bind:after="() => unsavedChanges = true"
+                                                   disabled="@(!isEditing)"
+                                                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50" />
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Privacy -->
+                            <div class="mb-6">
+                                <h4 class="font-medium text-gray-900 mb-3">Privacy</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Profile Visibility</label>
+                                        <select @bind="settings.Preferences.Privacy.ProfileVisibility" @bind:after="() => unsavedChanges = true"
+                                                disabled="@(!isEditing)"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500">
+                                            <option value="public">Public</option>
+                                            <option value="private">Private</option>
+                                            <option value="institution">Institution Only</option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-2">
+                                        @foreach (var privacy in GetPrivacySettings())
+                                        {
+                                            <label class="flex items-center justify-between">
+                                                <span class="text-sm text-gray-700">@privacy.Label</span>
+                                                <input type="checkbox" @bind="privacy.Value" @bind:after="() => unsavedChanges = true"
+                                                       disabled="@(!isEditing)"
+                                                       class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50" />
+                                            </label>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Interface -->
+                            <div>
+                                <h4 class="font-medium text-gray-900 mb-3">Interface</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                                        <select @bind="settings.Preferences.Interface.Language" @bind:after="() => unsavedChanges = true"
+                                                disabled="@(!isEditing)"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500">
+                                            <option value="English">English</option>
+                                            <option value="Spanish">Spanish</option>
+                                            <option value="French">French</option>
+                                            <option value="Hindi">Hindi</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Time Format</label>
+                                        <select @bind="settings.Preferences.Interface.TimeFormat" @bind:after="() => unsavedChanges = true"
+                                                disabled="@(!isEditing)"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500">
+                                            <option value="12h">12-hour</option>
+                                            <option value="24h">24-hour</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                }
+                else if (activeTab == "security")
+                {
+                    <!-- Security -->
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Security</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">Two-Factor Authentication</h4>
+                                        <p class="text-sm text-gray-600">Add an extra layer of security to your account</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm text-gray-500">@(settings.Security.TwoFactorEnabled ? "Enabled" : "Disabled")</span>
+                                        <button @onclick="@(() => settings.Security.TwoFactorEnabled = !settings.Security.TwoFactorEnabled)" 
+                                                class="px-4 py-2 @(settings.Security.TwoFactorEnabled ? "bg-green-600 hover:bg-green-700" : "bg-gray-600 hover:bg-gray-700") text-white rounded-lg transition-colors">
+                                            @(settings.Security.TwoFactorEnabled ? "Disable" : "Enable")
+                                        </button>
+                                    </div>
+                                </div>
 
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div>
-                                <h4 class="text-sm font-medium text-gray-900">Export Data</h4>
-                                <p class="text-sm text-gray-500">Download all your data and content</p>
-                            </div>
-                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                                Export
-                            </button>
-                        </div>
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">Change Password</h4>
+                                        <p class="text-sm text-gray-600">Last changed: @settings.Security.LastPasswordChange</p>
+                                    </div>
+                                    <button @onclick="@(() => showPasswordModal = true)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                                        Change Password
+                                    </button>
+                                </div>
 
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div>
-                                <h4 class="text-sm font-medium text-gray-900">Delete Account</h4>
-                                <p class="text-sm text-gray-500">Permanently delete your account and all data</p>
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                    <div>
+                                        <h4 class="font-medium text-gray-900">Active Sessions</h4>
+                                        <p class="text-sm text-gray-600">@settings.Security.ActiveSessions active sessions</p>
+                                    </div>
+                                    <button class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+                                        Sign Out All
+                                    </button>
+                                </div>
                             </div>
-                            <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                                Delete Account
-                            </button>
                         </div>
                     </div>
-                </div>
-            }
+                }
+                else if (activeTab == "account")
+                {
+                    <!-- Account -->
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Account</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-4 bg-red-50 border border-red-200 rounded-lg">
+                                    <div>
+                                        <h4 class="font-medium text-red-900">Delete Account</h4>
+                                        <p class="text-sm text-red-700">This action cannot be undone. All your data will be permanently deleted.</p>
+                                    </div>
+                                    <button @onclick="@(() => showDeleteModal = true)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+                                        Delete Account
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
@@ -410,6 +463,9 @@
 @code {
     private string activeTab = "personal";
     private bool unsavedChanges = false;
+    private bool isEditing = false;
+    private bool showPasswordModal = false;
+    private bool showDeleteModal = false;
     private string newSubject = "";
     private string newQualification = "";
 
@@ -482,12 +538,12 @@
 
     private List<NotificationSettingItem> notificationSettings = new()
     {
-        new NotificationSettingItem { Title = "Email", Description = "Receive email notifications", Enabled = true },
-        new NotificationSettingItem { Title = "Push", Description = "Receive push notifications", Enabled = true },
-        new NotificationSettingItem { Title = "SMS", Description = "Receive SMS notifications", Enabled = false },
-        new NotificationSettingItem { Title = "Reminders", Description = "Class and assignment reminders", Enabled = true },
-        new NotificationSettingItem { Title = "Announcements", Description = "Platform announcements", Enabled = true },
-        new NotificationSettingItem { Title = "Messages", Description = "New message notifications", Enabled = true }
+        new NotificationSettingItem { Label = "Email", Description = "Receive email notifications", Value = true },
+        new NotificationSettingItem { Label = "Push", Description = "Receive push notifications", Value = true },
+        new NotificationSettingItem { Label = "SMS", Description = "Receive SMS notifications", Value = false },
+        new NotificationSettingItem { Label = "Reminders", Description = "Class and assignment reminders", Value = true },
+        new NotificationSettingItem { Label = "Announcements", Description = "Platform announcements", Value = true },
+        new NotificationSettingItem { Label = "Messages", Description = "New message notifications", Value = true }
     };
 
     private List<LoginSessionItem> loginSessions = new()
@@ -536,12 +592,12 @@
         unsavedChanges = true;
     }
 
-    private void ToggleNotification(string title)
+    private void ToggleNotification(string label)
     {
-        var notification = notificationSettings.FirstOrDefault(n => n.Title == title);
+        var notification = notificationSettings.FirstOrDefault(n => n.Label == label);
         if (notification != null)
         {
-            notification.Enabled = !notification.Enabled;
+            notification.Value = !notification.Value;
             unsavedChanges = true;
         }
     }
@@ -563,6 +619,28 @@
         unsavedChanges = true;
     }
 
+    private List<NotificationSettingItem> GetNotificationSettings()
+    {
+        return new List<NotificationSettingItem>
+        {
+            new NotificationSettingItem { Label = "Email Notifications", Description = "Receive notifications via email", Value = settings.Preferences.Notifications.Email },
+            new NotificationSettingItem { Label = "Push Notifications", Description = "Receive push notifications", Value = settings.Preferences.Notifications.Push },
+            new NotificationSettingItem { Label = "SMS Notifications", Description = "Receive SMS notifications", Value = settings.Preferences.Notifications.Sms },
+            new NotificationSettingItem { Label = "Reminders", Description = "Class and assignment reminders", Value = settings.Preferences.Notifications.Reminders },
+            new NotificationSettingItem { Label = "Announcements", Description = "Platform announcements", Value = settings.Preferences.Notifications.Announcements },
+            new NotificationSettingItem { Label = "Messages", Description = "New message notifications", Value = settings.Preferences.Notifications.Messages }
+        };
+    }
+
+    private List<PrivacySettingItem> GetPrivacySettings()
+    {
+        return new List<PrivacySettingItem>
+        {
+            new PrivacySettingItem { Label = "Show Email in Profile", Value = settings.Preferences.Privacy.ShowEmail },
+            new PrivacySettingItem { Label = "Show Phone in Profile", Value = settings.Preferences.Privacy.ShowPhone },
+            new PrivacySettingItem { Label = "Allow Messages from Students", Value = settings.Preferences.Privacy.AllowMessages }
+        };
+    }
 
     public class SettingsTabItem
     {
@@ -603,7 +681,7 @@
 
     public class PreferencesInfo
     {
-        public string Theme { get; set; } = "";
+        public string Theme { get; set; } = "light";
         public NotificationSettings Notifications { get; set; } = new();
         public PrivacySettings Privacy { get; set; } = new();
         public InterfaceSettings Interface { get; set; } = new();
@@ -621,7 +699,7 @@
 
     public class PrivacySettings
     {
-        public string ProfileVisibility { get; set; } = "";
+        public string ProfileVisibility { get; set; } = "public";
         public bool ShowEmail { get; set; }
         public bool ShowPhone { get; set; }
         public bool AllowMessages { get; set; }
@@ -629,10 +707,10 @@
 
     public class InterfaceSettings
     {
-        public string Language { get; set; } = "";
-        public string DateFormat { get; set; } = "";
-        public string TimeFormat { get; set; } = "";
-        public string StartPage { get; set; } = "";
+        public string Language { get; set; } = "English";
+        public string DateFormat { get; set; } = "MM/DD/YYYY";
+        public string TimeFormat { get; set; } = "12h";
+        public string StartPage { get; set; } = "overview";
     }
 
     public class SecurityInfo
@@ -644,9 +722,15 @@
 
     public class NotificationSettingItem
     {
-        public string Title { get; set; } = "";
+        public string Label { get; set; } = "";
         public string Description { get; set; } = "";
-        public bool Enabled { get; set; }
+        public bool Value { get; set; }
+    }
+
+    public class PrivacySettingItem
+    {
+        public string Label { get; set; } = "";
+        public bool Value { get; set; }
     }
 
     public class LoginSessionItem

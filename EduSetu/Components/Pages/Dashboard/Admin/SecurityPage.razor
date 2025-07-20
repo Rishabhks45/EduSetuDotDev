@@ -1,0 +1,607 @@
+@page "/admin/dashboard/security"
+@using EduSetu.Components.Layout
+@using EduSetu.Domain.Enums
+@layout AdminLayout
+
+<PageTitle>Admin Security - EduSetu</PageTitle>
+
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Security Center</h2>
+                <p class="text-gray-600 mt-1">Monitor security events and system vulnerabilities</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <select @bind="selectedTimeframe" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    <option value="1h">Last Hour</option>
+                    <option value="24h">Last 24 Hours</option>
+                    <option value="7d">Last 7 Days</option>
+                    <option value="30d">Last 30 Days</option>
+                </select>
+                <button @onclick="RefreshData" class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                </button>
+                <button @onclick="ExportSecurityReport"
+                        class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Export Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+        @foreach (var metric in securityMetrics)
+        {
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 rounded-lg @GetStatusColor(metric.Status)">
+                        @GetMetricIcon(metric.Name)
+                    </div>
+                    <div class="text-right">
+                        @if (metric.Trend == "up")
+                        {
+                            <div class="text-red-500 text-xs">↑</div>
+                        }
+                        else if (metric.Trend == "down")
+                        {
+                            <div class="text-green-500 text-xs">↓</div>
+                        }
+                        else
+                        {
+                            <div class="text-gray-500 text-xs">→</div>
+                        }
+                    </div>
+                </div>
+                <div class="text-2xl font-bold text-gray-900 mb-1">
+                    @metric.Value@metric.Unit
+                </div>
+                <div class="text-sm text-gray-600 mb-2">@metric.Name</div>
+                <div class="text-xs text-gray-500">@metric.Description</div>
+            </div>
+        }
+    </div>
+
+    <!-- Security Events -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">Security Events</h3>
+            <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-600">
+                    @GetFilteredEvents().Count() events found
+                </span>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="relative md:col-span-2">
+                <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" placeholder="Search events by description, IP, location, or user..."
+                       @bind="searchQuery" @bind:after="OnSearchChanged"
+                       class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500" />
+            </div>
+
+            <div>
+                <select @bind="selectedSeverity" @bind:after="OnFilterChanged"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    <option value="">All Severities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+
+            <div>
+                <select @bind="selectedType" @bind:after="OnFilterChanged"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    <option value="">All Types</option>
+                    <option value="login_attempt">Login Attempts</option>
+                    <option value="suspicious_activity">Suspicious Activity</option>
+                    <option value="unauthorized_access">Unauthorized Access</option>
+                    <option value="data_breach">Data Breach</option>
+                    <option value="malware_detected">Malware Detected</option>
+                    <option value="ddos_attack">DDoS Attack</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Events List -->
+        <div class="space-y-4">
+            @foreach (var eventItem in GetCurrentEvents())
+            {
+                <div class="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-start gap-4 flex-1">
+                            <div class="p-2 rounded-lg @GetSeverityColor(eventItem.Severity)">
+                                @GetEventTypeIcon(eventItem.Type)
+                            </div>
+                            
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <h4 class="font-medium text-gray-900">@eventItem.Description</h4>
+                                    <span class="px-2 py-1 text-xs font-medium rounded-full @GetSeverityColor(eventItem.Severity)">
+                                        @eventItem.Severity
+                                    </span>
+                                    <span class="px-2 py-1 text-xs font-medium rounded-full @GetEventStatusColor(eventItem.Status)">
+                                        @eventItem.Status
+                                    </span>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 mb-3">
+                                    <div class="flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span>@eventItem.IpAddress</span>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                        <span>@eventItem.Location</span>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <span>@FormatTimestamp(eventItem.Timestamp)</span>
+                                    </div>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(eventItem.UserName))
+                                {
+                                    <div class="text-sm text-gray-600 mb-2">
+                                        <strong>User:</strong> @eventItem.UserName
+                                    </div>
+                                }
+
+                                <div class="text-xs text-gray-500 mb-3">
+                                    <strong>User Agent:</strong> @eventItem.UserAgent
+                                </div>
+
+                                @if (eventItem.Actions.Any())
+                                {
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach (var action in eventItem.Actions)
+                                        {
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                                @action
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 ml-4">
+                            <button @onclick="@(() => ToggleEventDetails(eventItem.Id))"
+                                    class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </button>
+                            
+                            <button @onclick="@(() => BlockIP(eventItem.IpAddress))"
+                                    class="p-2 text-red-600 hover:text-red-700 rounded-lg hover:bg-red-50"
+                                    title="Block IP">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                </svg>
+                            </button>
+                            
+                            @if (eventItem.Status != "resolved")
+                            {
+                                <button @onclick="@(() => ResolveEvent(eventItem.Id))"
+                                        class="p-2 text-green-600 hover:text-green-700 rounded-lg hover:bg-green-50"
+                                        title="Mark as resolved">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </button>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Event Details -->
+                    @if (showEventDetails == eventItem.Id)
+                    {
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-900 mb-3">Event Details</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <strong>Event ID:</strong> @eventItem.Id
+                                    </div>
+                                    <div>
+                                        <strong>Type:</strong> @eventItem.Type.Replace("_", " ")
+                                    </div>
+                                    <div>
+                                        <strong>Timestamp:</strong> @FormatTimestamp(eventItem.Timestamp)
+                                    </div>
+                                    <div>
+                                        <strong>Status:</strong> @eventItem.Status
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(eventItem.UserId))
+                                    {
+                                        <div>
+                                            <strong>User ID:</strong> @eventItem.UserId
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (GetTotalPages() > 1)
+        {
+            <div class="flex items-center justify-center gap-2 mt-6">
+                <button @onclick="@(() => currentPage = Math.Max(1, currentPage - 1))"
+                        disabled="@(currentPage == 1)"
+                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Previous
+                </button>
+                
+                <span class="px-4 py-2 text-sm text-gray-600">
+                    Page @currentPage of @GetTotalPages()
+                </span>
+                
+                <button @onclick="@(() => currentPage = Math.Min(GetTotalPages(), currentPage + 1))"
+                        disabled="@(currentPage == GetTotalPages())"
+                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next
+                </button>
+            </div>
+        }
+    </div>
+
+    <!-- Security Recommendations -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Security Recommendations</h3>
+        <div class="space-y-4">
+            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-yellow-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-medium text-yellow-900 mb-1">Update SSL Certificate</h4>
+                        <p class="text-yellow-800 text-sm">Your SSL certificate expires in 89 days. Consider renewing it soon to avoid service interruption.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-medium text-blue-900 mb-1">Enable Rate Limiting</h4>
+                        <p class="text-blue-800 text-sm">Consider implementing rate limiting to prevent brute force attacks and API abuse.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-medium text-green-900 mb-1">Security Audit Completed</h4>
+                        <p class="text-green-800 text-sm">Latest security audit completed successfully with no critical vulnerabilities found.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string selectedTimeframe = "24h";
+    private string selectedSeverity = "";
+    private string selectedType = "";
+    private string searchQuery = "";
+    private int currentPage = 1;
+    private const int itemsPerPage = 10;
+    private string? showEventDetails = null;
+
+    private List<SecurityMetric> securityMetrics = new()
+    {
+        new SecurityMetric { Name = "Failed Login Attempts", Value = 23, Unit = "attempts", Status = "warning", Trend = "up", Description = "Failed login attempts in the last 24 hours" },
+        new SecurityMetric { Name = "Blocked IPs", Value = 156, Unit = "IPs", Status = "good", Trend = "stable", Description = "IP addresses currently blocked" },
+        new SecurityMetric { Name = "Active Sessions", Value = 2847, Unit = "sessions", Status = "good", Trend = "stable", Description = "Currently active user sessions" },
+        new SecurityMetric { Name = "Security Score", Value = 94, Unit = "%", Status = "good", Trend = "up", Description = "Overall security health score" },
+        new SecurityMetric { Name = "Vulnerabilities", Value = 2, Unit = "issues", Status = "warning", Trend = "down", Description = "Known security vulnerabilities" },
+        new SecurityMetric { Name = "SSL Certificate", Value = 89, Unit = "days", Status = "good", Trend = "down", Description = "Days until SSL certificate expires" }
+    };
+
+    private List<SecurityEvent> securityEvents = new()
+    {
+        new SecurityEvent 
+        { 
+            Id = "1", 
+            Type = "suspicious_activity", 
+            Severity = "high", 
+            Description = "Multiple failed login attempts from suspicious IP address", 
+            Timestamp = DateTime.Now.AddHours(-2), 
+            IpAddress = "192.168.1.100", 
+            Location = "Unknown Location", 
+            UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36", 
+            Status = "investigating", 
+            Actions = new List<string> { "IP blocked", "User notified", "Investigation started" } 
+        },
+        new SecurityEvent 
+        { 
+            Id = "2", 
+            Type = "login_attempt", 
+            Severity = "medium", 
+            Description = "Login attempt from new device", 
+            Timestamp = DateTime.Now.AddHours(-3), 
+            IpAddress = "203.0.113.45", 
+            Location = "Mumbai, India", 
+            UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X)", 
+            UserId = "user123", 
+            UserName = "john.doe@example.com", 
+            Status = "resolved", 
+            Actions = new List<string> { "2FA verification sent", "Login approved" } 
+        },
+        new SecurityEvent 
+        { 
+            Id = "3", 
+            Type = "unauthorized_access", 
+            Severity = "critical", 
+            Description = "Attempt to access admin panel without proper authorization", 
+            Timestamp = DateTime.Now.AddHours(-4), 
+            IpAddress = "198.51.100.78", 
+            Location = "Unknown Location", 
+            UserAgent = "curl/7.68.0", 
+            Status = "active", 
+            Actions = new List<string> { "IP blocked immediately", "Admin notified", "Logs preserved" } 
+        }
+    };
+
+    protected override void OnInitialized()
+    {
+        // Add more sample events
+        for (int i = 4; i <= 20; i++)
+        {
+            var eventTypes = new[] { "login_attempt", "suspicious_activity", "unauthorized_access", "malware_detected" };
+            var severities = new[] { "low", "medium", "high", "critical" };
+            var locations = new[] { "Delhi, India", "Mumbai, India", "Bangalore, India", "Unknown" };
+            var statuses = new[] { "active", "resolved", "investigating" };
+
+            securityEvents.Add(new SecurityEvent
+            {
+                Id = i.ToString(),
+                Type = eventTypes[i % eventTypes.Length],
+                Severity = severities[i % severities.Length],
+                Description = $"Security event {i} description",
+                Timestamp = DateTime.Now.AddHours(-Random.Shared.Next(1, 168)),
+                IpAddress = $"192.168.{Random.Shared.Next(1, 255)}.{Random.Shared.Next(1, 255)}",
+                Location = locations[i % locations.Length],
+                UserAgent = "Mozilla/5.0 (compatible browser)",
+                UserId = Random.Shared.Next(2) == 1 ? $"user{i}" : null,
+                UserName = Random.Shared.Next(2) == 1 ? $"user{i}@example.com" : null,
+                Status = statuses[i % statuses.Length],
+                Actions = new List<string> { "Action taken", "Investigation ongoing" }
+            });
+        }
+    }
+
+    private RenderFragment GetMetricIcon(string name)
+    {
+        return name.ToLower() switch
+        {
+            "failed login attempts" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+            </svg>,
+            "blocked ips" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>,
+            "active sessions" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>,
+            "security score" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>,
+            "vulnerabilities" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>,
+            "ssl certificate" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0110 0v4"></path>
+            </svg>,
+            _ => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+        };
+    }
+
+    private string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "good" => "text-green-600 bg-green-100",
+            "warning" => "text-yellow-600 bg-yellow-100",
+            "critical" => "text-red-600 bg-red-100",
+            _ => "text-gray-600 bg-gray-100"
+        };
+    }
+
+    private string GetSeverityColor(string severity)
+    {
+        return severity switch
+        {
+            "low" => "bg-blue-100 text-blue-800",
+            "medium" => "bg-yellow-100 text-yellow-800",
+            "high" => "bg-orange-100 text-orange-800",
+            "critical" => "bg-red-100 text-red-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+
+    private string GetEventStatusColor(string status)
+    {
+        return status switch
+        {
+            "active" => "bg-red-100 text-red-800",
+            "resolved" => "bg-green-100 text-green-800",
+            "investigating" => "bg-yellow-100 text-yellow-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+
+    private RenderFragment GetEventTypeIcon(string type)
+    {
+        return type switch
+        {
+            "login_attempt" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+            </svg>,
+            "suspicious_activity" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>,
+            "unauthorized_access" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0110 0v4"></path>
+            </svg>,
+            "data_breach" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path>
+                <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path>
+            </svg>,
+            "malware_detected" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>,
+            "ddos_attack" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>,
+            _ => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+        };
+    }
+
+    private List<SecurityEvent> GetFilteredEvents()
+    {
+        return securityEvents.Where(eventItem =>
+        {
+            var matchesSearch = eventItem.Description.ToLower().Contains(searchQuery.ToLower()) ||
+                               eventItem.IpAddress.Contains(searchQuery) ||
+                               eventItem.Location.ToLower().Contains(searchQuery.ToLower()) ||
+                               (!string.IsNullOrEmpty(eventItem.UserName) && eventItem.UserName.ToLower().Contains(searchQuery.ToLower()));
+            
+            var matchesSeverity = string.IsNullOrEmpty(selectedSeverity) || eventItem.Severity == selectedSeverity;
+            var matchesType = string.IsNullOrEmpty(selectedType) || eventItem.Type == selectedType;
+
+            return matchesSearch && matchesSeverity && matchesType;
+        }).ToList();
+    }
+
+    private List<SecurityEvent> GetCurrentEvents()
+    {
+        var filteredEvents = GetFilteredEvents();
+        var startIndex = (currentPage - 1) * itemsPerPage;
+        return filteredEvents.Skip(startIndex).Take(itemsPerPage).ToList();
+    }
+
+    private int GetTotalPages()
+    {
+        var filteredEvents = GetFilteredEvents();
+        return (int)Math.Ceiling((double)filteredEvents.Count / itemsPerPage);
+    }
+
+    private string FormatTimestamp(DateTime timestamp)
+    {
+        return timestamp.ToString("MMM dd, yyyy HH:mm");
+    }
+
+    private void OnSearchChanged()
+    {
+        currentPage = 1;
+        StateHasChanged();
+    }
+
+    private void OnFilterChanged()
+    {
+        currentPage = 1;
+        StateHasChanged();
+    }
+
+    private void ToggleEventDetails(string eventId)
+    {
+        showEventDetails = showEventDetails == eventId ? null : eventId;
+        StateHasChanged();
+    }
+
+    private void ResolveEvent(string eventId)
+    {
+        var eventItem = securityEvents.FirstOrDefault(e => e.Id == eventId);
+        if (eventItem != null)
+        {
+            eventItem.Status = "resolved";
+            StateHasChanged();
+        }
+    }
+
+    private void BlockIP(string ipAddress)
+    {
+        // TODO: Implement IP blocking logic
+        StateHasChanged();
+    }
+
+    private void RefreshData()
+    {
+        // TODO: Implement data refresh logic
+        StateHasChanged();
+    }
+
+    private void ExportSecurityReport()
+    {
+        // TODO: Implement export logic
+    }
+
+    public class SecurityEvent
+    {
+        public string Id { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Severity { get; set; } = "";
+        public string Description { get; set; } = "";
+        public DateTime Timestamp { get; set; }
+        public string IpAddress { get; set; } = "";
+        public string Location { get; set; } = "";
+        public string UserAgent { get; set; } = "";
+        public string? UserId { get; set; }
+        public string? UserName { get; set; }
+        public string Status { get; set; } = "";
+        public List<string> Actions { get; set; } = new();
+    }
+
+    public class SecurityMetric
+    {
+        public string Name { get; set; } = "";
+        public int Value { get; set; }
+        public string Unit { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string Trend { get; set; } = "";
+        public string Description { get; set; } = "";
+    }
+} 

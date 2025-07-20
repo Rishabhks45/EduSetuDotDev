@@ -1,0 +1,233 @@
+@page "/teacher/dashboard"
+@layout TeacherLayout
+@using EduSetu.Components.Layout
+@using EduSetu.Components.Shared
+
+<div class="space-y-6">
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 rounded-lg bg-blue-100">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                    </svg>
+                </div>
+                <span class="text-sm text-green-600 font-medium">+12%</span>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1">247</div>
+            <div class="text-sm text-gray-600">Total Students</div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 rounded-lg bg-green-100">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                </div>
+                <span class="text-sm text-green-600 font-medium">+18%</span>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1">15,420</div>
+            <div class="text-sm text-gray-600">Content Views</div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 rounded-lg bg-purple-100">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                </div>
+                <span class="text-sm text-green-600 font-medium">+25%</span>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1">2,845</div>
+            <div class="text-sm text-gray-600">Downloads</div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-4">
+                <div class="p-3 rounded-lg bg-yellow-100">
+                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                </div>
+                <span class="text-sm text-green-600 font-medium">+0.2</span>
+            </div>
+            <div class="text-2xl font-bold text-gray-900 mb-1">4.8</div>
+            <div class="text-sm text-gray-600">Avg Rating</div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Today's Schedule -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Today's Classes</h3>
+                <button @onclick="@(() => NavigationManager.NavigateTo("/teacher/dashboard/schedule"))" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                    View All
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div class="p-2 bg-blue-100 rounded-lg">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-medium text-gray-900">Data Structures</h4>
+                        <p class="text-sm text-gray-600">10:00 AM • Room CS-101</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-medium text-gray-900">45</p>
+                        <p class="text-xs text-gray-500">students</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div class="p-2 bg-blue-100 rounded-lg">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-medium text-gray-900">Algorithms</h4>
+                        <p class="text-sm text-gray-600">2:00 PM • Room CS-102</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-medium text-gray-900">38</p>
+                        <p class="text-xs text-gray-500">students</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div class="p-2 bg-blue-100 rounded-lg">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-medium text-gray-900">Database Systems</h4>
+                        <p class="text-sm text-gray-600">4:00 PM • Room CS-103</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-medium text-gray-900">52</p>
+                        <p class="text-xs text-gray-500">students</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
+                <button class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                    View All
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-start gap-3">
+                    <div class="p-2 bg-gray-100 rounded-full mt-1">
+                        <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-800">New video lecture uploaded: "Advanced Algorithms"</p>
+                        <p class="text-xs text-gray-500 mt-1">2 hours ago</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <div class="p-2 bg-gray-100 rounded-full mt-1">
+                        <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-800">Student commented on "Data Structures Notes"</p>
+                        <p class="text-xs text-gray-500 mt-1">4 hours ago</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <div class="p-2 bg-gray-100 rounded-full mt-1">
+                        <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-800">25 new downloads on "Database Systems Guide"</p>
+                        <p class="text-xs text-gray-500 mt-1">6 hours ago</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <div class="p-2 bg-gray-100 rounded-full mt-1">
+                        <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm text-gray-800">Received 5-star rating on "Machine Learning Basics"</p>
+                        <p class="text-xs text-gray-500 mt-1">1 day ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <button @onclick="@(() => NavigationManager.NavigateTo("/teacher/dashboard/my-content"))" class="flex items-center gap-3 p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-left">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                <div>
+                    <p class="font-medium text-gray-900">Upload Content</p>
+                    <p class="text-sm text-gray-600">Add new materials</p>
+                </div>
+            </button>
+            
+            <button @onclick="@(() => NavigationManager.NavigateTo("/teacher/dashboard/schedule"))" class="flex items-center gap-3 p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors text-left">
+                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <div>
+                    <p class="font-medium text-gray-900">Schedule Class</p>
+                    <p class="text-sm text-gray-600">Plan your sessions</p>
+                </div>
+            </button>
+            
+            <button @onclick="@(() => NavigationManager.NavigateTo("/teacher/dashboard/messages"))" class="flex items-center gap-3 p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors text-left">
+                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                </svg>
+                <div>
+                    <p class="font-medium text-gray-900">Message Students</p>
+                    <p class="text-sm text-gray-600">Send announcements</p>
+                </div>
+            </button>
+            
+            <button @onclick="@(() => NavigationManager.NavigateTo("/teacher/dashboard/analytics"))" class="flex items-center gap-3 p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors text-left">
+                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                <div>
+                    <p class="font-medium text-gray-900">View Analytics</p>
+                    <p class="text-sm text-gray-600">Track performance</p>
+                </div>
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+} 

@@ -10,152 +10,454 @@
 
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex justify-between items-center">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Schedule</h1>
-            <p class="text-gray-600">Manage your classes and teaching schedule</p>
-        </div>
-        <div class="flex space-x-2">
-            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                Add Class
-            </button>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Schedule & Calendar</h2>
+                <p class="text-gray-600 mt-1">Manage your classes, meetings, and events</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="relative p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell "><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        3
+                    </span>
+                </button>
+                <button @onclick="@(() => showEventModal = true)" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Schedule Event
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Today's Schedule -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Today's Classes</h3>
-        <div class="space-y-4">
-            @foreach (var classItem in todaysClasses)
-            {
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div class="flex items-center space-x-4">
-                        <div class="p-3 @GetClassTypeColor(classItem.Type) rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Sidebar -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Mini Calendar -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-gray-900">
+                        @currentDate.ToString("MMMM yyyy")
+                    </h3>
+                    <div class="flex gap-1">
+                        <button @onclick="@(() => currentDate = currentDate.AddMonths(-1))" class="p-1 hover:bg-gray-100 rounded">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                             </svg>
-                        </div>
-                        <div>
-                            <h4 class="font-medium text-gray-900">@classItem.Subject</h4>
-                            <p class="text-sm text-gray-600">@classItem.Time - @classItem.Duration</p>
-                            <p class="text-sm text-gray-500">@classItem.Students students</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetStatusColor(classItem.Status)">
-                            @classItem.Status
-                        </span>
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
-                            Start
+                        </button>
+                        <button @onclick="@(() => currentDate = currentDate.AddMonths(1))" class="p-1 hover:bg-gray-100 rounded">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
                         </button>
                     </div>
                 </div>
-            }
-        </div>
-    </div>
+                
+                <!-- Calendar Grid -->
+                <div class="grid grid-cols-7 gap-1 text-center text-xs">
+                    @foreach (var day in new[] { "S", "M", "T", "W", "T", "F", "S" })
+                    {
+                        <div class="p-2 font-medium text-gray-500">@day</div>
+                    }
+                    @for (int i = 0; i < 35; i++)
+                    {
+                        var date = new DateTime(currentDate.Year, currentDate.Month, 1).AddDays(i - 6);
+                        var hasEvents = GetEventsForDate(date).Any();
+                        var isToday = date.Date == DateTime.Today;
+                        var isCurrentMonth = date.Month == currentDate.Month;
+                        
+                        <button @onclick="@(() => currentDate = date)" 
+                                class="p-2 rounded text-sm transition-colors @(isToday ? "bg-blue-600 text-white" : hasEvents ? "bg-blue-100 text-blue-700" : isCurrentMonth ? "hover:bg-gray-100" : "text-gray-400")">
+                            @date.Day
+                        </button>
+                    }
+                </div>
+            </div>
 
-    <!-- Weekly Schedule -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Weekly Schedule</h3>
-        <div class="grid grid-cols-7 gap-4">
-            @foreach (var day in weekDays)
+            <!-- Upcoming Events -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                <h3 class="font-semibold text-gray-900 mb-4">Upcoming Events</h3>
+                <div class="space-y-3">
+                    @foreach (var evt in GetUpcomingEventsList())
+                    {
+                        <div class="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div class="flex items-center gap-2 mb-1">
+                                @((MarkupString)GetEventTypeIcon(evt.Type))
+                                <span class="font-medium text-sm text-gray-900">@evt.Title</span>
+                            </div>
+                            <div class="text-xs text-gray-600">
+                                <p>@evt.StartTime - @evt.EndTime</p>
+                                <p>@DateTime.Parse(evt.Date).ToString("MMM dd")</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                <h3 class="font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                <div class="space-y-2">
+                    <button @onclick="@(() => showEventModal = true)" class="w-full flex items-center gap-2 p-3 text-left bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        <span class="text-blue-700 font-medium">Schedule Class</span>
+                    </button>
+                    <button class="w-full flex items-center gap-2 p-3 text-left bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                        <span class="text-green-700 font-medium">Start Meeting</span>
+                    </button>
+                    <button class="w-full flex items-center gap-2 p-3 text-left bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
+                        <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                        <span class="text-purple-700 font-medium">Send Announcement</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Calendar -->
+        <div class="lg:col-span-3 space-y-6">
+            <!-- Calendar Controls -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                            @foreach (var mode in new[] { "month", "week", "day", "agenda" })
+                            {
+                                <button @onclick="@(() => viewMode = mode)" 
+                                        class="px-3 py-2 rounded-md text-sm font-medium transition-colors @(viewMode == mode ? "bg-white text-gray-800 shadow-sm" : "text-gray-600 hover:text-gray-800")">
+                                    @(mode.Substring(0, 1).ToUpper() + mode.Substring(1))
+                                </button>
+                            }
+                        </div>
+                        
+                        <div class="flex items-center gap-2">
+                            <button @onclick="@(() => NavigateDate(-1))" class="p-2 hover:bg-gray-100 rounded-lg">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            <h3 class="text-lg font-semibold text-gray-900 min-w-[200px] text-center">
+                                @GetCurrentPeriodText()
+                            </h3>
+                            <button @onclick="@(() => NavigateDate(1))" class="p-2 hover:bg-gray-100 rounded-lg">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button @onclick="@(() => currentDate = DateTime.Today)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">
+                        Today
+                    </button>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="flex gap-4 mb-6">
+                    <div class="relative flex-1">
+                        <svg class="absolute left-3 top-3 text-gray-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" @bind="searchQuery" @bind:event="oninput" placeholder="Search events..."
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                    </div>
+                    <select @bind="filterType" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">All Types</option>
+                        <option value="class">Classes</option>
+                        <option value="meeting">Meetings</option>
+                        <option value="exam">Exams</option>
+                        <option value="office-hours">Office Hours</option>
+                        <option value="workshop">Workshops</option>
+                    </select>
+                </div>
+
+            @if (viewMode == "week")
             {
-                <div class="text-center">
-                    <div class="text-sm font-medium text-gray-900 mb-2">@day.Name</div>
-                    <div class="space-y-2">
-                        @foreach (var classItem in GetClassesForDay(day.Name))
+                <!-- Week View -->
+                <div class="grid grid-cols-8 gap-4">
+                    <!-- Time column -->
+                    <div class="text-sm font-medium text-gray-500 pt-8">
+                        <div class="h-12"></div>
+                        @for (int hour = 8; hour <= 20; hour++)
                         {
-                            <div class="p-2 bg-blue-50 rounded text-xs">
-                                <div class="font-medium text-blue-900">@classItem.Subject</div>
-                                <div class="text-blue-600">@classItem.Time</div>
+                            <div class="h-12 flex items-center text-xs text-gray-400">
+                                @(hour.ToString("00")):00
                             </div>
                         }
                     </div>
+
+                    <!-- Days -->
+                    @foreach (var day in GetWeekDays())
+                    {
+                        <div class="border-l border-gray-200">
+                            <div class="text-center p-2 border-b border-gray-200">
+                                <div class="text-sm font-medium text-gray-900">@day.ToString("ddd")</div>
+                                <div class="text-xs text-gray-500">@day.ToString("MMM d")</div>
+                            </div>
+                            <div class="relative">
+                                @for (int hour = 8; hour <= 20; hour++)
+                                {
+                                    <div class="h-12 border-b border-gray-100"></div>
+                                }
+                                @foreach (var evt in GetEventsForDate(day))
+                                {
+                                    <div class="absolute left-1 right-1 @GetEventPosition(evt)" 
+                                         style="top: @(GetEventTop(evt))px; height: @(GetEventHeight(evt))px;">
+                                        <div class="h-full @GetEventTypeColor(evt.Type) rounded p-2 text-xs overflow-hidden">
+                                            <div class="font-medium text-gray-900 truncate">@evt.Title</div>
+                                            <div class="text-gray-600">@evt.StartTime - @evt.EndTime</div>
+                                            <div class="text-gray-500 truncate">@evt.Location</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
                 </div>
             }
+            else if (viewMode == "agenda")
+            {
+                <!-- Agenda View -->
+                <div class="space-y-4">
+                    @foreach (var evt in GetFilteredEvents())
+                    {
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center space-x-4">
+                                <div class="p-3 @GetEventTypeColor(evt.Type) rounded-lg">
+                                    @GetEventTypeIcon(evt.Type)
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">@evt.Title</h4>
+                                    <p class="text-sm text-gray-600">@evt.Subject • @evt.StartTime - @evt.EndTime</p>
+                                    <p class="text-sm text-gray-500">@evt.Location @(evt.IsOnline ? "(Online)" : "")</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetStatusColor(evt.Status)">
+                                    @evt.Status
+                                </span>
+                                <button @onclick="@(() => EditEvent(evt))" class="p-1 text-blue-600 hover:text-blue-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </button>
+                                <button @onclick="@(() => DeleteEvent(evt))" class="p-1 text-red-600 hover:text-red-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            </div>
+
         </div>
     </div>
 
-    <!-- Upcoming Classes -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Upcoming Classes</h3>
-        <div class="space-y-4">
-            @foreach (var classItem in upcomingClasses)
-            {
-                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                    <div class="flex items-center space-x-4">
-                        <div class="p-3 @GetClassTypeColor(classItem.Type) rounded-lg">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h4 class="font-medium text-gray-900">@classItem.Subject</h4>
-                            <p class="text-sm text-gray-600">@classItem.Date at @classItem.Time</p>
-                            <p class="text-sm text-gray-500">@classItem.Students students</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
-                            Edit
-                        </button>
-                        <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
+   
 </div>
 
 @code {
-    private List<ClassItem> todaysClasses = new()
-    {
-        new ClassItem { Id = "1", Subject = "Physics", Time = "09:00 AM", Duration = "1 hour", Students = 25, Type = "lecture", Status = "upcoming" },
-        new ClassItem { Id = "2", Subject = "Chemistry Lab", Time = "11:00 AM", Duration = "2 hours", Students = 15, Type = "lab", Status = "in-progress" },
-        new ClassItem { Id = "3", Subject = "Mathematics", Time = "02:00 PM", Duration = "1.5 hours", Students = 30, Type = "tutorial", Status = "completed" }
-    };
+    private DateTime currentDate = DateTime.Today;
+    private string viewMode = "week";
+    private string searchQuery = "";
+    private string filterType = "";
+    private bool showEventModal = false;
+    private ScheduleEvent? selectedEvent = null;
 
-    private List<ClassItem> upcomingClasses = new()
+    private List<ScheduleEvent> events = new()
     {
-        new ClassItem { Id = "4", Subject = "Biology", Date = "2024-01-22", Time = "10:00 AM", Duration = "1 hour", Students = 28, Type = "lecture", Status = "scheduled" },
-        new ClassItem { Id = "5", Subject = "Physics Lab", Date = "2024-01-23", Time = "09:00 AM", Duration = "2 hours", Students = 20, Type = "lab", Status = "scheduled" },
-        new ClassItem { Id = "6", Subject = "Chemistry", Date = "2024-01-24", Time = "11:00 AM", Duration = "1 hour", Students = 32, Type = "lecture", Status = "scheduled" }
-    };
-
-    private List<DayItem> weekDays = new()
-    {
-        new DayItem { Name = "Mon" },
-        new DayItem { Name = "Tue" },
-        new DayItem { Name = "Wed" },
-        new DayItem { Name = "Thu" },
-        new DayItem { Name = "Fri" },
-        new DayItem { Name = "Sat" },
-        new DayItem { Name = "Sun" }
-    };
-
-    private List<ClassItem> GetClassesForDay(string dayName)
-    {
-        // Mock data for weekly schedule
-        return new List<ClassItem>
+        new ScheduleEvent
         {
-            new ClassItem { Subject = "Physics", Time = "09:00" },
-            new ClassItem { Subject = "Chemistry", Time = "11:00" }
-        };
+            Id = "1",
+            Title = "Data Structures Lecture",
+            Type = "class",
+            Subject = "Computer Science",
+            StartTime = "10:00",
+            EndTime = "11:30",
+            Date = "2024-01-22",
+            Location = "Room CS-101",
+            IsOnline = false,
+            Students = 45,
+            MaxStudents = 50,
+            Description = "Introduction to Binary Trees and Tree Traversal Algorithms",
+            Status = "scheduled",
+            Recurring = true,
+            RecurringPattern = "Weekly on Monday, Wednesday, Friday"
+        },
+        new ScheduleEvent
+        {
+            Id = "2",
+            Title = "Algorithm Analysis Workshop",
+            Type = "workshop",
+            Subject = "Computer Science",
+            StartTime = "14:00",
+            EndTime = "16:00",
+            Date = "2024-01-22",
+            Location = "Online",
+            IsOnline = true,
+            MeetingLink = "https://meet.google.com/abc-defg-hij",
+            Students = 28,
+            MaxStudents = 30,
+            Description = "Hands-on workshop on time complexity analysis and Big O notation",
+            Status = "scheduled",
+            Recurring = false
+        },
+        new ScheduleEvent
+        {
+            Id = "3",
+            Title = "Office Hours",
+            Type = "office-hours",
+            Subject = "General",
+            StartTime = "15:00",
+            EndTime = "17:00",
+            Date = "2024-01-23",
+            Location = "Office 204",
+            IsOnline = false,
+            Students = 0,
+            MaxStudents = 10,
+            Description = "Open office hours for student consultations and doubt clearing",
+            Status = "scheduled",
+            Recurring = true,
+            RecurringPattern = "Weekly on Tuesday, Thursday"
+        },
+        new ScheduleEvent
+        {
+            Id = "4",
+            Title = "Mid-term Examination",
+            Type = "exam",
+            Subject = "Database Systems",
+            StartTime = "09:00",
+            EndTime = "12:00",
+            Date = "2024-01-25",
+            Location = "Exam Hall A",
+            IsOnline = false,
+            Students = 52,
+            MaxStudents = 60,
+            Description = "Mid-semester examination covering SQL, Normalization, and Transactions",
+            Status = "scheduled",
+            Recurring = false
+        },
+        new ScheduleEvent
+        {
+            Id = "5",
+            Title = "Faculty Meeting",
+            Type = "meeting",
+            Subject = "Administration",
+            StartTime = "11:00",
+            EndTime = "12:30",
+            Date = "2024-01-24",
+            Location = "Conference Room",
+            IsOnline = false,
+            Students = 0,
+            MaxStudents = 0,
+            Description = "Monthly faculty meeting to discuss curriculum updates",
+            Status = "scheduled",
+            Recurring = true,
+            RecurringPattern = "Monthly on last Wednesday"
+        }
+    };
+
+    private void NavigateDate(int direction)
+    {
+        switch (viewMode)
+        {
+            case "week":
+                currentDate = currentDate.AddDays(direction * 7);
+                break;
+            case "month":
+                currentDate = currentDate.AddMonths(direction);
+                break;
+            case "day":
+                currentDate = currentDate.AddDays(direction);
+                break;
+        }
     }
 
-    private string GetClassTypeColor(string type)
+    private string GetCurrentPeriodText()
+    {
+        switch (viewMode)
+        {
+            case "week":
+                var startOfWeek = currentDate.AddDays(-(int)currentDate.DayOfWeek);
+                var endOfWeek = startOfWeek.AddDays(6);
+                return $"{startOfWeek:MMM d} - {endOfWeek:MMM d, yyyy}";
+            case "month":
+                return currentDate.ToString("MMMM yyyy");
+            case "day":
+                return currentDate.ToString("MMMM d, yyyy");
+            default:
+                return currentDate.ToString("MMMM yyyy");
+        }
+    }
+
+    private List<DateTime> GetWeekDays()
+    {
+        var startOfWeek = currentDate.AddDays(-(int)currentDate.DayOfWeek);
+        var days = new List<DateTime>();
+        for (int i = 0; i < 7; i++)
+        {
+            days.Add(startOfWeek.AddDays(i));
+        }
+        return days;
+    }
+
+    private List<ScheduleEvent> GetEventsForDate(DateTime date)
+    {
+        var dateString = date.ToString("yyyy-MM-dd");
+        return events.Where(e => e.Date == dateString).ToList();
+    }
+
+    private List<ScheduleEvent> GetFilteredEvents()
+    {
+        return events.Where(e =>
+        {
+            var matchesSearch = string.IsNullOrEmpty(searchQuery) ||
+                               e.Title.ToLower().Contains(searchQuery.ToLower()) ||
+                               e.Subject.ToLower().Contains(searchQuery.ToLower()) ||
+                               e.Description.ToLower().Contains(searchQuery.ToLower());
+            
+            var matchesType = string.IsNullOrEmpty(filterType) || e.Type == filterType;
+            
+            return matchesSearch && matchesType;
+        }).OrderBy(e => e.Date).ThenBy(e => e.StartTime).ToList();
+    }
+
+    private string GetEventTypeIcon(string type)
     {
         return type switch
         {
-            "lecture" => "bg-blue-100 text-blue-600",
-            "lab" => "bg-green-100 text-green-600",
-            "tutorial" => "bg-purple-100 text-purple-600",
-            _ => "bg-gray-100 text-gray-600"
+            "class" => "<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253\"></path></svg>",
+            "meeting" => "<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z\"></path></svg>",
+            "exam" => "<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z\"></path></svg>",
+            "office-hours" => "<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z\"></path></svg>",
+            "workshop" => "<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z\"></path></svg>",
+            _ => "<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z\"></path></svg>"
+        };
+    }
+
+    private string GetEventTypeColor(string type)
+    {
+        return type switch
+        {
+            "class" => "bg-blue-50 text-blue-700 border-blue-200",
+            "meeting" => "bg-purple-50 text-purple-700 border-purple-200",
+            "exam" => "bg-red-50 text-red-700 border-red-200",
+            "office-hours" => "bg-green-50 text-green-700 border-green-200",
+            "workshop" => "bg-orange-50 text-orange-700 border-orange-200",
+            _ => "bg-gray-50 text-gray-700 border-gray-200"
         };
     }
 
@@ -163,29 +465,84 @@
     {
         return status switch
         {
-            "upcoming" => "text-blue-600 bg-blue-100",
-            "in-progress" => "text-green-600 bg-green-100",
-            "completed" => "text-gray-600 bg-gray-100",
-            "scheduled" => "text-yellow-600 bg-yellow-100",
-            _ => "text-gray-600 bg-gray-100"
+            "scheduled" => "bg-blue-100 text-blue-800",
+            "ongoing" => "bg-green-100 text-green-800",
+            "completed" => "bg-gray-100 text-gray-800",
+            "cancelled" => "bg-red-100 text-red-800",
+            _ => "bg-gray-100 text-gray-800"
         };
     }
 
-
-    public class ClassItem
+    private string GetEventPosition(ScheduleEvent evt)
     {
-        public string Id { get; set; } = "";
-        public string Subject { get; set; } = "";
-        public string Time { get; set; } = "";
-        public string Date { get; set; } = "";
-        public string Duration { get; set; } = "";
-        public int Students { get; set; }
-        public string Type { get; set; } = "";
-        public string Status { get; set; } = "";
+        // Simple positioning logic - can be enhanced
+        return "z-10";
     }
 
-    public class DayItem
+    private int GetEventTop(ScheduleEvent evt)
+    {
+        var startHour = int.Parse(evt.StartTime.Split(':')[0]);
+        return (startHour - 8) * 48; // 48px per hour
+    }
+
+    private int GetEventHeight(ScheduleEvent evt)
+    {
+        var startHour = int.Parse(evt.StartTime.Split(':')[0]);
+        var endHour = int.Parse(evt.EndTime.Split(':')[0]);
+        var duration = endHour - startHour;
+        return Math.Max(duration * 48, 24); // Minimum 24px height
+    }
+
+    private int GetTotalEvents() => events.Count;
+    private int GetTodayEvents() => events.Count(e => e.Date == DateTime.Today.ToString("yyyy-MM-dd"));
+    private int GetTotalStudents() => events.Sum(e => e.Students);
+    private int GetUpcomingEvents() => events.Count(e => DateTime.Parse(e.Date) > DateTime.Today);
+
+    private void EditEvent(ScheduleEvent evt)
+    {
+        selectedEvent = evt;
+        showEventModal = true;
+    }
+
+    private void DeleteEvent(ScheduleEvent evt)
+    {
+        events.Remove(evt);
+    }
+
+    private List<ScheduleEvent> GetUpcomingEventsList()
+    {
+        return events
+            .Where(e => DateTime.Parse(e.Date + "T" + e.StartTime) > DateTime.Now)
+            .OrderBy(e => DateTime.Parse(e.Date + "T" + e.StartTime))
+            .Take(5)
+            .ToList();
+    }
+
+    public class ScheduleEvent
+    {
+        public string Id { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Subject { get; set; } = "";
+        public string StartTime { get; set; } = "";
+        public string EndTime { get; set; } = "";
+        public string Date { get; set; } = "";
+        public string Location { get; set; } = "";
+        public bool IsOnline { get; set; }
+        public string? MeetingLink { get; set; }
+        public int Students { get; set; }
+        public int MaxStudents { get; set; }
+        public string Description { get; set; } = "";
+        public string Status { get; set; } = "";
+        public bool Recurring { get; set; }
+        public string? RecurringPattern { get; set; }
+        public List<string> Reminders { get; set; } = new();
+        public List<Attachment> Attachments { get; set; } = new();
+    }
+
+    public class Attachment
     {
         public string Name { get; set; } = "";
+        public string Url { get; set; } = "";
     }
 }

@@ -1,4 +1,4 @@
-@page "/teacher/dashboard"
+@page "/teacher/dashboardd"
 @using EduSetu.Components.Layout
 @using EduSetu.Domain.Enums
 @using EduSetu.Domain.Entities
@@ -17,15 +17,41 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between mb-4">
                     <div class="p-3 rounded-lg @stat.BgColor">
-                        <stat.Icon class="w-6 h-6 @stat.Color" />
+                        @switch (stat.Icon)
+                        {
+                            case "users":
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users text-blue-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                ;
+                                break;
+
+                            case "eye":
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye text-green-600"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                ;
+                                break;
+
+                            case "download":
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download text-purple-600"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+                                ;
+                                break;
+
+                            case "trending-up":
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up text-yellow-600"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                                ;
+                                break;
+                        }
                     </div>
-                    <span class="text-sm @(stat.ChangeType == "positive" ? "text-green-600" : "text-red-600") font-medium">@stat.Change</span>
+
+                    <span class="text-sm @(stat.ChangeType == "positive" ? "text-green-600" : "text-red-600") font-medium">
+                        @stat.Change
+                    </span>
                 </div>
+
                 <div class="text-2xl font-bold text-gray-900 mb-1">@stat.Value</div>
                 <div class="text-sm text-gray-600">@stat.Label</div>
             </div>
         }
     </div>
+
 
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

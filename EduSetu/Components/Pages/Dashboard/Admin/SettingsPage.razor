@@ -1,0 +1,523 @@
+@page "/admin/dashboard/settings"
+@using EduSetu.Components.Layout
+@using EduSetu.Domain.Enums
+@layout AdminLayout 
+
+<PageTitle>Admin Settings - EduSetu</PageTitle>
+
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">System Settings</h2>
+                <p class="text-gray-600 mt-1">Configure platform settings and preferences</p>
+            </div>
+            <div class="flex items-center gap-3">
+                @if (hasUnsavedChanges)
+                {
+                    <div class="flex items-center gap-2 text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Unsaved changes</span>
+                    </div>
+                }
+                <button @onclick="ExportSettings"
+                        class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Export
+                </button>
+                <button @onclick="SaveSettings"
+                        disabled="@(!hasUnsavedChanges)"
+                        class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                    </svg>
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Sidebar Navigation -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                <nav class="space-y-2">
+                    @foreach (var category in categories)
+                    {
+                        <button @onclick="@(() => activeCategory = category.Id)"
+                                class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left @(activeCategory == category.Id ? "bg-red-50 text-red-700 border border-red-200" : "text-gray-600 hover:bg-gray-50 hover:text-gray-800")">
+                            @switch (category.Icon)
+                            {
+                                case "settings":
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    break;
+                                case "globe":
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    break;
+                                case "mail":
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                    break;
+                                case "bell":
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                    </svg>
+                                    break;
+                                case "shield":
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                    </svg>
+                                    break;
+                                case "database":
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
+                                    </svg>
+                                    break;
+                                case "server":
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                                    </svg>
+                                    break;
+                                case "users":
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                    </svg>
+                                    break;
+                                case "file-text":
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    break;
+                                case "dollar-sign":
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                    </svg>
+                                    break;
+                                default:
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    break;
+                            }
+                            <span class="font-medium">@category.Label</span>
+                        </button>
+                    }
+                </nav>
+            </div>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="lg:col-span-3">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        @(categories.FirstOrDefault(c => c.Id == activeCategory)?.Label) Settings
+                    </h3>
+                    <div class="flex items-center gap-2">
+                        <button @onclick="ResetSettings"
+                                class="text-sm text-gray-600 hover:text-gray-800 font-medium">
+                            Reset to Defaults
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    @foreach (var setting in GetCategorySettings(activeCategory))
+                    {
+                        <div class="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex-1">
+                                    <label class="block text-sm font-medium text-gray-900 mb-1">
+                                        @setting.Name
+                                        @if (setting.Required)
+                                        {
+                                            <span class="text-red-500 ml-1">*</span>
+                                        }
+                                    </label>
+                                    <p class="text-sm text-gray-600">@setting.Description</p>
+                                </div>
+                                @if (setting.Sensitive)
+                                {
+                                    <div class="ml-4">
+                                        <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" title="Sensitive setting">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                        </svg>
+                                    </div>
+                                }
+                            </div>
+                            
+                            <div class="max-w-md">
+                                @RenderSettingInput(setting)
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Category-specific actions -->
+                @if (activeCategory == "database")
+                {
+                    <div class="mt-8 pt-6 border-t border-gray-200">
+                        <h4 class="text-md font-semibold text-gray-900 mb-4">Database Management</h4>
+                        <div class="flex gap-3">
+                            <button @onclick="@(() => showBackupModal = true)"
+                                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
+                                </svg>
+                                Create Backup
+                            </button>
+                            <button @onclick="@(() => showRestoreModal = true)"
+                                    class="flex items-center gap-2 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                Restore Backup
+                            </button>
+                        </div>
+                    </div>
+                }
+
+                @if (activeCategory == "general")
+                {
+                    <div class="mt-8 pt-6 border-t border-gray-200">
+                        <h4 class="text-md font-semibold text-gray-900 mb-4">Configuration Management</h4>
+                        <div class="flex gap-3">
+                            <button @onclick="ImportSettings"
+                                    class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                </svg>
+                                Import Settings
+                            </button>
+                            <button @onclick="ExportSettings"
+                                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Export Settings
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Backup Modal -->
+    @if (showBackupModal)
+    {
+        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900">Create System Backup</h3>
+                    <button @onclick="@(() => showBackupModal = false)" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Backup Name</label>
+                        <input type="text" @bind="backupName"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500" />
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Include</label>
+                        <div class="space-y-2">
+                            @foreach (var item in backupOptions)
+                            {
+                                <label class="flex items-center gap-2">
+                                    <input type="checkbox" @bind="item.Selected" class="w-4 h-4 text-red-600 focus:ring-red-500 border-gray-300 rounded" />
+                                    <span class="text-sm text-gray-700">@item.Label</span>
+                                </label>
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3 mt-6">
+                    <button @onclick="@(() => showBackupModal = false)"
+                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button @onclick="CreateBackup"
+                            class="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
+                        Create Backup
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Restore Modal -->
+    @if (showRestoreModal)
+    {
+        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900">Restore from Backup</h3>
+                    <button @onclick="@(() => showRestoreModal = false)" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Select Backup</label>
+                        <select @bind="selectedBackup" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                            @foreach (var backup in availableBackups)
+                            {
+                                <option value="@backup.Value">@backup.Text</option>
+                            }
+                        </select>
+                    </div>
+                    
+                    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div class="flex items-start gap-2">
+                            <svg class="w-4 h-4 text-yellow-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                            <div>
+                                <p class="text-sm font-medium text-yellow-900">Warning</p>
+                                <p class="text-sm text-yellow-800">This will overwrite current system data. Make sure to create a backup first.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3 mt-6">
+                    <button @onclick="@(() => showRestoreModal = false)"
+                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button @onclick="RestoreBackup"
+                            class="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors">
+                        Restore Backup
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private string activeCategory = "general";
+    private bool hasUnsavedChanges = false;
+    private bool showBackupModal = false;
+    private bool showRestoreModal = false;
+    private string backupName = "";
+    private string selectedBackup = "";
+
+    private List<CategoryItem> categories = new()
+    {
+        new CategoryItem { Id = "general", Label = "General", Icon = "settings" },
+        new CategoryItem { Id = "platform", Label = "Platform", Icon = "globe" },
+        new CategoryItem { Id = "email", Label = "Email", Icon = "mail" },
+        new CategoryItem { Id = "notifications", Label = "Notifications", Icon = "bell" },
+        new CategoryItem { Id = "security", Label = "Security", Icon = "shield" },
+        new CategoryItem { Id = "database", Label = "Database", Icon = "database" },
+        new CategoryItem { Id = "storage", Label = "Storage", Icon = "server" },
+        new CategoryItem { Id = "users", Label = "User Settings", Icon = "users" },
+        new CategoryItem { Id = "content", Label = "Content", Icon = "file-text" },
+        new CategoryItem { Id = "billing", Label = "Billing", Icon = "dollar-sign" }
+    };
+
+    private List<SystemSetting> settings = new()
+    {
+        // General Settings
+        new SystemSetting { Id = "site_name", Category = "general", Name = "Site Name", Description = "The name of your platform", Type = "text", Value = "EduSetu", Required = true },
+        new SystemSetting { Id = "site_description", Category = "general", Name = "Site Description", Description = "Brief description of your platform", Type = "textarea", Value = "Your ultimate study companion for academic success", Required = true },
+        new SystemSetting { Id = "maintenance_mode", Category = "general", Name = "Maintenance Mode", Description = "Enable maintenance mode to prevent user access", Type = "boolean", Value = false, Required = false },
+        new SystemSetting { Id = "default_language", Category = "general", Name = "Default Language", Description = "Default language for the platform", Type = "select", Value = "English", Options = new List<string> { "English", "Spanish", "French", "German", "Hindi" }, Required = true },
+
+        // Platform Settings
+        new SystemSetting { Id = "max_file_size", Category = "platform", Name = "Maximum File Size (MB)", Description = "Maximum file size for uploads", Type = "number", Value = 100, Required = true },
+        new SystemSetting { Id = "allowed_file_types", Category = "platform", Name = "Allowed File Types", Description = "Comma-separated list of allowed file extensions", Type = "text", Value = "pdf,doc,docx,ppt,pptx,mp4,avi,mov", Required = true },
+        new SystemSetting { Id = "content_moderation", Category = "platform", Name = "Content Moderation", Description = "Require admin approval for new content", Type = "boolean", Value = true, Required = false },
+
+        // Email Settings
+        new SystemSetting { Id = "smtp_host", Category = "email", Name = "SMTP Host", Description = "SMTP server hostname", Type = "text", Value = "smtp.gmail.com", Required = true },
+        new SystemSetting { Id = "smtp_port", Category = "email", Name = "SMTP Port", Description = "SMTP server port", Type = "number", Value = 587, Required = true },
+        new SystemSetting { Id = "smtp_username", Category = "email", Name = "SMTP Username", Description = "SMTP authentication username", Type = "text", Value = "noreply@edusetu.com", Required = true },
+        new SystemSetting { Id = "smtp_password", Category = "email", Name = "SMTP Password", Description = "SMTP authentication password", Type = "text", Value = "••••••••••••", Required = true, Sensitive = true },
+
+        // Security Settings
+        new SystemSetting { Id = "session_timeout", Category = "security", Name = "Session Timeout (minutes)", Description = "User session timeout duration", Type = "number", Value = 30, Required = true },
+        new SystemSetting { Id = "password_min_length", Category = "security", Name = "Minimum Password Length", Description = "Minimum required password length", Type = "number", Value = 8, Required = true },
+        new SystemSetting { Id = "two_factor_required", Category = "security", Name = "Require Two-Factor Authentication", Description = "Force all users to enable 2FA", Type = "boolean", Value = false, Required = false },
+
+        // User Settings
+        new SystemSetting { Id = "user_registration", Category = "users", Name = "User Registration", Description = "Allow new user registration", Type = "boolean", Value = true, Required = false },
+        new SystemSetting { Id = "email_verification", Category = "users", Name = "Email Verification Required", Description = "Require email verification for new accounts", Type = "boolean", Value = true, Required = false },
+        new SystemSetting { Id = "default_user_role", Category = "users", Name = "Default User Role", Description = "Default role for new users", Type = "select", Value = "user", Options = new List<string> { "user", "teacher", "admin" }, Required = true }
+    };
+
+    private List<BackupOption> backupOptions = new()
+    {
+        new BackupOption { Label = "Database", Selected = true },
+        new BackupOption { Label = "User Files", Selected = true },
+        new BackupOption { Label = "System Configuration", Selected = true },
+        new BackupOption { Label = "Logs", Selected = false }
+    };
+
+    private List<SelectListItem> availableBackups = new()
+    {
+        new SelectListItem { Value = "backup_2024_01_22", Text = "Backup_2024-01-22 (Latest)" },
+        new SelectListItem { Value = "backup_2024_01_21", Text = "Backup_2024-01-21" },
+        new SelectListItem { Value = "backup_2024_01_20", Text = "Backup_2024-01-20" },
+        new SelectListItem { Value = "backup_2024_01_19", Text = "Backup_2024-01-19" }
+    };
+
+    protected override void OnInitialized()
+    {
+        backupName = $"Backup_{DateTime.Now:yyyy-MM-dd}";
+    }
+
+    private List<SystemSetting> GetCategorySettings(string category)
+    {
+        return settings.Where(s => s.Category == category).ToList();
+    }
+
+    private void UpdateSetting(string settingId, object newValue)
+    {
+        var setting = settings.FirstOrDefault(s => s.Id == settingId);
+        if (setting != null)
+        {
+            setting.Value = newValue;
+            hasUnsavedChanges = true;
+            StateHasChanged();
+        }
+    }
+
+    private RenderFragment RenderSettingInput(SystemSetting setting)
+    {
+        return setting.Type switch
+        {
+            "text" => @<input type="@(setting.Sensitive ? "password" : "text")" 
+                               value="@setting.Value" 
+                               @onchange="@(e => UpdateSetting(setting.Id, e.Value ?? ""))"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                               required="@setting.Required" />,
+            
+            "number" => @<input type="number" 
+                                value="@setting.Value" 
+                                @onchange="@(e => UpdateSetting(setting.Id, int.TryParse(e.Value?.ToString(), out var num) ? num : 0))"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                required="@setting.Required" />,
+            
+            "boolean" => @<label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" 
+                                   checked="@((bool)setting.Value)" 
+                                   @onchange="@(e => UpdateSetting(setting.Id, e.Value ?? false))"
+                                   class="w-4 h-4 text-red-600 focus:ring-red-500 border-gray-300 rounded" />
+                            <span class="text-sm text-gray-700">
+                                @(((bool)setting.Value ? "Enabled" : "Disabled"))
+                            </span>
+                          </label>,
+            
+            "select" => @<select value="@setting.Value" 
+                                 @onchange="@(e => UpdateSetting(setting.Id, e.Value ?? ""))"
+                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                 required="@setting.Required">
+                            @foreach (var option in setting.Options ?? new List<string>())
+                            {
+                                <option value="@option">@option</option>
+                            }
+                          </select>,
+            
+            "textarea" => @<textarea value="@setting.Value" 
+                                     @onchange="@(e => UpdateSetting(setting.Id, e.Value ?? ""))"
+                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
+                                     rows="3"
+                                     required="@setting.Required"></textarea>,
+            
+            _ => @<div>Unsupported input type</div>
+        };
+    }
+
+    private void SaveSettings()
+    {
+        // TODO: Implement save logic
+        hasUnsavedChanges = false;
+        StateHasChanged();
+    }
+
+    private void ResetSettings()
+    {
+        // TODO: Implement reset logic
+        hasUnsavedChanges = false;
+        StateHasChanged();
+    }
+
+    private void ExportSettings()
+    {
+        // TODO: Implement export logic
+    }
+
+    private void ImportSettings()
+    {
+        // TODO: Implement import logic
+    }
+
+    private void CreateBackup()
+    {
+        // TODO: Implement backup logic
+        showBackupModal = false;
+        StateHasChanged();
+    }
+
+    private void RestoreBackup()
+    {
+        // TODO: Implement restore logic
+        showRestoreModal = false;
+        StateHasChanged();
+    }
+
+    public class CategoryItem
+    {
+        public string Id { get; set; } = "";
+        public string Label { get; set; } = "";
+        public string Icon { get; set; } = "";
+    }
+
+    public class SystemSetting
+    {
+        public string Id { get; set; } = "";
+        public string Category { get; set; } = "";
+        public string Name { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Type { get; set; } = "";
+        public object Value { get; set; } = "";
+        public List<string>? Options { get; set; }
+        public bool Required { get; set; }
+        public bool Sensitive { get; set; }
+    }
+
+    public class BackupOption
+    {
+        public string Label { get; set; } = "";
+        public bool Selected { get; set; }
+    }
+
+    public class SelectListItem
+    {
+        public string Value { get; set; } = "";
+        public string Text { get; set; } = "";
+    }
+} 

@@ -6,212 +6,483 @@
 @attribute [Authorize(Roles = "SuperAdmin")]
 @layout AdminLayout
 
-<PageTitle>System Settings - Admin Dashboard</PageTitle>
+<PageTitle>System Health - Admin Dashboard</PageTitle>
 
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex justify-between items-center">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">System Settings</h1>
-            <p class="text-gray-600">Manage platform configuration and system settings</p>
-        </div>
-        <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-            </svg>
-            Save Changes
-        </button>
-    </div>
-
-    <!-- System Status -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">Server Status</h3>
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    Online
-                </span>
-            </div>
-            <div class="space-y-3">
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">CPU Usage</span>
-                    <span class="font-medium">23%</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Memory Usage</span>
-                    <span class="font-medium">67%</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Disk Space</span>
-                    <span class="font-medium">45%</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">Database</h3>
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    Healthy
-                </span>
-            </div>
-            <div class="space-y-3">
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Connections</span>
-                    <span class="font-medium">24/50</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Response Time</span>
-                    <span class="font-medium">12ms</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Uptime</span>
-                    <span class="font-medium">99.9%</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">Security</h3>
-                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    Secure
-                </span>
-            </div>
-            <div class="space-y-3">
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">SSL Certificate</span>
-                    <span class="font-medium text-green-600">Valid</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Firewall</span>
-                    <span class="font-medium text-green-600">Active</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-600">Last Scan</span>
-                    <span class="font-medium">2 hours ago</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Settings Sections -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- General Settings -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">General Settings</h3>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Site Name</label>
-                    <input type="text" value="EduSetu" 
-                           class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500" />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Site Description</label>
-                    <textarea rows="3" 
-                              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500">Educational platform for students and teachers</textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
-                    <input type="email" value="admin@edusetu.com" 
-                           class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500" />
-                </div>
-                <div class="flex items-center justify-between">
-                    <div>
-                        <label class="text-sm font-medium text-gray-700">Maintenance Mode</label>
-                        <p class="text-xs text-gray-500">Temporarily disable the site</p>
-                    </div>
-                    <button class="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-200">
-                        <span class="inline-block h-4 w-4 transform rounded-full bg-white transition"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Security Settings -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Security Settings</h3>
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <label class="text-sm font-medium text-gray-700">Two-Factor Authentication</label>
-                        <p class="text-xs text-gray-500">Require 2FA for all users</p>
-                    </div>
-                    <button class="relative inline-flex h-6 w-11 items-center rounded-full bg-red-600">
-                        <span class="inline-block h-4 w-4 transform rounded-full bg-white transition translate-x-5"></span>
-                    </button>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div>
-                        <label class="text-sm font-medium text-gray-700">Session Timeout</label>
-                        <p class="text-xs text-gray-500">Auto-logout after inactivity</p>
-                    </div>
-                    <button class="relative inline-flex h-6 w-11 items-center rounded-full bg-red-600">
-                        <span class="inline-block h-4 w-4 transform rounded-full bg-white transition translate-x-5"></span>
-                    </button>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
-                    <input type="number" value="30" min="5" max="480" 
-                           class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-red-500" />
-                </div>
-                <div class="flex items-center justify-between">
-                    <div>
-                        <label class="text-sm font-medium text-gray-700">Rate Limiting</label>
-                        <p class="text-xs text-gray-500">Prevent brute force attacks</p>
-                    </div>
-                    <button class="relative inline-flex h-6 w-11 items-center rounded-full bg-red-600">
-                        <span class="inline-block h-4 w-4 transform rounded-full bg-white transition translate-x-5"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Backup & Maintenance -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Backup & Maintenance</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-4">
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div>
-                        <h4 class="font-medium text-gray-900">Database Backup</h4>
-                        <p class="text-sm text-gray-500">Last backup: 2 hours ago</p>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">System Health</h2>
+                <p class="text-gray-600 mt-1">Monitor system performance and service status</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <select @bind="selectedTimeframe" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    <option value="1h">Last Hour</option>
+                    <option value="24h">Last 24 Hours</option>
+                    <option value="7d">Last 7 Days</option>
+                    <option value="30d">Last 30 Days</option>
+                </select>
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" @bind="autoRefresh" class="w-4 h-4 text-red-600 focus:ring-red-500 border-gray-300 rounded" />
+                    <span class="text-sm text-gray-700">Auto-refresh</span>
+                </label>
+                <button @onclick="RefreshData"
+                        class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+        @foreach (var metric in systemMetrics)
+        {
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 rounded-lg @GetStatusColor(metric.Status)">
+                        @GetMetricIcon(metric.Name)
                     </div>
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                        Backup Now
-                    </button>
+                    <div class="flex items-center gap-1">
+                        @GetTrendIcon(metric.Trend)
+                    </div>
                 </div>
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div>
-                        <h4 class="font-medium text-gray-900">File Backup</h4>
-                        <p class="text-sm text-gray-500">Last backup: 1 day ago</p>
+                <div class="text-2xl font-bold text-gray-900 mb-1">
+                    @metric.Value@metric.Unit
+                </div>
+                <div class="text-sm text-gray-600 mb-2">@metric.Name</div>
+                <div class="text-xs text-gray-500">
+                    Updated @FormatTimestamp(metric.LastUpdated)
+                </div>
+                
+                <!-- Progress bar for percentage metrics -->
+                @if (metric.Unit == "%")
+                {
+                    <div class="mt-3">
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="h-2 rounded-full @(metric.Value >= metric.Threshold.Critical ? "bg-red-500" : metric.Value >= metric.Threshold.Warning ? "bg-yellow-500" : "bg-green-500")"
+                                 style="width: @(Math.Min(metric.Value, 100))%"></div>
+                        </div>
                     </div>
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                        Backup Now
-                    </button>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Service Status -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Service Status</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach (var service in services)
+            {
+                <div class="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-medium text-gray-900">@service.Name</h4>
+                        <span class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full @GetStatusColor(service.Status)">
+                            @GetStatusIcon(service.Status)
+                            @service.Status
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div class="flex justify-between">
+                            <span>Uptime:</span>
+                            <span class="font-medium">@service.Uptime</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Response Time:</span>
+                            <span class="font-medium">
+                                @(service.ResponseTime > 0 ? $"{service.ResponseTime}ms" : "N/A")
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Last Check:</span>
+                            <span class="font-medium">@FormatTimestamp(service.LastCheck)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 pt-3 border-t border-gray-200">
+                        <p class="text-xs text-gray-500 truncate" title="@service.Endpoint">
+                            @service.Endpoint
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Performance Metrics -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Performance Metrics</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center p-4 bg-blue-50 rounded-lg">
+                    <svg class="mx-auto mb-2 text-blue-600 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                    </svg>
+                    <div class="text-2xl font-bold text-blue-600">@performanceData.ActiveUsers.ToString("N0")</div>
+                    <div class="text-sm text-blue-800">Active Users</div>
+                </div>
+                
+                <div class="text-center p-4 bg-green-50 rounded-lg">
+                    <svg class="mx-auto mb-2 text-green-600 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                    <div class="text-2xl font-bold text-green-600">@performanceData.RequestsPerMinute.ToString("N0")</div>
+                    <div class="text-sm text-green-800">Requests/min</div>
+                </div>
+                
+                <div class="text-center p-4 bg-red-50 rounded-lg">
+                    <svg class="mx-auto mb-2 text-red-600 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                    <div class="text-2xl font-bold text-red-600">@performanceData.ErrorRate%</div>
+                    <div class="text-sm text-red-800">Error Rate</div>
+                </div>
+                
+                <div class="text-center p-4 bg-purple-50 rounded-lg">
+                    <svg class="mx-auto mb-2 text-purple-600 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div class="text-2xl font-bold text-purple-600">@performanceData.AverageLoadTime.ToString("F1")s</div>
+                    <div class="text-sm text-purple-800">Avg Load Time</div>
                 </div>
             </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Resource Usage</h3>
             <div class="space-y-4">
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div>
-                        <h4 class="font-medium text-gray-900">Cache Clear</h4>
-                        <p class="text-sm text-gray-500">Clear all cached data</p>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-gray-700">Bandwidth Usage</span>
+                        <span class="text-sm text-gray-600">@performanceData.BandwidthUsage GB/day</span>
                     </div>
-                    <button class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                        Clear Cache
-                    </button>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div>
+                    </div>
                 </div>
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div>
-                        <h4 class="font-medium text-gray-900">System Update</h4>
-                        <p class="text-sm text-gray-500">Check for updates</p>
+                
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-gray-700">Storage Used</span>
+                        <span class="text-sm text-gray-600">@performanceData.StorageUsed TB / 5 TB</span>
                     </div>
-                    <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                        Check Updates
-                    </button>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-green-600 h-2 rounded-full" style="width: 48%"></div>
+                    </div>
+                </div>
+                
+                <div class="pt-4 border-t border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Last Backup</p>
+                            <p class="text-xs text-gray-500">@FormatTimestamp(performanceData.LastBackup)</p>
+                        </div>
+                        <span class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            @performanceData.BackupStatus
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div> 
+
+    <!-- System Alerts -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">System Alerts</h3>
+            <button class="text-sm text-red-600 hover:text-red-700 font-medium">
+                View All Alerts
+            </button>
+        </div>
+        
+        <div class="space-y-4">
+            @foreach (var alert in systemAlerts)
+            {
+                <div class="p-4 rounded-lg border @(alert.Severity == "critical" ? "bg-red-50 border-red-200" : alert.Severity == "warning" ? "bg-yellow-50 border-yellow-200" : "bg-blue-50 border-blue-200")">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 @(alert.Severity == "critical" ? "text-red-600" : alert.Severity == "warning" ? "text-yellow-600" : "text-blue-600")" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                            <div>
+                                <p class="font-medium text-gray-900">@alert.Message</p>
+                                <div class="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                                    <span>Service: @alert.Service</span>
+                                    <span>@FormatTimestamp(alert.Timestamp)</span>
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium @(alert.Severity == "critical" ? "bg-red-100 text-red-800" : alert.Severity == "warning" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800")">
+                                        @alert.Severity
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        @if (!alert.Resolved)
+                        {
+                            <button @onclick="@(() => ResolveAlert(alert.Id))"
+                                    class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                Resolve
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <button class="flex items-center gap-3 p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-left">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                    <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path>
+                    <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path>
+                </svg>
+                <div>
+                    <p class="font-medium text-gray-900">Backup Database</p>
+                    <p class="text-sm text-gray-600">Create manual backup</p>
+                </div>
+            </button>
+            
+            <button class="flex items-center gap-3 p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors text-left">
+                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                <div>
+                    <p class="font-medium text-gray-900">Restart Services</p>
+                    <p class="text-sm text-gray-600">Restart all services</p>
+                </div>
+            </button>
+            
+            <button class="flex items-center gap-3 p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors text-left">
+                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <div>
+                    <p class="font-medium text-gray-900">System Config</p>
+                    <p class="text-sm text-gray-600">Modify settings</p>
+                </div>
+            </button>
+            
+            <button class="flex items-center gap-3 p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors text-left">
+                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <div>
+                    <p class="font-medium text-gray-900">Export Logs</p>
+                    <p class="text-sm text-gray-600">Download system logs</p>
+                </div>
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string selectedTimeframe = "24h";
+    private bool autoRefresh = true;
+    private string? showDetails = null;
+
+    private List<SystemMetric> systemMetrics = new()
+    {
+        new SystemMetric { Name = "CPU Usage", Value = 45.2, Unit = "%", Status = "healthy", Trend = "stable", LastUpdated = DateTime.Now.AddMinutes(-5), Threshold = new Threshold { Warning = 70, Critical = 90 } },
+        new SystemMetric { Name = "Memory Usage", Value = 68.7, Unit = "%", Status = "warning", Trend = "up", LastUpdated = DateTime.Now.AddMinutes(-5), Threshold = new Threshold { Warning = 70, Critical = 85 } },
+        new SystemMetric { Name = "Disk Usage", Value = 82.1, Unit = "%", Status = "warning", Trend = "up", LastUpdated = DateTime.Now.AddMinutes(-5), Threshold = new Threshold { Warning = 80, Critical = 95 } },
+        new SystemMetric { Name = "Network I/O", Value = 234.5, Unit = "MB/s", Status = "healthy", Trend = "stable", LastUpdated = DateTime.Now.AddMinutes(-5), Threshold = new Threshold { Warning = 500, Critical = 800 } },
+        new SystemMetric { Name = "Database Connections", Value = 156, Unit = "active", Status = "healthy", Trend = "down", LastUpdated = DateTime.Now.AddMinutes(-5), Threshold = new Threshold { Warning = 200, Critical = 250 } },
+        new SystemMetric { Name = "Response Time", Value = 245, Unit = "ms", Status = "healthy", Trend = "stable", LastUpdated = DateTime.Now.AddMinutes(-5), Threshold = new Threshold { Warning = 500, Critical = 1000 } }
+    };
+
+    private List<ServiceStatus> services = new()
+    {
+        new ServiceStatus { Name = "Web Server", Status = "online", Uptime = "99.98%", ResponseTime = 120, LastCheck = DateTime.Now.AddMinutes(-5), Endpoint = "https://api.edusetu.com/health" },
+        new ServiceStatus { Name = "Database", Status = "online", Uptime = "99.95%", ResponseTime = 45, LastCheck = DateTime.Now.AddMinutes(-5), Endpoint = "postgresql://db.edusetu.com:5432" },
+        new ServiceStatus { Name = "File Storage", Status = "online", Uptime = "99.99%", ResponseTime = 89, LastCheck = DateTime.Now.AddMinutes(-5), Endpoint = "https://storage.edusetu.com" },
+        new ServiceStatus { Name = "CDN", Status = "online", Uptime = "99.97%", ResponseTime = 67, LastCheck = DateTime.Now.AddMinutes(-5), Endpoint = "https://cdn.edusetu.com" },
+        new ServiceStatus { Name = "Email Service", Status = "maintenance", Uptime = "99.92%", ResponseTime = 0, LastCheck = DateTime.Now.AddHours(-1), Endpoint = "smtp.edusetu.com:587" },
+        new ServiceStatus { Name = "Search Engine", Status = "online", Uptime = "99.94%", ResponseTime = 156, LastCheck = DateTime.Now.AddMinutes(-5), Endpoint = "https://search.edusetu.com" }
+    };
+
+    private PerformanceData performanceData = new()
+    {
+        ActiveUsers = 3247,
+        RequestsPerMinute = 1856,
+        ErrorRate = 0.12,
+        AverageLoadTime = 1.2,
+        BandwidthUsage = 45.6,
+        StorageUsed = 2.4,
+        BackupStatus = "completed",
+        LastBackup = DateTime.Now.AddHours(-8)
+    };
+
+    private List<SystemAlert> systemAlerts = new()
+    {
+        new SystemAlert { Id = "1", Severity = "warning", Message = "Disk usage approaching 85% threshold", Timestamp = DateTime.Now.AddMinutes(-15), Service = "File Storage", Resolved = false },
+        new SystemAlert { Id = "2", Severity = "info", Message = "Scheduled maintenance completed successfully", Timestamp = DateTime.Now.AddMinutes(-30), Service = "Email Service", Resolved = true },
+        new SystemAlert { Id = "3", Severity = "warning", Message = "Memory usage spike detected", Timestamp = DateTime.Now.AddMinutes(-45), Service = "Web Server", Resolved = false }
+    };
+
+    private RenderFragment GetMetricIcon(string name)
+    {
+        return name.ToLower() switch
+        {
+            "cpu usage" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+            </svg>,
+            "memory usage" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
+            </svg>,
+            "disk usage" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path>
+                <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path>
+            </svg>,
+            "network i/o" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
+            </svg>,
+            "database connections" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path>
+                <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path>
+            </svg>,
+            "response time" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>,
+            _ => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>
+        };
+    }
+
+    private string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "online" or "healthy" => "text-green-600 bg-green-100",
+            "warning" or "maintenance" => "text-yellow-600 bg-yellow-100",
+            "critical" or "offline" => "text-red-600 bg-red-100",
+            _ => "text-gray-600 bg-gray-100"
+        };
+    }
+
+    private RenderFragment GetStatusIcon(string status)
+    {
+        return status switch
+        {
+            "online" or "healthy" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>,
+            "warning" or "maintenance" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>,
+            "critical" or "offline" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>,
+            _ => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+            </svg>
+        };
+    }
+
+    private RenderFragment GetTrendIcon(string trend)
+    {
+        return trend switch
+        {
+            "up" => @<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+            </svg>,
+            "down" => @<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path>
+            </svg>,
+            _ => @<svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+            </svg>
+        };
+    }
+
+    private string FormatTimestamp(DateTime timestamp)
+    {
+        var now = DateTime.Now;
+        var diffMinutes = (int)(now - timestamp).TotalMinutes;
+        
+        if (diffMinutes < 1) return "Just now";
+        if (diffMinutes < 60) return $"{diffMinutes}m ago";
+        if (diffMinutes < 1440) return $"{diffMinutes / 60}h ago";
+        return timestamp.ToString("MMM dd, yyyy");
+    }
+
+    private void RefreshData()
+    {
+        // TODO: Implement data refresh logic
+        StateHasChanged();
+    }
+
+    private void ResolveAlert(string alertId)
+    {
+        var alert = systemAlerts.FirstOrDefault(a => a.Id == alertId);
+        if (alert != null)
+        {
+            alert.Resolved = true;
+            StateHasChanged();
+        }
+    }
+
+    public class SystemMetric
+    {
+        public string Name { get; set; } = "";
+        public double Value { get; set; }
+        public string Unit { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string Trend { get; set; } = "";
+        public DateTime LastUpdated { get; set; }
+        public Threshold Threshold { get; set; } = new();
+    }
+
+    public class Threshold
+    {
+        public double Warning { get; set; }
+        public double Critical { get; set; }
+    }
+
+    public class ServiceStatus
+    {
+        public string Name { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string Uptime { get; set; } = "";
+        public int ResponseTime { get; set; }
+        public DateTime LastCheck { get; set; }
+        public string Endpoint { get; set; } = "";
+    }
+
+    public class PerformanceData
+    {
+        public int ActiveUsers { get; set; }
+        public int RequestsPerMinute { get; set; }
+        public double ErrorRate { get; set; }
+        public double AverageLoadTime { get; set; }
+        public double BandwidthUsage { get; set; }
+        public double StorageUsed { get; set; }
+        public string BackupStatus { get; set; } = "";
+        public DateTime LastBackup { get; set; }
+    }
+
+    public class SystemAlert
+    {
+        public string Id { get; set; } = "";
+        public string Severity { get; set; } = "";
+        public string Message { get; set; } = "";
+        public DateTime Timestamp { get; set; }
+        public string Service { get; set; } = "";
+        public bool Resolved { get; set; }
+    }
+} 

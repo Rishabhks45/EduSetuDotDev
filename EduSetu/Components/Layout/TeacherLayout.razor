@@ -6,11 +6,11 @@
 
 <PageTitle>Teacher Dashboard - EduSetu</PageTitle>
 
-<div class="min-h-screen bg-gray-50 flex">
+<div class="min-h-screen bg-gray-50 flex" @onclick="@(() => showNotifications = false)">
     <!-- Sidebar -->
-    <div class="@(sidebarOpen ? "w-64" : "w-16") bg-white shadow-lg border-r border-gray-200 transition-all duration-300 flex flex-col">
+    <div class="@(sidebarOpen ? "w-64" : "w-16") bg-white shadow-lg border-r border-gray-200 transition-all duration-300 flex flex-col h-screen">
         <!-- Sidebar Header -->
-        <div class="p-4 border-b border-gray-200">
+        <div class="p-4 border-b border-gray-200 flex-shrink-0">
             <div class="flex items-center justify-between">
                 @if (sidebarOpen)
                 {
@@ -29,13 +29,13 @@
                 <button @onclick="@ToggleSidebar" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                     @if (sidebarOpen)
                     {
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     }
                     else
                     {
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
                     }
@@ -44,59 +44,74 @@
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 p-4 space-y-2">
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto min-h-0">
             @foreach (var item in sidebarItems)
             {
                 <button @onclick="@(() => NavigateToPage(item.Url))"
-                        class="w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-colors text-left @(IsActiveTab(item.Id) ? "bg-blue-50 text-blue-700 border border-blue-200" : "text-gray-600 hover:bg-gray-50 hover:text-gray-800")">
-                    @if (item.Icon == "home")
+                        style="padding-left: 5px;"
+                        class="w-full flex items-center gap-3 py-3 rounded-lg transition-colors text-left @(IsActiveTab(item.Id) ? "bg-blue-50 text-blue-700 border border-blue-200" : "text-gray-600 hover:bg-gray-50 hover:text-gray-800")">
+                    @switch (item.Icon)
                     {
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                        </svg>
-                    }
-                    else if (item.Icon == "file-text")
-                    {
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                    }
-                    else if (item.Icon == "book-open")
-                    {
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                        </svg>
-                    }
-                    else if (item.Icon == "calendar")
-                    {
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                    }
-                    else if (item.Icon == "message-square")
-                    {
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                        </svg>
-                    }
-                    else if (item.Icon == "bar-chart")
-                    {
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                    }
-                    else if (item.Icon == "settings")
-                    {
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                    }
-                    else
-                    {
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
+                        case "home":
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home">
+                                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                            break;
+
+                        case "file-text":
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                                <polyline points="14,2 14,8 20,8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10,9 9,9 8,9"></polyline>
+                            </svg>
+                            break;
+
+                        case "book-open":
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14H2V3z"></path>
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14h10V3z"></path>
+                            </svg>
+                            break;
+
+                        case "calendar":
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            break;
+
+                        case "message-square":
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            break;
+
+                        case "bar-chart":
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart-3">
+                                <path d="M3 3v18h18"></path>
+                                <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                            </svg>
+                            break;
+
+                        case "settings":
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings">
+                                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            break;
+
+                        default:
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-help-circle">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                <path d="M12 17h.01"></path>
+                            </svg>
+                            break;
                     }
                     @if (sidebarOpen)
                     {
@@ -113,7 +128,7 @@
         </nav>
 
         <!-- User Profile -->
-        <div class="p-4 border-t border-gray-200">
+        <div class="p-4 border-t border-gray-200 flex-shrink-0">
             <div class="flex items-center gap-3">
                 <img src="@(currentUser?.ProfilePictureUrl ?? "https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2")"
                      alt="@currentUser?.FullName"
@@ -130,74 +145,73 @@
     </div>
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col min-h-0">
         <!-- Header -->
-        <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-2">
+        <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 sticky top-0 z-40">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">
-                        @(GetCurrentPageTitle())
-                    </h1>
-                    <p class="text-gray-600">Welcome back, @currentUser?.FullName</p>
+                    <h1 class="text-2xl font-bold text-gray-900">@(GetCurrentPageTitle())</h1>
+                    <p class="text-gray-600">Welcome back, @(currentUser?.FirstName ?? "Teacher")</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="relative">
                         <svg class="absolute left-3 top-3 text-gray-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        <input type="text" placeholder="Search..."
-                               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64" />
+                        <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64">
                     </div>
-                    <button @onclick="@(() => showNotifications = !showNotifications)" class="relative p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell "><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
-                        @if (notifications > 0)
+                    <div class="relative">
+                        <button @onclick="@(() => showNotifications = !showNotifications)" class="relative p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell "><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+                            @if (notifications > 0)
+                            {
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    @notifications
+                                </span>
+                            }
+                        </button>
+                        
+                        <!-- Notifications Dropdown -->
+                        @if (showNotifications)
                         {
-                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                @notifications
-                            </span>
-                        }
-                    </button>
-                    
-                    <!-- Notifications Dropdown -->
-                    @if (showNotifications)
-                    {
-                        <div class="absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                            <div class="p-4 border-b border-gray-200">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="font-semibold text-gray-900">Notifications</h3>
-                                    <button @onclick="@(() => showNotifications = false)" class="text-gray-400 hover:text-gray-600">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
+                            <div class="absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50" @onclick:stopPropagation="true">
+                                <div class="p-4 border-b border-gray-200">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="font-semibold text-gray-900">Notifications</h3>
+                                        <button @onclick="@(() => showNotifications = false)" class="text-gray-400 hover:text-gray-600">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="max-h-96 overflow-y-auto">
+                                    @foreach (var notification in notificationItems)
+                                    {
+                                        <div class="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                            <div class="flex items-start gap-3">
+                                                <div class="p-2 bg-blue-100 rounded-full">
+                                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                    </svg>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="text-sm font-medium text-gray-900">@notification.Title</p>
+                                                    <p class="text-sm text-gray-600 mt-1">@notification.Message</p>
+                                                    <p class="text-xs text-gray-500 mt-2">@notification.Time</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="p-4 border-t border-gray-200">
+                                    <button class="w-full text-center text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                        View All Notifications
                                     </button>
                                 </div>
                             </div>
-                            <div class="max-h-96 overflow-y-auto">
-                                @foreach (var notification in notificationItems)
-                                {
-                                    <div class="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                                        <div class="flex items-start gap-3">
-                                            <div class="p-2 bg-blue-100 rounded-full">
-                                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                                </svg>
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <p class="text-sm font-medium text-gray-900">@notification.Title</p>
-                                                <p class="text-sm text-gray-600 mt-1">@notification.Message</p>
-                                                <p class="text-xs text-gray-500 mt-2">@notification.Time</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                            <div class="p-4 border-t border-gray-200">
-                                <button class="w-full text-center text-sm text-blue-600 hover:text-blue-700 font-medium">
-                                    View All Notifications
-                                </button>
-                            </div>
-                        </div>
-                    }
+                        }
+                    </div>
                     <button @onclick="@HandleLogout"
                             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                         Logout
@@ -207,7 +221,7 @@
         </header>
 
         <!-- Content Area -->
-        <main class="flex-1 p-6 overflow-auto">
+        <main class="flex-1 p-6 overflow-y-auto">
             @Body
         </main>
     </div>
@@ -217,6 +231,7 @@
     private bool sidebarOpen = true;
     private int notifications = 5;
     private User? currentUser;
+    private string headerName="";
 
     private bool showNotifications = false;
     private List<NotificationItem> notificationItems = new()
@@ -276,10 +291,17 @@
         if (item != null)
         {
             var itemPath = item.Url.TrimStart('/');
-            var isActive = relativePath.StartsWith(itemPath, StringComparison.OrdinalIgnoreCase);
             
-            // Debug output
-            System.Diagnostics.Debug.WriteLine($"Tab: {tabId}, Current: {relativePath}, Item: {itemPath}, Active: {isActive}");
+            // Special handling for Overview (home) page
+            if (tabId == "overview")
+            {
+                // Overview should be active for exact match or when no other specific page is active
+                var isExactMatch = relativePath.Equals(itemPath, StringComparison.OrdinalIgnoreCase);
+                var isBasePath = relativePath.Equals("teacher/dashboard", StringComparison.OrdinalIgnoreCase);
+                return isExactMatch || isBasePath;
+            }
+            
+            var isActive = relativePath.StartsWith(itemPath, StringComparison.OrdinalIgnoreCase);
             
             return isActive;
         }
@@ -288,16 +310,25 @@
 
     private string GetCurrentPageTitle()
     {
-        var currentUri = NavigationManager.Uri;
-        var baseUri = NavigationManager.BaseUri;
-        var relativePath = currentUri.Replace(baseUri, "").TrimStart('/');
-        
-        var item = sidebarItems.FirstOrDefault(x => {
-            var itemPath = x.Url.TrimStart('/');
-            return relativePath.StartsWith(itemPath, StringComparison.OrdinalIgnoreCase);
-        });
-        return item?.Label ?? "Dashboard";
+        // Get the relative path, remove query strings and trailing slashes
+        var relativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri)
+                                            .Split('?')[0]
+                                            .Trim('/')
+                                            .ToLowerInvariant();
+
+        // Normalize item URLs and compare
+        var matchedItem = sidebarItems
+            .OrderByDescending(x => x.Url.Length) // Ensure longest match comes first
+            .FirstOrDefault(x =>
+            {
+                var itemPath = x.Url.Trim('/').ToLowerInvariant();
+                return relativePath == itemPath || relativePath.StartsWith(itemPath + "/");
+            });
+
+        // Fallback title
+        return matchedItem?.Label ?? $"Dashboard";
     }
+
 
     private void HandleLogout()
     {
@@ -319,4 +350,4 @@
         public string Message { get; set; } = "";
         public string Time { get; set; } = "";
     }
-}
+}.
