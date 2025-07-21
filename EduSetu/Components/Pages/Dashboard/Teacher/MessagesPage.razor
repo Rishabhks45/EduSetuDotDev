@@ -80,7 +80,10 @@
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between mb-1">
                                     <div class="flex items-center gap-2">
-                                        <h3 class="font-medium text-gray-900 truncate">@conversation.Name</h3>
+                                        <h3 class="font-medium text-gray-900 truncate">
+                                            @(conversation.Name?.Length > 15 ? conversation.Name.Substring(0, 15) + "..." : conversation.Name)
+                                        </h3>
+
                                         @if (conversation.IsPinned)
                                         {
                                             <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
