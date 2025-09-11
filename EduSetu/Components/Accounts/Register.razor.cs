@@ -103,9 +103,9 @@ namespace EduSetu.Components.Accounts
         private string GetStepLineClass(int stepIndex)
         {
             if (currentStep > stepIndex + 1)
-                return "w-16 h-0.5 mx-4 bg-primary-600";
+                return "w-32 h-0.5 mx-4 bg-primary-600";
             else
-                return "w-16 h-0.5 mx-4 bg-gray-300";
+                return "w-32 h-0.5 mx-4 bg-gray-300";
         }
 
         private string GetInstitutionTypeClass(string value)
