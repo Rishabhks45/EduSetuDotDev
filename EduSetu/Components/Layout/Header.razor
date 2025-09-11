@@ -74,7 +74,7 @@
             </div>
 
             <!-- Mobile Menu Button -->
-            <button class="md:hidden text-gray-600" @onclick="ToggleMenu">
+            <button class="md:hidden text-gray-600" @onclick="ToggleMenu" aria-label="Toggle menu" aria-expanded="@isMenuOpen" aria-controls="mobile-menu">
                 @if (isMenuOpen)
                 {
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +93,8 @@
         <!-- Mobile Menu -->
         @if (isMenuOpen)
         {
-            <div class="md:hidden bg-white mt-4 p-4 rounded-lg shadow-lg">
+            <div class="fixed inset-0 bg-black/40 md:hidden" @onclick="ToggleMenu"></div>
+            <div id="mobile-menu" class="md:hidden bg-white mt-4 p-4 rounded-lg shadow-lg relative z-50 max-h-[70vh] overflow-y-auto">
                 <nav class="flex flex-col space-y-4">
                     <a href="/" class="nav-link">Home</a>
                     <a href="/pyqs" class="nav-link">PYQs</a>

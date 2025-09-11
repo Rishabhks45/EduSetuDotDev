@@ -8,6 +8,8 @@ using MediatR;
 using EduSetu.Application.Common.Settings;
 using EduSetu.Infrastructure.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Google;
+using FluentValidation;
+using EduSetu.Application.Features.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,6 +106,7 @@ builder.Services.AddApplicationServices();
 
 // Add controllers for API endpoints
 builder.Services.AddControllers();
+builder.Services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
 
 WebApplication app = builder.Build();
 
