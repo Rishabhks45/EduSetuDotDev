@@ -11,75 +11,87 @@
 
 <div class="space-y-6">
     <!-- Stats Grid -->
-    <!-- Stats Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         @foreach (var stat in stats)
         {
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="p-3 rounded-lg @stat.BgColor">
+                    <div class="p-3 rounded-lg @stat.BgColor dark:opacity-90">
                         @switch (stat.Icon)
                         {
                             case "users":
-                                <svg class="w-6 h-6 @stat.Color" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20v-2a4 4 0 0 0-3-3.87M9 20v-2a4 4 0 0 1 3-3.87M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" /></svg>
-                                ;
+                                <svg class="w-6 h-6 @stat.Color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20v-2a4 4 0 0 0-3-3.87M9 20v-2a4 4 0 0 1 3-3.87M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+                                </svg>
                                 break;
                             case "file-text":
-                                <svg class="w-6 h-6 @stat.Color" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><line x1="10" y1="9" x2="8" y2="9" /></svg>
-                                ;
+                                <svg class="w-6 h-6 @stat.Color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                    <line x1="16" y1="13" x2="8" y2="13" />
+                                    <line x1="16" y1="17" x2="8" y2="17" />
+                                    <line x1="10" y1="9" x2="8" y2="9" />
+                                </svg>
                                 break;
                             case "video":
-                                <svg class="w-6 h-6 @stat.Color" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>
-                                ;
+                                <svg class="w-6 h-6 @stat.Color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <polygon points="23 7 16 12 23 17 23 7" />
+                                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                                </svg>
                                 break;
                             case "dollar-sign":
-                                <svg class="w-6 h-6 @stat.Color" fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" /></svg>
-                                ;
+                                <svg class="w-6 h-6 @stat.Color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <line x1="12" y1="1" x2="12" y2="23" />
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" />
+                                </svg>
                                 break;
                             case "server":
-                                <svg class="w-6 h-6 @stat.Color" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2" /><rect x="2" y="14" width="20" height="8" rx="2" ry="2" /><line x1="6" y1="6" x2="6.01" y2="6" /><line x1="6" y1="18" x2="6.01" y2="18" /></svg>
-                                ;
+                                <svg class="w-6 h-6 @stat.Color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2" />
+                                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2" />
+                                    <line x1="6" y1="6" x2="6.01" y2="6" />
+                                    <line x1="6" y1="18" x2="6.01" y2="18" />
+                                </svg>
                                 break;
                             case "message-square":
-                                <svg class="w-6 h-6 @stat.Color" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2l3 3v-3h13z" /></svg>
-                                ;
+                                <svg class="w-6 h-6 @stat.Color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2l3 3v-3h13z" />
+                                </svg>
                                 break;
                         }
                     </div>
-                    <span class="text-sm @(stat.ChangeType == "positive" ? "text-green-600" : "text-red-600") font-medium">@stat.Change</span>
+                    <span class="text-sm @(stat.ChangeType == "positive" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400") font-medium">@stat.Change</span>
                 </div>
-                <div class="text-2xl font-bold text-gray-900 mb-1">@stat.Value</div>
-                <div class="text-sm text-gray-600">@stat.Label</div>
+                <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1">@stat.Value</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">@stat.Label</div>
             </div>
         }
     </div>
 
-
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Recent Users -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900">Recent Users</h3>
-                <button @onclick="@(() => NavigateToTab("users"))" 
-                        class="text-sm text-red-600 hover:text-red-700 font-medium">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Users</h3>
+                <button @onclick="@(() => NavigateToTab("users"))" class="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium">
                     View All
                 </button>
             </div>
             <div class="space-y-4">
                 @foreach (var user in recentUsers)
                 {
-                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <img src="@user.Avatar" alt="@user.Name" class="w-10 h-10 rounded-full border border-gray-300" />
+                    <div class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                        <img src="@user.Avatar" alt="@user.Name" class="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-600" />
                         <div class="flex-1">
-                            <h4 class="font-medium text-gray-900">@user.Name</h4>
-                            <p class="text-sm text-gray-600">@user.Email</p>
+                            <h4 class="font-medium text-gray-900 dark:text-white">@user.Name</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">@user.Email</p>
                         </div>
                         <div class="text-right">
                             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetRoleColor(user.Role)">
                                 @user.Role
                             </span>
-                            <p class="text-xs text-gray-500 mt-1">@user.LastLogin</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">@user.LastLogin</p>
                         </div>
                     </div>
                 }
@@ -87,30 +99,46 @@
         </div>
 
         <!-- Recent Content -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900">Recent Content</h3>
-                <button @onclick="@(() => NavigateToTab("content"))" 
-                        class="text-sm text-red-600 hover:text-red-700 font-medium">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Content</h3>
+                <button @onclick="@(() => NavigateToTab("content"))" class="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium">
                     View All
                 </button>
             </div>
             <div class="space-y-4">
                 @foreach (var content in recentContent)
                 {
-                    <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                         <div class="p-2 @GetContentTypeColor(content.Type) rounded-lg">
-                            <content.TypeIcon class="w-5 h-5" />
+                            @switch (content.TypeIcon)
+                            {
+                                case "file-text":
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="16" y1="13" x2="8" y2="13" />
+                                        <line x1="16" y1="17" x2="8" y2="17" />
+                                        <line x1="10" y1="9" x2="8" y2="9" />
+                                    </svg>
+                                    break;
+                                case "video":
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <polygon points="23 7 16 12 23 17 23 7" />
+                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                                    </svg>
+                                    break;
+                            }
                         </div>
                         <div class="flex-1">
-                            <h4 class="font-medium text-gray-900">@content.Title</h4>
-                            <p class="text-sm text-gray-600">@content.Author</p>
+                            <h4 class="font-medium text-gray-900 dark:text-white">@content.Title</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">@content.Author</p>
                         </div>
                         <div class="text-right">
                             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetStatusColor(content.Status)">
                                 @content.Status
                             </span>
-                            <p class="text-xs text-gray-500 mt-1">@content.UploadDate</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">@content.UploadDate</p>
                         </div>
                     </div>
                 }
@@ -119,56 +147,51 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Quick Actions</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button @onclick="@(() => NavigateToTab("users"))" 
-                    class="flex items-center gap-3 p-4 bg-red-50 hover:bg-red-100 rounded-lg transition-colors text-left">
-                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button @onclick="@(() => NavigateToTab("users"))" class="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900 hover:bg-red-100 dark:hover:bg-red-800 rounded-lg transition-colors text-left">
+                <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
                 </svg>
                 <div>
-                    <p class="font-medium text-gray-900">Manage Users</p>
-                    <p class="text-sm text-gray-600">User administration</p>
+                    <p class="font-medium text-gray-900 dark:text-white">Manage Users</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">User administration</p>
                 </div>
             </button>
-            
-            <button @onclick="@(() => NavigateToTab("content"))" 
-                    class="flex items-center gap-3 p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors text-left">
-                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+            <button @onclick="@(() => NavigateToTab("content"))" class="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900 hover:bg-green-100 dark:hover:bg-green-800 rounded-lg transition-colors text-left">
+                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
                 <div>
-                    <p class="font-medium text-gray-900">Moderate Content</p>
-                    <p class="text-sm text-gray-600">Review submissions</p>
+                    <p class="font-medium text-gray-900 dark:text-white">Moderate Content</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Review submissions</p>
                 </div>
             </button>
-            
-            <button @onclick="@(() => NavigateToTab("analytics"))" 
-                    class="flex items-center gap-3 p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-left">
-                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+            <button @onclick="@(() => NavigateToTab("analytics"))" class="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900 hover:bg-blue-100 dark:hover:bg-blue-800 rounded-lg transition-colors text-left">
+                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                 </svg>
                 <div>
-                    <p class="font-medium text-gray-900">View Analytics</p>
-                    <p class="text-sm text-gray-600">Platform insights</p>
+                    <p class="font-medium text-gray-900 dark:text-white">View Analytics</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Platform insights</p>
                 </div>
             </button>
-            
-            <button @onclick="@(() => NavigateToTab("system"))" 
-                    class="flex items-center gap-3 p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors text-left">
-                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+            <button @onclick="@(() => NavigateToTab("system"))" class="flex items-center gap-3 p-4 bg-yellow-50 dark:bg-yellow-900 hover:bg-yellow-100 dark:hover:bg-yellow-800 rounded-lg transition-colors text-left">
+                <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <div>
-                    <p class="font-medium text-gray-900">System Health</p>
-                    <p class="text-sm text-gray-600">Monitor status</p>
+                    <p class="font-medium text-gray-900 dark:text-white">System Health</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Monitor status</p>
                 </div>
             </button>
         </div>
     </div>
 </div>
-
 @code {
     // Stats data
     private List<StatItem> stats = new()

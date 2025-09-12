@@ -9,27 +9,26 @@
 <PageTitle>Platform Analytics - Admin Dashboard</PageTitle>
 
 <div class="space-y-6">
-    <!-- Header -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h2 class="text-2xl font-bold text-gray-900">Platform Analytics</h2>
-                <p class="text-gray-600 mt-1">Comprehensive insights into platform performance and user behavior</p>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Platform Analytics</h2>
+                <p class="text-gray-600 dark:text-gray-300 mt-1">Comprehensive insights into platform performance and user behavior</p>
             </div>
             <div class="flex items-center gap-3">
-                <select @bind="selectedPeriod" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                <select @bind="selectedPeriod" class="px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:focus:ring-red-400 dark:focus:border-red-400">
                     <option value="week">Last Week</option>
                     <option value="month">Last Month</option>
                     <option value="quarter">Last Quarter</option>
                     <option value="year">Last Year</option>
                 </select>
-                <button class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                <button class="p-2 text-gray-400 dark:text-gray-300 hover:text-gray-600 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
                 </button>
                 <button @onclick="ExportData"
-                        class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                        class="flex items-center gap-2 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
@@ -39,19 +38,18 @@
         </div>
     </div>
 
-    <!-- Overview Cards -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex items-center justify-between cursor-pointer mb-6" @onclick="@(() =>ToggleSection("overview"))">
-            <h3 class="text-lg font-semibold text-gray-900">Overview</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Overview</h3>
             @if (expandedSections.Contains("overview"))
             {
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
                 </svg>
             }
             else
             {
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
             }
@@ -60,113 +58,111 @@
         @if (expandedSections.Contains("overview"))
         {
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-6">
-                <div class="bg-blue-50 rounded-lg p-4">
+                <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4">
                     <div class="flex items-center justify-between mb-2">
-                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
                         </svg>
-                        <span class="text-green-600 text-sm font-medium">+12%</span>
+                        <span class="text-green-600 dark:text-green-400 text-sm font-medium">+12%</span>
                     </div>
-                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.TotalUsers.ToString("N0")</div>
-                    <div class="text-sm text-gray-600">Total Users</div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white">@analyticsData.Overview.TotalUsers.ToString("N0")</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Total Users</div>
                 </div>
 
-                <div class="bg-green-50 rounded-lg p-4">
+                <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-4">
                     <div class="flex items-center justify-between mb-2">
-                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                         </svg>
-                        <span class="text-green-600 text-sm font-medium">+8%</span>
+                        <span class="text-green-600 dark:text-green-400 text-sm font-medium">+8%</span>
                     </div>
-                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.ActiveUsers.ToString("N0")</div>
-                    <div class="text-sm text-gray-600">Active Users</div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white">@analyticsData.Overview.ActiveUsers.ToString("N0")</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Active Users</div>
                 </div>
 
-                <div class="bg-purple-50 rounded-lg p-4">
+                <div class="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-4">
                     <div class="flex items-center justify-between mb-2">
-                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
-                        <span class="text-green-600 text-sm font-medium">+15%</span>
+                        <span class="text-green-600 dark:text-green-400 text-sm font-medium">+15%</span>
                     </div>
-                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.TotalContent.ToString("N0")</div>
-                    <div class="text-sm text-gray-600">Content Items</div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white">@analyticsData.Overview.TotalContent.ToString("N0")</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Content Items</div>
                 </div>
 
-                <div class="bg-yellow-50 rounded-lg p-4">
+                <div class="bg-yellow-50 dark:bg-yellow-900/30 rounded-lg p-4">
                     <div class="flex items-center justify-between mb-2">
-                        <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                         </svg>
-                        <span class="text-green-600 text-sm font-medium">+25%</span>
+                        <span class="text-green-600 dark:text-green-400 text-sm font-medium">+25%</span>
                     </div>
-                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.TotalViews.ToString("N0")</div>
-                    <div class="text-sm text-gray-600">Total Views</div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white">@analyticsData.Overview.TotalViews.ToString("N0")</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Total Views</div>
                 </div>
 
-                <div class="bg-indigo-50 rounded-lg p-4">
+                <div class="bg-indigo-50 dark:bg-indigo-900/30 rounded-lg p-4">
                     <div class="flex items-center justify-between mb-2">
-                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
-                        <span class="text-green-600 text-sm font-medium">+18%</span>
+                        <span class="text-green-600 dark:text-green-400 text-sm font-medium">+18%</span>
                     </div>
-                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.TotalDownloads.ToString("N0")</div>
-                    <div class="text-sm text-gray-600">Downloads</div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white">@analyticsData.Overview.TotalDownloads.ToString("N0")</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Downloads</div>
                 </div>
 
-                <div class="bg-pink-50 rounded-lg p-4">
+                <div class="bg-pink-50 dark:bg-pink-900/30 rounded-lg p-4">
                     <div class="flex items-center justify-between mb-2">
-                        <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-pink-600 dark:text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                         </svg>
-                        <span class="text-green-600 text-sm font-medium">+23%</span>
+                        <span class="text-green-600 dark:text-green-400 text-sm font-medium">+23%</span>
                     </div>
-                    <div class="text-2xl font-bold text-gray-900">$@analyticsData.Overview.Revenue.ToString("N0")</div>
-                    <div class="text-sm text-gray-600">Revenue</div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white">$@analyticsData.Overview.Revenue.ToString("N0")</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Revenue</div>
                 </div>
 
-                <div class="bg-orange-50 rounded-lg p-4">
+                <div class="bg-orange-50 dark:bg-orange-900/30 rounded-lg p-4">
                     <div class="flex items-center justify-between mb-2">
-                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span class="text-green-600 text-sm font-medium">+0.3%</span>
+                        <span class="text-green-600 dark:text-green-400 text-sm font-medium">+0.3%</span>
                     </div>
-                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.ConversionRate%</div>
-                    <div class="text-sm text-gray-600">Conversion</div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white">@analyticsData.Overview.ConversionRate%</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Conversion</div>
                 </div>
 
-                <div class="bg-teal-50 rounded-lg p-4">
+                <div class="bg-teal-50 dark:bg-teal-900/30 rounded-lg p-4">
                     <div class="flex items-center justify-between mb-2">
-                        <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span class="text-green-600 text-sm font-medium">+2%</span>
+                        <span class="text-green-600 dark:text-green-400 text-sm font-medium">+2%</span>
                     </div>
-                    <div class="text-2xl font-bold text-gray-900">@analyticsData.Overview.RetentionRate%</div>
-                    <div class="text-sm text-gray-600">Retention</div>
+                    <div class="text-2xl font-bold text-gray-900 dark:text-white">@analyticsData.Overview.RetentionRate%</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Retention</div>
                 </div>
             </div>
         }
     </div>
 
-    <!-- Content and Device Analytics -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Content Breakdown -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between cursor-pointer mb-6" @onclick="@(() =>ToggleSection("content"))">
-                <h3 class="text-lg font-semibold text-gray-900">Content Breakdown</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Content Breakdown</h3>
                 @if (expandedSections.Contains("content"))
                 {
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
                     </svg>
                 }
                 else
                 {
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 }
@@ -183,13 +179,13 @@
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 @GetContentIcon(content.Type)
-                                <span class="font-medium text-gray-900 capitalize">@content.Type</span>
+                                <span class="font-medium text-gray-900 dark:text-white capitalize">@content.Type</span>
                             </div>
                             <div class="flex items-center gap-3">
-                                <div class="w-24 bg-gray-200 rounded-full h-2">
-                                    <div class="bg-red-600 h-2 rounded-full" style="width: @(percentage)%"></div>
+                                <div class="w-24 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                    <div class="bg-red-600 dark:bg-red-500 h-2 rounded-full" style="width: @(percentage)%"></div>
                                 </div>
-                                <span class="text-sm text-gray-600 w-12 text-right">@content.Count.ToString("N0")</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-300 w-12 text-right">@content.Count.ToString("N0")</span>
                             </div>
                         </div>
                     }
@@ -197,19 +193,18 @@
             }
         </div>
 
-        <!-- Device Breakdown -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between cursor-pointer mb-6" @onclick="@(() =>ToggleSection("devices"))">
-                <h3 class="text-lg font-semibold text-gray-900">Device Usage</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Device Usage</h3>
                 @if (expandedSections.Contains("devices"))
                 {
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
                     </svg>
                 }
                 else
                 {
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 }
@@ -223,14 +218,14 @@
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 @GetDeviceIcon(device.Device)
-                                <span class="font-medium text-gray-900">@device.Device</span>
+                                <span class="font-medium text-gray-900 dark:text-white">@device.Device</span>
                             </div>
                             <div class="flex items-center gap-3">
-                                <div class="w-24 bg-gray-200 rounded-full h-2">
-                                    <div class="bg-red-600 h-2 rounded-full" style="width: @(device.Percentage)%"></div>
+                                <div class="w-24 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                    <div class="bg-red-600 dark:bg-red-500 h-2 rounded-full" style="width: @(device.Percentage)%"></div>
                                 </div>
-                                <span class="text-sm text-gray-600 w-12 text-right">@device.Percentage%</span>
-                                <span class="text-sm text-gray-500 w-16 text-right">(@device.Users.ToString("N0"))</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-300 w-12 text-right">@device.Percentage%</span>
+                                <span class="text-sm text-gray-500 dark:text-gray-400 w-16 text-right">(@device.Users.ToString("N0"))</span>
                             </div>
                         </div>
                     }
@@ -278,16 +273,16 @@
     {
         return type switch
         {
-            "notes" => @<svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "notes" => @<svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
             </svg>,
-            "videos" => @<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "videos" => @<svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
             </svg>,
-            "pyqs" => @<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "pyqs" => @<svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>,
-            _ => @<svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            _ => @<svg class="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
         };
@@ -297,20 +292,20 @@
     {
         return device.ToLower() switch
         {
-            "desktop" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "desktop" => @<svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect width="20" height="14" x="2" y="3" rx="2" ry="2"></rect>
                 <line x1="8" x2="16" y1="21" y2="21"></line>
                 <line x1="12" x2="12" y1="17" y2="21"></line>
             </svg>,
-            "mobile" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "mobile" => @<svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect>
                 <path d="M12 18h.01"></path>
             </svg>,
-            "tablet" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "tablet" => @<svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect width="16" height="20" x="4" y="2" rx="2" ry="2"></rect>
                 <line x1="12" x2="12.01" y1="18" y2="18"></line>
             </svg>,
-            _ => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            _ => @<svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <rect width="20" height="14" x="2" y="3" rx="2" ry="2"></rect>
                 <line x1="8" x2="16" y1="21" y2="21"></line>
                 <line x1="12" x2="12" y1="17" y2="21"></line>
@@ -366,4 +361,4 @@
         public int Percentage { get; set; }
         public int Users { get; set; }
     }
-} 
+}

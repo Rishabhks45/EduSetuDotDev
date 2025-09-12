@@ -10,14 +10,14 @@
 
 <div class="space-y-6">
     <!-- Header -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h2 class="text-2xl font-bold text-gray-900">System Health</h2>
-                <p class="text-gray-600 mt-1">Monitor system performance and service status</p>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">System Health</h2>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Monitor system performance and service status</p>
             </div>
             <div class="flex items-center gap-3">
-                <select @bind="selectedTimeframe" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                <select @bind="selectedTimeframe" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="1h">Last Hour</option>
                     <option value="24h">Last 24 Hours</option>
                     <option value="7d">Last 7 Days</option>
@@ -42,7 +42,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
         @foreach (var metric in systemMetrics)
         {
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between mb-4">
                     <div class="p-3 rounded-lg @GetStatusColor(metric.Status)">
                         @GetMetricIcon(metric.Name)
@@ -51,10 +51,10 @@
                         @GetTrendIcon(metric.Trend)
                     </div>
                 </div>
-                <div class="text-2xl font-bold text-gray-900 mb-1">
+                <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                     @metric.Value@metric.Unit
                 </div>
-                <div class="text-sm text-gray-600 mb-2">@metric.Name</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">@metric.Name</div>
                 <div class="text-xs text-gray-500">
                     Updated @FormatTimestamp(metric.LastUpdated)
                 </div>
@@ -74,21 +74,21 @@
     </div>
 
     <!-- Service Status -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-6">Service Status</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Service Status</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach (var service in services)
             {
-                <div class="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
                     <div class="flex items-center justify-between mb-3">
-                        <h4 class="font-medium text-gray-900">@service.Name</h4>
+                        <h4 class="font-medium text-gray-900 dark:text-white">@service.Name</h4>
                         <span class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full @GetStatusColor(service.Status)">
                             @GetStatusIcon(service.Status)
                             @service.Status
                         </span>
                     </div>
                     
-                    <div class="space-y-2 text-sm text-gray-600">
+                    <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                         <div class="flex justify-between">
                             <span>Uptime:</span>
                             <span class="font-medium">@service.Uptime</span>
@@ -117,8 +117,8 @@
 
     <!-- Performance Metrics -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-6">Performance Metrics</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Performance Metrics</h3>
             <div class="grid grid-cols-2 gap-4">
                 <div class="text-center p-4 bg-blue-50 rounded-lg">
                     <svg class="mx-auto mb-2 text-blue-600 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,13 +154,13 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-6">Resource Usage</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Resource Usage</h3>
             <div class="space-y-4">
                 <div>
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium text-gray-700">Bandwidth Usage</span>
-                        <span class="text-sm text-gray-600">@performanceData.BandwidthUsage GB/day</span>
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Bandwidth Usage</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">@performanceData.BandwidthUsage GB/day</span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2">
                         <div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div>
@@ -169,19 +169,19 @@
                 
                 <div>
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium text-gray-700">Storage Used</span>
-                        <span class="text-sm text-gray-600">@performanceData.StorageUsed TB / 5 TB</span>
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Storage Used</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">@performanceData.StorageUsed TB / 5 TB</span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2">
                         <div class="bg-green-600 h-2 rounded-full" style="width: 48%"></div>
                     </div>
                 </div>
                 
-                <div class="pt-4 border-t border-gray-200">
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-700">Last Backup</p>
-                            <p class="text-xs text-gray-500">@FormatTimestamp(performanceData.LastBackup)</p>
+                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Last Backup</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">@FormatTimestamp(performanceData.LastBackup)</p>
                         </div>
                         <span class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -196,10 +196,10 @@
     </div>
 
     <!-- System Alerts -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold text-gray-900">System Alerts</h3>
-            <button class="text-sm text-red-600 hover:text-red-700 font-medium">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">System Alerts</h3>
+            <button class="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium">
                 View All Alerts
             </button>
         </div>
@@ -207,18 +207,18 @@
         <div class="space-y-4">
             @foreach (var alert in systemAlerts)
             {
-                <div class="p-4 rounded-lg border @(alert.Severity == "critical" ? "bg-red-50 border-red-200" : alert.Severity == "warning" ? "bg-yellow-50 border-yellow-200" : "bg-blue-50 border-blue-200")">
+                <div class="p-4 rounded-lg border @(alert.Severity == "critical" ? "bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800" : alert.Severity == "warning" ? "bg-yellow-50 dark:bg-yellow-900/30 border-yellow-200 dark:border-yellow-800" : "bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800")">
                     <div class="flex items-start justify-between">
                         <div class="flex items-start gap-3">
-                            <svg class="w-5 h-5 @(alert.Severity == "critical" ? "text-red-600" : alert.Severity == "warning" ? "text-yellow-600" : "text-blue-600")" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 @(alert.Severity == "critical" ? "text-red-600 dark:text-red-400" : alert.Severity == "warning" ? "text-yellow-600 dark:text-yellow-400" : "text-blue-600 dark:text-blue-400")" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                             </svg>
                             <div>
-                                <p class="font-medium text-gray-900">@alert.Message</p>
-                                <div class="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                                <p class="font-medium text-gray-900 dark:text-white">@alert.Message</p>
+                                <div class="flex items-center gap-4 mt-2 text-sm text-gray-600 dark:text-gray-400">
                                     <span>Service: @alert.Service</span>
                                     <span>@FormatTimestamp(alert.Timestamp)</span>
-                                    <span class="px-2 py-1 rounded-full text-xs font-medium @(alert.Severity == "critical" ? "bg-red-100 text-red-800" : alert.Severity == "warning" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800")">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium @(alert.Severity == "critical" ? "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200" : alert.Severity == "warning" ? "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200" : "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200")">
                                         @alert.Severity
                                     </span>
                                 </div>
@@ -239,18 +239,18 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Quick Actions</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button class="flex items-center gap-3 p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-left">
-                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button class="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition-colors text-left">
+                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                     <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path>
                     <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path>
                 </svg>
                 <div>
-                    <p class="font-medium text-gray-900">Backup Database</p>
-                    <p class="text-sm text-gray-600">Create manual backup</p>
+                    <p class="font-medium text-gray-900 dark:text-white">Backup Database</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Create manual backup</p>
                 </div>
             </button>
             

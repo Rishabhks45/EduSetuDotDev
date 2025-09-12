@@ -78,6 +78,7 @@ namespace EduSetu.Components.Layout
         {
             isDarkMode = !isDarkMode;
             await ApplyTheme();
+            StateHasChanged(); // Trigger re-render to update header styles
         }
 
         private async Task ApplyTheme()
@@ -94,6 +95,9 @@ namespace EduSetu.Components.Layout
             {
                 await JSRuntime.InvokeVoidAsync("eval", "document.documentElement.classList.remove('dark')");
             }
+            
+            // Trigger re-render to update header styles based on new theme
+            StateHasChanged();
         }
 
         private void Logout()

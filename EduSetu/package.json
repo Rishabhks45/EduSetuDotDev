@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:css": "tailwindcss -i ./wwwroot/css/app.css -o ./wwwroot/css/app.min.css --watch",
-    "build:css:prod": "tailwindcss -i ./wwwroot/css/app.css -o ./wwwroot/css/app.min.css --minify"
+    "build:css:prod": "tailwindcss -i ./wwwroot/css/app.css -o ./wwwroot/css/app.min.css --minify",
+    "dev": "concurrently \"npm run build:css\" \"dotnet watch run\""
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,7 @@
   "description": "",
   "devDependencies": {
     "autoprefixer": "^10.4.18",
+    "concurrently": "^9.2.1",
     "postcss": "^8.4.35"
   },
   "dependencies": {

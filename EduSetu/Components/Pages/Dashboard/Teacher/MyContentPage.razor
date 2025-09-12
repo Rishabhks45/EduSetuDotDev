@@ -9,15 +9,14 @@
 <PageTitle>My Content - Teacher Dashboard</PageTitle>
 
 <div class="space-y-6">
-    <!-- Header -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">My Content</h1>
-            <p class="text-gray-600">Manage your uploaded content and materials</p>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">My Content</h1>
+            <p class="text-gray-600 dark:text-gray-400">Manage your uploaded content and materials</p>
         </div>
         <div class="flex space-x-2">
-            <button @onclick="@(() => showUploadModal = true)" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+            <button @onclick="@(() => showUploadModal = true)" class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
@@ -26,88 +25,86 @@
         </div>
     </div>
     </div>
-    <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between">
-                <div class="p-3 bg-blue-100 rounded-lg">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-3 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
                 </div>
-                <span class="text-sm text-green-600 font-medium">+12%</span>
+                <span class="text-sm text-green-600 dark:text-green-400 font-medium">+12%</span>
             </div>
-            <div class="text-2xl font-bold text-gray-900 mb-1">@GetTotalContent()</div>
-            <div class="text-sm text-gray-600">Total Content</div>
+            <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1">@GetTotalContent()</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Total Content</div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between">
-                <div class="p-3 bg-green-100 rounded-lg">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-3 bg-green-100 dark:bg-green-900/50 rounded-lg">
+                    <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                     </svg>
                 </div>
-                <span class="text-sm text-green-600 font-medium">+18%</span>
+                <span class="text-sm text-green-600 dark:text-green-400 font-medium">+18%</span>
             </div>
-            <div class="text-2xl font-bold text-gray-900 mb-1">@GetTotalViews()</div>
-            <div class="text-sm text-gray-600">Total Views</div>
+            <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1">@GetTotalViews()</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Total Views</div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between">
-                <div class="p-3 bg-purple-100 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-3 bg-purple-100 dark:bg-purple-900/50 rounded-lg">
+                    <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                     </svg>
                 </div>
-                <span class="text-sm text-green-600 font-medium">+25%</span>
+                <span class="text-sm text-green-600 dark:text-green-400 font-medium">+25%</span>
             </div>
-            <div class="text-2xl font-bold text-gray-900 mb-1">@GetTotalDownloads()</div>
-            <div class="text-sm text-gray-600">Downloads</div>
+            <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1">@GetTotalDownloads()</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Downloads</div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between">
-                <div class="p-3 bg-yellow-100 rounded-lg">
-                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-3 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg">
+                    <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
                     </svg>
                 </div>
-                <span class="text-sm text-green-600 font-medium">+0.2</span>
+                <span class="text-sm text-green-600 dark:text-green-400 font-medium">+0.2</span>
             </div>
-            <div class="text-2xl font-bold text-gray-900 mb-1">@GetAverageRating()</div>
-            <div class="text-sm text-gray-600">Avg Rating</div>
+            <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1">@GetAverageRating()</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Avg Rating</div>
         </div>
     </div>
 
-    <!-- Filters and Controls -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center space-x-4">
                 <div class="relative">
-                    <svg class="absolute left-3 top-3 text-gray-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="absolute left-3 top-3 text-gray-400 dark:text-gray-500 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                     <input type="text" @bind="searchQuery" @bind:event="oninput" placeholder="Search content..."
-                           class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64" />
+                           class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64 bg-white dark:bg-gray-700 text-gray-900 dark:text-white dark:placeholder-gray-400" />
                 </div>
-                <select @bind="selectedType" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <select @bind="selectedType" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="">All Types</option>
                     <option value="notes">Notes</option>
                     <option value="video">Video</option>
                     <option value="pyq">PYQ</option>
                     <option value="assignment">Assignment</option>
                 </select>
-                <select @bind="selectedStatus" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <select @bind="selectedStatus" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="">All Status</option>
                     <option value="published">Published</option>
                     <option value="draft">Draft</option>
                     <option value="pending">Pending</option>
                     <option value="rejected">Rejected</option>
                 </select>
-                <select @bind="selectedVisibility" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <select @bind="selectedVisibility" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="">All Visibility</option>
                     <option value="public">Public</option>
                     <option value="private">Private</option>
@@ -116,24 +113,24 @@
             </div>
             <div class="flex items-center space-x-2">
                 <button @onclick="@(() => viewMode = "grid")"
-                        class="p-2 @(viewMode == "grid" ? "bg-blue-100 text-blue-600" : "text-gray-400 hover:text-gray-600") rounded-lg hover:bg-gray-100">
+                        class="p-2 @(viewMode == "grid" ? "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400") rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                     </svg>
                 </button>
                 <button @onclick="@(() => viewMode = "list")"
-                        class="p-2 @(viewMode == "list" ? "bg-blue-100 text-blue-600" : "text-gray-400 hover:text-gray-600") rounded-lg hover:bg-gray-100">
+                        class="p-2 @(viewMode == "list" ? "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400") rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                     </svg>
                 </button>
-                <select @bind="sortBy" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                <select @bind="sortBy" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="newest">Newest</option>
                     <option value="popular">Popular</option>
                     <option value="rating">Rating</option>
                     <option value="title">Title</option>
                 </select>
-                <button @onclick="@(() => sortOrder = sortOrder == "asc" ? "desc" : "asc")" class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                <button @onclick="@(() => sortOrder = sortOrder == "asc" ? "desc" : "asc")" class="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                     @if (sortOrder == "asc")
                     {
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,19 +147,18 @@
             </div>
         </div>
 
-        <!-- Bulk Actions -->
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center space-x-4">
                 <label class="flex items-center space-x-2">
-                    <input type="checkbox" @onchange="@(() => SelectAllItems())" 
+                    <input type="checkbox" @onchange="@(() => SelectAllItems())"
                            checked="@(selectedItems.Count == GetFilteredContent().Count && GetFilteredContent().Any())"
-                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
-                    <span class="text-sm text-gray-700">Select All</span>
+                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <span class="text-sm text-gray-700 dark:text-gray-300">Select All</span>
                 </label>
                 @if (selectedItems.Any())
                 {
-                    <span class="text-sm text-blue-600">@selectedItems.Count items selected</span>
-                    <button @onclick="@(() => selectedItems.Clear())" class="text-sm text-blue-600 hover:text-blue-700">Clear selection</button>
+                    <span class="text-sm text-blue-600 dark:text-blue-400">@selectedItems.Count items selected</span>
+                    <button @onclick="@(() => selectedItems.Clear())" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-500">Clear selection</button>
                 }
             </div>
             @if (selectedItems.Any())
@@ -177,16 +173,15 @@
 
         @if (viewMode == "grid")
         {
-            <!-- Grid View -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach (var content in GetFilteredContent())
                 {
-                    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
                         <div class="relative">
                             <div class="absolute top-2 left-2">
-                                <input type="checkbox" @onchange="@(() => ToggleItemSelection(content.Id))" 
+                                <input type="checkbox" @onchange="@(() => ToggleItemSelection(content.Id))"
                                        checked="@selectedItems.Contains(content.Id)"
-                                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+                                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                             </div>
                             <img src="@content.Thumbnail" alt="@content.Title" class="w-full h-48 object-cover" />
                             <div class="absolute top-2 right-2 flex space-x-1">
@@ -218,18 +213,18 @@
                         </div>
                         <div class="p-4">
                             <div class="flex items-center justify-between mb-2">
-                                <h3 class="font-medium text-gray-900 truncate">@content.Title</h3>
+                                <h3 class="font-medium text-gray-900 dark:text-white truncate">@content.Title</h3>
                                 <div class="flex items-center space-x-1">
-                                    <span class="text-yellow-500">★</span>
-                                    <span class="text-sm text-gray-600">@content.Rating.ToString("F1")</span>
+                                    <span class="text-yellow-500 dark:text-yellow-400">★</span>
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">@content.Rating.ToString("F1")</span>
                                 </div>
                             </div>
-                            <p class="text-sm text-gray-600 mb-3 line-clamp-2">@content.Description</p>
-                            <div class="flex items-center justify-between text-xs text-gray-500 mb-3">
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">@content.Description</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-3">
                                 <span>@content.Subject</span>
                                 <span>@content.Difficulty</span>
                             </div>
-                            <div class="flex items-center justify-between text-xs text-gray-500 mb-3">
+                            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-3">
                                 <span>@content.Views views</span>
                                 <span>@content.Downloads downloads</span>
                             </div>
@@ -243,17 +238,17 @@
                                     </span>
                                 </div>
                                 <div class="flex space-x-1">
-                                    <button @onclick="@(() => EditContent(content))" class="p-1 text-blue-600 hover:text-blue-700" title="Edit">
+                                    <button @onclick="@(() => EditContent(content))" class="p-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-500" title="Edit">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                         </svg>
                                     </button>
-                                    <button @onclick="@(() => ViewAnalytics(content))" class="p-1 text-green-600 hover:text-green-700" title="Analytics">
+                                    <button @onclick="@(() => ViewAnalytics(content))" class="p-1 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-500" title="Analytics">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                                         </svg>
                                     </button>
-                                    <button @onclick="@(() => DeleteContent(content))" class="p-1 text-red-600 hover:text-red-700" title="Delete">
+                                    <button @onclick="@(() => DeleteContent(content))" class="p-1 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500" title="Delete">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
@@ -267,16 +262,15 @@
         }
         else
         {
-            <!-- List View -->
             <div class="space-y-4">
                 @foreach (var content in GetFilteredContent())
                 {
-                    <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div class="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                         <img src="@content.Thumbnail" alt="@content.Title" class="w-16 h-16 rounded-lg object-cover" />
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between mb-2">
                                 <div class="flex items-center space-x-2">
-                                    <h3 class="font-medium text-gray-900">@content.Title</h3>
+                                    <h3 class="font-medium text-gray-900 dark:text-white">@content.Title</h3>
                                     @if (content.IsVerified)
                                     {
                                         <span class="bg-blue-500 text-white text-xs px-1 py-0.5 rounded">✓</span>
@@ -292,16 +286,16 @@
                                         @content.Visibility
                                     </span>
                                 </div>
-                                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
                                     <span>@FormatDate(content.UploadDate)</span>
                                     <span>@content.Views views</span>
                                     <span>@content.Downloads downloads</span>
                                     <span>★ @content.Rating</span>
                                 </div>
                             </div>
-                            <p class="text-sm text-gray-600 mb-2">@content.Description</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">@content.Description</p>
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                <div class="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
                                     <span>@content.Subject</span>
                                     <span>@content.Difficulty</span>
                                     <span>@content.FileSize</span>
@@ -311,9 +305,9 @@
                                     }
                                 </div>
                                 <div class="flex space-x-2">
-                                    <button @onclick="@(() => EditContent(content))" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Edit</button>
-                                    <button @onclick="@(() => ViewAnalytics(content))" class="text-xs text-green-600 hover:text-green-700 font-medium">Analytics</button>
-                                    <button @onclick="@(() => DeleteContent(content))" class="text-xs text-red-600 hover:text-red-700 font-medium">Delete</button>
+                                    <button @onclick="@(() => EditContent(content))" class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-500 font-medium">Edit</button>
+                                    <button @onclick="@(() => ViewAnalytics(content))" class="text-xs text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-500 font-medium">Analytics</button>
+                                    <button @onclick="@(() => DeleteContent(content))" class="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500 font-medium">Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -323,27 +317,26 @@
         }
     </div>
 
-    <!-- Pagination -->
     <div class="flex items-center justify-between">
-        <div class="text-sm text-gray-500">
+        <div class="text-sm text-gray-500 dark:text-gray-400">
             Showing @((currentPage - 1) * itemsPerPage + 1) to @Math.Min(currentPage * itemsPerPage, GetFilteredContent().Count) of @GetFilteredContent().Count results
         </div>
         <div class="flex items-center space-x-2">
             <button @onclick="@(() => currentPage = Math.Max(1, currentPage - 1))"
                     disabled="@(currentPage == 1)"
-                    class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed">
                 Previous
             </button>
             @foreach (var page in GetPageNumbers())
             {
                 <button @onclick="@(() => currentPage = page)"
-                        class="px-3 py-2 text-sm @(currentPage == page ? "bg-blue-600 text-white" : "border border-gray-300 hover:bg-gray-50") rounded-lg">
+                        class="px-3 py-2 text-sm @(currentPage == page ? "bg-blue-600 text-white" : "border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white") rounded-lg">
                     @(page)
                 </button>
             }
             <button @onclick="@(() => currentPage = Math.Min(GetTotalPages(), currentPage + 1))"
                     disabled="@(currentPage == GetTotalPages())"
-                    class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed">
                 Next
             </button>
         </div>
@@ -497,11 +490,11 @@
     {
         return status switch
         {
-            "published" => "bg-green-100 text-green-800",
-            "draft" => "bg-gray-100 text-gray-800",
-            "pending" => "bg-yellow-100 text-yellow-800",
-            "rejected" => "bg-red-100 text-red-800",
-            _ => "bg-gray-100 text-gray-800"
+            "published" => "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-400",
+            "draft" => "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200",
+            "pending" => "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-400",
+            "rejected" => "bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-400",
+            _ => "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
         };
     }
 
@@ -509,10 +502,10 @@
     {
         return visibility switch
         {
-            "public" => "bg-blue-100 text-blue-800",
-            "private" => "bg-gray-100 text-gray-800",
-            "unlisted" => "bg-orange-100 text-orange-800",
-            _ => "bg-gray-100 text-gray-800"
+            "public" => "bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-400",
+            "private" => "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200",
+            "unlisted" => "bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-400",
+            _ => "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
         };
     }
 

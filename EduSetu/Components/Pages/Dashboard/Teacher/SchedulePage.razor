@@ -9,22 +9,21 @@
 <PageTitle>Schedule - Teacher Dashboard</PageTitle>
 
 <div class="space-y-6">
-    <!-- Header -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h2 class="text-2xl font-bold text-gray-900">Schedule & Calendar</h2>
-                <p class="text-gray-600 mt-1">Manage your classes, meetings, and events</p>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Schedule & Calendar</h2>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Manage your classes, meetings, and events</p>
             </div>
             <div class="flex items-center gap-3">
-                <button class="relative p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                <button class="relative p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell "><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
 
                     <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         3
                     </span>
                 </button>
-                <button @onclick="@(() => showEventModal = true)" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-sm">
+                <button @onclick="@(() => showEventModal = true)" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
@@ -35,33 +34,30 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <!-- Sidebar -->
         <div class="lg:col-span-1 space-y-6">
-            <!-- Mini Calendar -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-semibold text-gray-900">
+                    <h3 class="font-semibold text-gray-900 dark:text-white">
                         @currentDate.ToString("MMMM yyyy")
                     </h3>
                     <div class="flex gap-1">
-                        <button @onclick="@(() => currentDate = currentDate.AddMonths(-1))" class="p-1 hover:bg-gray-100 rounded">
+                        <button @onclick="@(() => currentDate = currentDate.AddMonths(-1))" class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-900 dark:text-gray-100">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                             </svg>
                         </button>
-                        <button @onclick="@(() => currentDate = currentDate.AddMonths(1))" class="p-1 hover:bg-gray-100 rounded">
+                        <button @onclick="@(() => currentDate = currentDate.AddMonths(1))" class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-900 dark:text-gray-100">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                         </button>
                     </div>
                 </div>
-                
-                <!-- Calendar Grid -->
+
                 <div class="grid grid-cols-7 gap-1 text-center text-xs">
                     @foreach (var day in new[] { "S", "M", "T", "W", "T", "F", "S" })
                     {
-                        <div class="p-2 font-medium text-gray-500">@day</div>
+                        <div class="p-2 font-medium text-gray-500 dark:text-gray-400">@day</div>
                     }
                     @for (int i = 0; i < 35; i++)
                     {
@@ -69,27 +65,26 @@
                         var hasEvents = GetEventsForDate(date).Any();
                         var isToday = date.Date == DateTime.Today;
                         var isCurrentMonth = date.Month == currentDate.Month;
-                        
-                        <button @onclick="@(() => currentDate = date)" 
-                                class="p-2 rounded text-sm transition-colors @(isToday ? "bg-blue-600 text-white" : hasEvents ? "bg-blue-100 text-blue-700" : isCurrentMonth ? "hover:bg-gray-100" : "text-gray-400")">
+
+                        <button @onclick="@(() => currentDate = date)"
+                                class="p-2 rounded text-sm transition-colors @(isToday ? "bg-blue-600 text-white" : hasEvents ? "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400" : isCurrentMonth ? "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white" : "text-gray-400 dark:text-gray-500")">
                             @date.Day
                         </button>
                     }
                 </div>
             </div>
 
-            <!-- Upcoming Events -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                <h3 class="font-semibold text-gray-900 mb-4">Upcoming Events</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Upcoming Events</h3>
                 <div class="space-y-3">
                     @foreach (var evt in GetUpcomingEventsList())
                     {
-                        <div class="p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                             <div class="flex items-center gap-2 mb-1">
                                 @((MarkupString)GetEventTypeIcon(evt.Type))
-                                <span class="font-medium text-sm text-gray-900">@evt.Title</span>
+                                <span class="font-medium text-sm text-gray-900 dark:text-white">@evt.Title</span>
                             </div>
-                            <div class="text-xs text-gray-600">
+                            <div class="text-xs text-gray-600 dark:text-gray-400">
                                 <p>@evt.StartTime - @evt.EndTime</p>
                                 <p>@DateTime.Parse(evt.Date).ToString("MMM dd")</p>
                             </div>
@@ -98,58 +93,55 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                <h3 class="font-semibold text-gray-900 mb-4">Quick Actions</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
                 <div class="space-y-2">
-                    <button @onclick="@(() => showEventModal = true)" class="w-full flex items-center gap-2 p-3 text-left bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
-                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button @onclick="@(() => showEventModal = true)" class="w-full flex items-center gap-2 p-3 text-left bg-blue-50 hover:bg-blue-100 dark:bg-blue-950 dark:hover:bg-blue-900 rounded-lg transition-colors">
+                        <svg class="w-4 h-4 text-blue-600 dark:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
-                        <span class="text-blue-700 font-medium">Schedule Class</span>
+                        <span class="text-blue-700 dark:text-blue-400 font-medium">Schedule Class</span>
                     </button>
-                    <button class="w-full flex items-center gap-2 p-3 text-left bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
-                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button class="w-full flex items-center gap-2 p-3 text-left bg-green-50 hover:bg-green-100 dark:bg-green-950 dark:hover:bg-green-900 rounded-lg transition-colors">
+                        <svg class="w-4 h-4 text-green-600 dark:text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                         </svg>
-                        <span class="text-green-700 font-medium">Start Meeting</span>
+                        <span class="text-green-700 dark:text-green-400 font-medium">Start Meeting</span>
                     </button>
-                    <button class="w-full flex items-center gap-2 p-3 text-left bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
-                        <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button class="w-full flex items-center gap-2 p-3 text-left bg-purple-50 hover:bg-purple-100 dark:bg-purple-950 dark:hover:bg-purple-900 rounded-lg transition-colors">
+                        <svg class="w-4 h-4 text-purple-600 dark:text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                         </svg>
-                        <span class="text-purple-700 font-medium">Send Announcement</span>
+                        <span class="text-purple-700 dark:text-purple-400 font-medium">Send Announcement</span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Main Calendar -->
         <div class="lg:col-span-3 space-y-6">
-            <!-- Calendar Controls -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div class="flex items-center gap-4">
-                        <div class="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                        <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
                             @foreach (var mode in new[] { "month", "week", "day", "agenda" })
                             {
-                                <button @onclick="@(() => viewMode = mode)" 
-                                        class="px-3 py-2 rounded-md text-sm font-medium transition-colors @(viewMode == mode ? "bg-white text-gray-800 shadow-sm" : "text-gray-600 hover:text-gray-800")">
+                                <button @onclick="@(() => viewMode = mode)"
+                                        class="px-3 py-2 rounded-md text-sm font-medium transition-colors @(viewMode == mode ? "bg-white dark:bg-gray-800 text-gray-800 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white")">
                                     @(mode.Substring(0, 1).ToUpper() + mode.Substring(1))
                                 </button>
                             }
                         </div>
-                        
+
                         <div class="flex items-center gap-2">
-                            <button @onclick="@(() => NavigateDate(-1))" class="p-2 hover:bg-gray-100 rounded-lg">
+                            <button @onclick="@(() => NavigateDate(-1))" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-gray-900 dark:text-gray-100">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                 </svg>
                             </button>
-                            <h3 class="text-lg font-semibold text-gray-900 min-w-[200px] text-center">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white min-w-[200px] text-center">
                                 @GetCurrentPeriodText()
                             </h3>
-                            <button @onclick="@(() => NavigateDate(1))" class="p-2 hover:bg-gray-100 rounded-lg">
+                            <button @onclick="@(() => NavigateDate(1))" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-gray-900 dark:text-gray-100">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
@@ -157,21 +149,20 @@
                         </div>
                     </div>
 
-                    <button @onclick="@(() => currentDate = DateTime.Today)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">
+                    <button @onclick="@(() => currentDate = DateTime.Today)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg font-medium transition-colors">
                         Today
                     </button>
                 </div>
 
-                <!-- Search and Filter -->
                 <div class="flex gap-4 mb-6">
                     <div class="relative flex-1">
                         <svg class="absolute left-3 top-3 text-gray-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                         <input type="text" @bind="searchQuery" @bind:event="oninput" placeholder="Search events..."
-                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
                     </div>
-                    <select @bind="filterType" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <select @bind="filterType" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                         <option value="">All Types</option>
                         <option value="class">Classes</option>
                         <option value="meeting">Meetings</option>
@@ -181,92 +172,85 @@
                     </select>
                 </div>
 
-            @if (viewMode == "week")
-            {
-                <!-- Week View -->
-                <div class="grid grid-cols-8 gap-4">
-                    <!-- Time column -->
-                    <div class="text-sm font-medium text-gray-500 pt-8">
-                        <div class="h-12"></div>
-                        @for (int hour = 8; hour <= 20; hour++)
+                @if (viewMode == "week")
+                {
+                    <div class="grid grid-cols-8 gap-4">
+                        <div class="text-sm font-medium text-gray-500 dark:text-gray-400 pt-8">
+                            <div class="h-12"></div>
+                            @for (int hour = 8; hour <= 20; hour++)
+                            {
+                                <div class="h-12 flex items-center text-xs text-gray-400 dark:text-gray-500">
+                                    @(hour.ToString("00")):00
+                                </div>
+                            }
+                        </div>
+
+                        @foreach (var day in GetWeekDays())
                         {
-                            <div class="h-12 flex items-center text-xs text-gray-400">
-                                @(hour.ToString("00")):00
+                            <div class="border-l border-gray-200 dark:border-gray-700">
+                                <div class="text-center p-2 border-b border-gray-200 dark:border-gray-700">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">@day.ToString("ddd")</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">@day.ToString("MMM d")</div>
+                                </div>
+                                <div class="relative">
+                                    @for (int hour = 8; hour <= 20; hour++)
+                                    {
+                                        <div class="h-12 border-b border-gray-100 dark:border-gray-800"></div>
+                                    }
+                                    @foreach (var evt in GetEventsForDate(day))
+                                    {
+                                        <div class="absolute left-1 right-1 @GetEventPosition(evt)"
+                                             style="top: @(GetEventTop(evt))px; height: @(GetEventHeight(evt))px;">
+                                            <div class="h-full @GetEventTypeColor(evt.Type) rounded p-2 text-xs overflow-hidden">
+                                                <div class="font-medium text-gray-900 dark:text-white truncate">@evt.Title</div>
+                                                <div class="text-gray-600 dark:text-gray-400">@evt.StartTime - @evt.EndTime</div>
+                                                <div class="text-gray-500 dark:text-gray-500 truncate">@evt.Location</div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         }
                     </div>
-
-                    <!-- Days -->
-                    @foreach (var day in GetWeekDays())
-                    {
-                        <div class="border-l border-gray-200">
-                            <div class="text-center p-2 border-b border-gray-200">
-                                <div class="text-sm font-medium text-gray-900">@day.ToString("ddd")</div>
-                                <div class="text-xs text-gray-500">@day.ToString("MMM d")</div>
-                            </div>
-                            <div class="relative">
-                                @for (int hour = 8; hour <= 20; hour++)
-                                {
-                                    <div class="h-12 border-b border-gray-100"></div>
-                                }
-                                @foreach (var evt in GetEventsForDate(day))
-                                {
-                                    <div class="absolute left-1 right-1 @GetEventPosition(evt)" 
-                                         style="top: @(GetEventTop(evt))px; height: @(GetEventHeight(evt))px;">
-                                        <div class="h-full @GetEventTypeColor(evt.Type) rounded p-2 text-xs overflow-hidden">
-                                            <div class="font-medium text-gray-900 truncate">@evt.Title</div>
-                                            <div class="text-gray-600">@evt.StartTime - @evt.EndTime</div>
-                                            <div class="text-gray-500 truncate">@evt.Location</div>
-                                        </div>
+                }
+                else if (viewMode == "agenda")
+                {
+                    <div class="space-y-4">
+                        @foreach (var evt in GetFilteredEvents())
+                        {
+                            <div class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                <div class="flex items-center space-x-4">
+                                    <div class="p-3 @GetEventTypeColor(evt.Type) rounded-lg">
+                                        @GetEventTypeIcon(evt.Type)
                                     </div>
-                                }
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
-            else if (viewMode == "agenda")
-            {
-                <!-- Agenda View -->
-                <div class="space-y-4">
-                    @foreach (var evt in GetFilteredEvents())
-                    {
-                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                            <div class="flex items-center space-x-4">
-                                <div class="p-3 @GetEventTypeColor(evt.Type) rounded-lg">
-                                    @GetEventTypeIcon(evt.Type)
+                                    <div>
+                                        <h4 class="font-medium text-gray-900 dark:text-white">@evt.Title</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">@evt.Subject • @evt.StartTime - @evt.EndTime</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-500">@evt.Location @(evt.IsOnline ? "(Online)" : "")</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 class="font-medium text-gray-900">@evt.Title</h4>
-                                    <p class="text-sm text-gray-600">@evt.Subject • @evt.StartTime - @evt.EndTime</p>
-                                    <p class="text-sm text-gray-500">@evt.Location @(evt.IsOnline ? "(Online)" : "")</p>
+                                <div class="flex items-center space-x-2">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetStatusColor(evt.Status)">
+                                        @evt.Status
+                                    </span>
+                                    <button @onclick="@(() => EditEvent(evt))" class="p-1 text-blue-600 dark:text-blue-500 hover:text-blue-700 dark:hover:text-blue-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </button>
+                                    <button @onclick="@(() => DeleteEvent(evt))" class="p-1 text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="flex items-center space-x-2">
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium @GetStatusColor(evt.Status)">
-                                    @evt.Status
-                                </span>
-                                <button @onclick="@(() => EditEvent(evt))" class="p-1 text-blue-600 hover:text-blue-700">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                    </svg>
-                                </button>
-                                <button @onclick="@(() => DeleteEvent(evt))" class="p-1 text-red-600 hover:text-red-700">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
+                        }
+                    </div>
+                }
             </div>
-
         </div>
     </div>
-
-   
 </div>
 
 @code {
@@ -428,9 +412,9 @@
                                e.Title.ToLower().Contains(searchQuery.ToLower()) ||
                                e.Subject.ToLower().Contains(searchQuery.ToLower()) ||
                                e.Description.ToLower().Contains(searchQuery.ToLower());
-            
+
             var matchesType = string.IsNullOrEmpty(filterType) || e.Type == filterType;
-            
+
             return matchesSearch && matchesType;
         }).OrderBy(e => e.Date).ThenBy(e => e.StartTime).ToList();
     }
@@ -439,12 +423,12 @@
     {
         return type switch
         {
-            "class" => "<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253\"></path></svg>",
-            "meeting" => "<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z\"></path></svg>",
-            "exam" => "<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z\"></path></svg>",
-            "office-hours" => "<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z\"></path></svg>",
-            "workshop" => "<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z\"></path></svg>",
-            _ => "<svg class=\"w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z\"></path></svg>"
+            "class" => "<svg class=\"w-4 h-4 text-blue-600 dark:text-blue-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253\"></path></svg>",
+            "meeting" => "<svg class=\"w-4 h-4 text-purple-600 dark:text-purple-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z\"></path></svg>",
+            "exam" => "<svg class=\"w-4 h-4 text-red-600 dark:text-red-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z\"></path></svg>",
+            "office-hours" => "<svg class=\"w-4 h-4 text-green-600 dark:text-green-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z\"></path></svg>",
+            "workshop" => "<svg class=\"w-4 h-4 text-orange-600 dark:text-orange-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z\"></path></svg>",
+            _ => "<svg class=\"w-4 h-4 text-gray-600 dark:text-gray-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z\"></path></svg>"
         };
     }
 
@@ -452,12 +436,12 @@
     {
         return type switch
         {
-            "class" => "bg-blue-50 text-blue-700 border-blue-200",
-            "meeting" => "bg-purple-50 text-purple-700 border-purple-200",
-            "exam" => "bg-red-50 text-red-700 border-red-200",
-            "office-hours" => "bg-green-50 text-green-700 border-green-200",
-            "workshop" => "bg-orange-50 text-orange-700 border-orange-200",
-            _ => "bg-gray-50 text-gray-700 border-gray-200"
+            "class" => "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-400 dark:border-blue-900",
+            "meeting" => "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950 dark:text-purple-400 dark:border-purple-900",
+            "exam" => "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-400 dark:border-red-900",
+            "office-hours" => "bg-green-50 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-400 dark:border-green-900",
+            "workshop" => "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950 dark:text-orange-400 dark:border-orange-900",
+            _ => "bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
         };
     }
 
@@ -465,11 +449,11 @@
     {
         return status switch
         {
-            "scheduled" => "bg-blue-100 text-blue-800",
-            "ongoing" => "bg-green-100 text-green-800",
-            "completed" => "bg-gray-100 text-gray-800",
-            "cancelled" => "bg-red-100 text-red-800",
-            _ => "bg-gray-100 text-gray-800"
+            "scheduled" => "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100",
+            "ongoing" => "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100",
+            "completed" => "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200",
+            "cancelled" => "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100",
+            _ => "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
         };
     }
 

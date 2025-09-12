@@ -6,21 +6,20 @@
 <PageTitle>Admin Security - EduSetu</PageTitle>
 
 <div class="space-y-6">
-    <!-- Header -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h2 class="text-2xl font-bold text-gray-900">Security Center</h2>
-                <p class="text-gray-600 mt-1">Monitor security events and system vulnerabilities</p>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Security Center</h2>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Monitor security events and system vulnerabilities</p>
             </div>
             <div class="flex items-center gap-3">
-                <select @bind="selectedTimeframe" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                <select @bind="selectedTimeframe" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="1h">Last Hour</option>
                     <option value="24h">Last 24 Hours</option>
                     <option value="7d">Last 7 Days</option>
                     <option value="30d">Last 30 Days</option>
                 </select>
-                <button @onclick="RefreshData" class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                <button @onclick="RefreshData" class="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
@@ -36,11 +35,10 @@
         </div>
     </div>
 
-    <!-- Security Metrics -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
         @foreach (var metric in securityMetrics)
         {
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between mb-4">
                     <div class="p-3 rounded-lg @GetStatusColor(metric.Status)">
                         @GetMetricIcon(metric.Name)
@@ -48,52 +46,50 @@
                     <div class="text-right">
                         @if (metric.Trend == "up")
                         {
-                            <div class="text-red-500 text-xs">↑</div>
+                            <div class="text-red-500 dark:text-red-400 text-xs">↑</div>
                         }
                         else if (metric.Trend == "down")
                         {
-                            <div class="text-green-500 text-xs">↓</div>
+                            <div class="text-green-500 dark:text-green-400 text-xs">↓</div>
                         }
                         else
                         {
-                            <div class="text-gray-500 text-xs">→</div>
+                            <div class="text-gray-500 dark:text-gray-400 text-xs">→</div>
                         }
                     </div>
                 </div>
-                <div class="text-2xl font-bold text-gray-900 mb-1">
+                <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                     @metric.Value@metric.Unit
                 </div>
-                <div class="text-sm text-gray-600 mb-2">@metric.Name</div>
-                <div class="text-xs text-gray-500">@metric.Description</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">@metric.Name</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">@metric.Description</div>
             </div>
         }
     </div>
 
-    <!-- Security Events -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold text-gray-900">Security Events</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Security Events</h3>
             <div class="flex items-center gap-3">
-                <span class="text-sm text-gray-600">
+                <span class="text-sm text-gray-600 dark:text-gray-400">
                     @GetFilteredEvents().Count() events found
                 </span>
             </div>
         </div>
 
-        <!-- Search and Filters -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div class="relative md:col-span-2">
-                <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="absolute left-3 top-3 text-gray-400 dark:text-gray-500 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
                 <input type="text" placeholder="Search events by description, IP, location, or user..."
                        @bind="searchQuery" @bind:after="OnSearchChanged"
-                       class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500" />
+                       class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400" />
             </div>
 
             <div>
                 <select @bind="selectedSeverity" @bind:after="OnFilterChanged"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                        class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="">All Severities</option>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
@@ -104,7 +100,7 @@
 
             <div>
                 <select @bind="selectedType" @bind:after="OnFilterChanged"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                        class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="">All Types</option>
                     <option value="login_attempt">Login Attempts</option>
                     <option value="suspicious_activity">Suspicious Activity</option>
@@ -116,20 +112,19 @@
             </div>
         </div>
 
-        <!-- Events List -->
         <div class="space-y-4">
             @foreach (var eventItem in GetCurrentEvents())
             {
-                <div class="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
                     <div class="flex items-start justify-between">
                         <div class="flex items-start gap-4 flex-1">
                             <div class="p-2 rounded-lg @GetSeverityColor(eventItem.Severity)">
                                 @GetEventTypeIcon(eventItem.Type)
                             </div>
-                            
+
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 mb-2">
-                                    <h4 class="font-medium text-gray-900">@eventItem.Description</h4>
+                                    <h4 class="font-medium text-gray-900 dark:text-white">@eventItem.Description</h4>
                                     <span class="px-2 py-1 text-xs font-medium rounded-full @GetSeverityColor(eventItem.Severity)">
                                         @eventItem.Severity
                                     </span>
@@ -137,8 +132,8 @@
                                         @eventItem.Status
                                     </span>
                                 </div>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 mb-3">
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
                                     <div class="flex items-center gap-1">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -162,12 +157,12 @@
 
                                 @if (!string.IsNullOrEmpty(eventItem.UserName))
                                 {
-                                    <div class="text-sm text-gray-600 mb-2">
+                                    <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">
                                         <strong>User:</strong> @eventItem.UserName
                                     </div>
                                 }
 
-                                <div class="text-xs text-gray-500 mb-3">
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mb-3">
                                     <strong>User Agent:</strong> @eventItem.UserAgent
                                 </div>
 
@@ -176,7 +171,7 @@
                                     <div class="flex flex-wrap gap-2">
                                         @foreach (var action in eventItem.Actions)
                                         {
-                                            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-400 text-xs rounded-full">
                                                 @action
                                             </span>
                                         }
@@ -187,25 +182,25 @@
 
                         <div class="flex items-center gap-2 ml-4">
                             <button @onclick="@(() => ToggleEventDetails(eventItem.Id))"
-                                    class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                                    class="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                 </svg>
                             </button>
-                            
+
                             <button @onclick="@(() => BlockIP(eventItem.IpAddress))"
-                                    class="p-2 text-red-600 hover:text-red-700 rounded-lg hover:bg-red-50"
+                                    class="p-2 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/50"
                                     title="Block IP">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                                 </svg>
                             </button>
-                            
+
                             @if (eventItem.Status != "resolved")
                             {
                                 <button @onclick="@(() => ResolveEvent(eventItem.Id))"
-                                        class="p-2 text-green-600 hover:text-green-700 rounded-lg hover:bg-green-50"
+                                        class="p-2 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-500 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/50"
                                         title="Mark as resolved">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -215,28 +210,27 @@
                         </div>
                     </div>
 
-                    <!-- Event Details -->
                     @if (showEventDetails == eventItem.Id)
                     {
-                        <div class="mt-4 pt-4 border-t border-gray-200">
-                            <div class="bg-gray-50 rounded-lg p-4">
-                                <h5 class="font-medium text-gray-900 mb-3">Event Details</h5>
+                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                                <h5 class="font-medium text-gray-900 dark:text-white mb-3">Event Details</h5>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                    <div>
+                                    <div class="text-gray-600 dark:text-gray-400">
                                         <strong>Event ID:</strong> @eventItem.Id
                                     </div>
-                                    <div>
+                                    <div class="text-gray-600 dark:text-gray-400">
                                         <strong>Type:</strong> @eventItem.Type.Replace("_", " ")
                                     </div>
-                                    <div>
+                                    <div class="text-gray-600 dark:text-gray-400">
                                         <strong>Timestamp:</strong> @FormatTimestamp(eventItem.Timestamp)
                                     </div>
-                                    <div>
+                                    <div class="text-gray-600 dark:text-gray-400">
                                         <strong>Status:</strong> @eventItem.Status
                                     </div>
                                     @if (!string.IsNullOrEmpty(eventItem.UserId))
                                     {
-                                        <div>
+                                        <div class="text-gray-600 dark:text-gray-400">
                                             <strong>User ID:</strong> @eventItem.UserId
                                         </div>
                                     }
@@ -248,65 +242,63 @@
             }
         </div>
 
-        <!-- Pagination -->
         @if (GetTotalPages() > 1)
         {
             <div class="flex items-center justify-center gap-2 mt-6">
                 <button @onclick="@(() => currentPage = Math.Max(1, currentPage - 1))"
                         disabled="@(currentPage == 1)"
-                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed">
                     Previous
                 </button>
-                
-                <span class="px-4 py-2 text-sm text-gray-600">
+
+                <span class="px-4 py-2 text-sm text-gray-600 dark:text-gray-400">
                     Page @currentPage of @GetTotalPages()
                 </span>
-                
+
                 <button @onclick="@(() => currentPage = Math.Min(GetTotalPages(), currentPage + 1))"
                         disabled="@(currentPage == GetTotalPages())"
-                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed">
                     Next
                 </button>
             </div>
         }
     </div>
 
-    <!-- Security Recommendations -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-6">Security Recommendations</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Security Recommendations</h3>
         <div class="space-y-4">
-            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div class="p-4 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg">
                 <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-yellow-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                     </svg>
                     <div>
-                        <h4 class="font-medium text-yellow-900 mb-1">Update SSL Certificate</h4>
-                        <p class="text-yellow-800 text-sm">Your SSL certificate expires in 89 days. Consider renewing it soon to avoid service interruption.</p>
+                        <h4 class="font-medium text-yellow-900 dark:text-yellow-100 mb-1">Update SSL Certificate</h4>
+                        <p class="text-yellow-800 dark:text-yellow-300 text-sm">Your SSL certificate expires in 89 days. Consider renewing it soon to avoid service interruption.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div class="p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg">
                 <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                     </svg>
                     <div>
-                        <h4 class="font-medium text-blue-900 mb-1">Enable Rate Limiting</h4>
-                        <p class="text-blue-800 text-sm">Consider implementing rate limiting to prevent brute force attacks and API abuse.</p>
+                        <h4 class="font-medium text-blue-900 dark:text-blue-100 mb-1">Enable Rate Limiting</h4>
+                        <p class="text-blue-800 dark:text-blue-300 text-sm">Consider implementing rate limiting to prevent brute force attacks and API abuse.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div class="p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg">
                 <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <div>
-                        <h4 class="font-medium text-green-900 mb-1">Security Audit Completed</h4>
-                        <p class="text-green-800 text-sm">Latest security audit completed successfully with no critical vulnerabilities found.</p>
+                        <h4 class="font-medium text-green-900 dark:text-green-100 mb-1">Security Audit Completed</h4>
+                        <p class="text-green-800 dark:text-green-300 text-sm">Latest security audit completed successfully with no critical vulnerabilities found.</p>
                     </div>
                 </div>
             </div>
@@ -335,46 +327,46 @@
 
     private List<SecurityEvent> securityEvents = new()
     {
-        new SecurityEvent 
-        { 
-            Id = "1", 
-            Type = "suspicious_activity", 
-            Severity = "high", 
-            Description = "Multiple failed login attempts from suspicious IP address", 
-            Timestamp = DateTime.Now.AddHours(-2), 
-            IpAddress = "192.168.1.100", 
-            Location = "Unknown Location", 
-            UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36", 
-            Status = "investigating", 
-            Actions = new List<string> { "IP blocked", "User notified", "Investigation started" } 
+        new SecurityEvent
+        {
+            Id = "1",
+            Type = "suspicious_activity",
+            Severity = "high",
+            Description = "Multiple failed login attempts from suspicious IP address",
+            Timestamp = DateTime.Now.AddHours(-2),
+            IpAddress = "192.168.1.100",
+            Location = "Unknown Location",
+            UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            Status = "investigating",
+            Actions = new List<string> { "IP blocked", "User notified", "Investigation started" }
         },
-        new SecurityEvent 
-        { 
-            Id = "2", 
-            Type = "login_attempt", 
-            Severity = "medium", 
-            Description = "Login attempt from new device", 
-            Timestamp = DateTime.Now.AddHours(-3), 
-            IpAddress = "203.0.113.45", 
-            Location = "Mumbai, India", 
-            UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X)", 
-            UserId = "user123", 
-            UserName = "john.doe@example.com", 
-            Status = "resolved", 
-            Actions = new List<string> { "2FA verification sent", "Login approved" } 
+        new SecurityEvent
+        {
+            Id = "2",
+            Type = "login_attempt",
+            Severity = "medium",
+            Description = "Login attempt from new device",
+            Timestamp = DateTime.Now.AddHours(-3),
+            IpAddress = "203.0.113.45",
+            Location = "Mumbai, India",
+            UserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X)",
+            UserId = "user123",
+            UserName = "john.doe@example.com",
+            Status = "resolved",
+            Actions = new List<string> { "2FA verification sent", "Login approved" }
         },
-        new SecurityEvent 
-        { 
-            Id = "3", 
-            Type = "unauthorized_access", 
-            Severity = "critical", 
-            Description = "Attempt to access admin panel without proper authorization", 
-            Timestamp = DateTime.Now.AddHours(-4), 
-            IpAddress = "198.51.100.78", 
-            Location = "Unknown Location", 
-            UserAgent = "curl/7.68.0", 
-            Status = "active", 
-            Actions = new List<string> { "IP blocked immediately", "Admin notified", "Logs preserved" } 
+        new SecurityEvent
+        {
+            Id = "3",
+            Type = "unauthorized_access",
+            Severity = "critical",
+            Description = "Attempt to access admin panel without proper authorization",
+            Timestamp = DateTime.Now.AddHours(-4),
+            IpAddress = "198.51.100.78",
+            Location = "Unknown Location",
+            UserAgent = "curl/7.68.0",
+            Status = "active",
+            Actions = new List<string> { "IP blocked immediately", "Admin notified", "Logs preserved" }
         }
     };
 
@@ -411,27 +403,27 @@
         return name.ToLower() switch
         {
             "failed login attempts" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-            </svg>,
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+</svg>,
             "blocked ips" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-            </svg>,
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+</svg>,
             "active sessions" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-            </svg>,
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+</svg>,
             "security score" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>,
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+</svg>,
             "vulnerabilities" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-            </svg>,
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+</svg>,
             "ssl certificate" => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0110 0v4"></path>
-            </svg>,
+    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+    <path d="M7 11V7a5 5 0 0110 0v4"></path>
+</svg>,
             _ => @<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-            </svg>
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+</svg>
         };
     }
 
@@ -439,10 +431,10 @@
     {
         return status switch
         {
-            "good" => "text-green-600 bg-green-100",
-            "warning" => "text-yellow-600 bg-yellow-100",
-            "critical" => "text-red-600 bg-red-100",
-            _ => "text-gray-600 bg-gray-100"
+            "good" => "text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50",
+            "warning" => "text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/50",
+            "critical" => "text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/50",
+            _ => "text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700"
         };
     }
 
@@ -450,11 +442,11 @@
     {
         return severity switch
         {
-            "low" => "bg-blue-100 text-blue-800",
-            "medium" => "bg-yellow-100 text-yellow-800",
-            "high" => "bg-orange-100 text-orange-800",
-            "critical" => "bg-red-100 text-red-800",
-            _ => "bg-gray-100 text-gray-800"
+            "low" => "bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-400",
+            "medium" => "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-400",
+            "high" => "bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-400",
+            "critical" => "bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-400",
+            _ => "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
         };
     }
 
@@ -462,10 +454,10 @@
     {
         return status switch
         {
-            "active" => "bg-red-100 text-red-800",
-            "resolved" => "bg-green-100 text-green-800",
-            "investigating" => "bg-yellow-100 text-yellow-800",
-            _ => "bg-gray-100 text-gray-800"
+            "active" => "bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-400",
+            "resolved" => "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-400",
+            "investigating" => "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-400",
+            _ => "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
         };
     }
 
@@ -474,29 +466,29 @@
         return type switch
         {
             "login_attempt" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
-            </svg>,
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+</svg>,
             "suspicious_activity" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-            </svg>,
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+</svg>,
             "unauthorized_access" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0110 0v4"></path>
-            </svg>,
+    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+    <path d="M7 11V7a5 5 0 0110 0v4"></path>
+</svg>,
             "data_breach" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path>
-                <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path>
-            </svg>,
+    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+    <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path>
+    <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path>
+</svg>,
             "malware_detected" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-            </svg>,
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+</svg>,
             "ddos_attack" => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>,
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+</svg>,
             _ => @<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-            </svg>
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+</svg>
         };
     }
 
@@ -508,7 +500,7 @@
                                eventItem.IpAddress.Contains(searchQuery) ||
                                eventItem.Location.ToLower().Contains(searchQuery.ToLower()) ||
                                (!string.IsNullOrEmpty(eventItem.UserName) && eventItem.UserName.ToLower().Contains(searchQuery.ToLower()));
-            
+
             var matchesSeverity = string.IsNullOrEmpty(selectedSeverity) || eventItem.Severity == selectedSeverity;
             var matchesType = string.IsNullOrEmpty(selectedType) || eventItem.Type == selectedType;
 
@@ -604,4 +596,4 @@
         public string Trend { get; set; } = "";
         public string Description { get; set; } = "";
     }
-} 
+}

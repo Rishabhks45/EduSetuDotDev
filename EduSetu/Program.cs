@@ -4,10 +4,8 @@ using EduSetu.Infrastructure.Data.Contexts;
 using EduSetu.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using MediatR;
 using EduSetu.Application.Common.Settings;
 using EduSetu.Infrastructure.DependencyInjection;
-using Microsoft.AspNetCore.Authentication.Google;
 using FluentValidation;
 using EduSetu.Application.Features.Authentication;
 
