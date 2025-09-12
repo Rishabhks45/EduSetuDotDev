@@ -1,6 +1,7 @@
 using EduSetu.Domain.Entities;
 using EduSetu.Domain.Enums;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace EduSetu.Components.Layout
 {
@@ -12,7 +13,8 @@ namespace EduSetu.Components.Layout
         private string searchQuery = "";
         private User? currentUser;
         private string headerName = "";
-
+        private bool isDarkMode = false;
+        private DotNetObjectReference<AdminLayout>? objRef;
         private List<NotificationItem> notificationItems = new()
     {
         new NotificationItem { Id = "1", Type = "error", Title = "Database Connection Timeout", Message = "Multiple connection timeouts to primary database server", Time = "2 hours ago", Severity = "high", Resolved = false },
@@ -52,7 +54,51 @@ namespace EduSetu.Components.Layout
             UpdateHeaderName();
             NavigationManager.LocationChanged += OnLocationChanged;
         }
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                objRef = DotNetObjectReference.Create(this);
 
+                // Initialize theme preference from localStorage
+                isDarkMode = await JSRuntime.InvokeAsync<bool>("getThemePreference");
+                StateHasChanged();
+
+                // Apply the initial theme
+                await ApplyTheme();
+            }
+        }
+
+        private async Task ToggleTheme()
+        {
+            isDarkMode = !isDarkMode;
+            await ApplyTheme();
+            StateHasChanged();
+        }
+
+        private async Task ApplyTheme()
+        {
+            // Save preference to localStorage and apply theme to document
+            await JSRuntime.InvokeVoidAsync("setThemePreference", isDarkMode);
+
+            // Apply the theme classes to the HTML element
+            if (isDarkMode)
+            {
+                await JSRuntime.InvokeVoidAsync("eval", "document.documentElement.classList.add('dark')");
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("eval", "document.documentElement.classList.remove('dark')");
+            }
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (objRef is not null)
+            {
+                objRef.Dispose();
+            }
+        }
         private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
         {
             UpdateHeaderName();

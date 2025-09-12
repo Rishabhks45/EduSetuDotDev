@@ -1,8 +1,10 @@
-@inherits LayoutComponentBase
 @using EduSetu.Domain.Enums
 @using EduSetu.Domain.Entities
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager NavigationManager
+@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
+@using Microsoft.JSInterop
 
 <PageTitle>Teacher Dashboard - EduSetu</PageTitle>
 
@@ -161,8 +163,36 @@
                         </svg>
                         <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400">
                     </div>
+
+                    <!-- Dark Mode Toggle Button -->
+                    <button @onclick="ToggleTheme" 
+                            class="relative p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                        @if (isDarkMode)
+                        {
+                            <!-- Sun icon for light mode -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun">
+                                <circle cx="12" cy="12" r="4"></circle>
+                                <path d="M12 2v2"></path>
+                                <path d="M12 20v2"></path>
+                                <path d="M4.93 4.93l1.41 1.41"></path>
+                                <path d="M17.66 17.66l1.41 1.41"></path>
+                                <path d="M2 12h2"></path>
+                                <path d="M20 12h2"></path>
+                                <path d="M6.34 17.66l-1.41 1.41"></path>
+                                <path d="M19.07 4.93l-1.41 1.41"></path>
+                            </svg>
+                        }
+                        else
+                        {
+                            <!-- Moon icon for dark mode -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon">
+                                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                            </svg>
+                        }
+                    </button>
+
                     <div class="relative">
-                        <button @onclick="@(() => showNotifications = !showNotifications)" class="relative p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <button @onclick="@(() => showNotifications = !showNotifications)" @onclick:stopPropagation="true" class="relative p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell "><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
                             @if (notifications > 0)
                             {
@@ -172,7 +202,6 @@
                             }
                         </button>
                         
-                        <!-- Notifications Dropdown -->
                         @if (showNotifications)
                         {
                             <div class="absolute top-full right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50" @onclick:stopPropagation="true">
@@ -213,6 +242,7 @@
                             </div>
                         }
                     </div>
+
                     <button @onclick="@HandleLogout"
                             class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                         Logout
@@ -350,5 +380,54 @@
         public string Title { get; set; } = "";
         public string Message { get; set; } = "";
         public string Time { get; set; } = "";
+    }
+
+    private bool isDarkMode = false;
+    private DotNetObjectReference<TeacherLayout>? objRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            
+            // Initialize theme preference from localStorage
+            isDarkMode = await JSRuntime.InvokeAsync<bool>("getThemePreference");
+            StateHasChanged();
+
+            // Apply the initial theme
+            await ApplyTheme();
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        isDarkMode = !isDarkMode;
+        await ApplyTheme();
+        StateHasChanged();
+    }
+
+    private async Task ApplyTheme()
+    {
+        // Save preference to localStorage and apply theme to document
+        await JSRuntime.InvokeVoidAsync("setThemePreference", isDarkMode);
+
+        // Apply the theme classes to the HTML element
+        if (isDarkMode)
+        {
+            await JSRuntime.InvokeVoidAsync("eval", "document.documentElement.classList.add('dark')");
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("eval", "document.documentElement.classList.remove('dark')");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (objRef is not null)
+        {
+            objRef.Dispose();
+        }
     }
 }

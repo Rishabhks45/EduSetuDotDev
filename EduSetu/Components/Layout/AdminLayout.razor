@@ -3,6 +3,9 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager NavigationManager
 @inherits LayoutComponentBase
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
 
 <PageTitle>Admin Dashboard - EduSetu</PageTitle>
 
@@ -179,90 +182,120 @@
                               placeholder-gray-500 dark:placeholder-gray-400" />
                     </div>
 
-                    <!-- Notifications -->
-                    <div class="relative">
-                        <button @onclick="@(() => showNotifications = !showNotifications)"
-                                class="relative p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell">
-                                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-                                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-                            </svg>
-                            @if (notifications > 0)
+                    <!-- Mode Toggle and Notifications -->
+                    <div class="flex items-center gap-2">
+                        <!-- Dark Mode Toggle -->
+                        <button @onclick="ToggleTheme"
+                                class="relative p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 mr-2">
+                            @if (isDarkMode)
                             {
-                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                    @notifications
-                                </span>
+                                <!-- Sun icon for light mode -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun">
+                                    <circle cx="12" cy="12" r="4"></circle>
+                                    <path d="M12 2v2"></path>
+                                    <path d="M12 20v2"></path>
+                                    <path d="M4.93 4.93l1.41 1.41"></path>
+                                    <path d="M17.66 17.66l1.41 1.41"></path>
+                                    <path d="M2 12h2"></path>
+                                    <path d="M20 12h2"></path>
+                                    <path d="M6.34 17.66l-1.41 1.41"></path>
+                                    <path d="M19.07 4.93l-1.41 1.41"></path>
+                                </svg>
+                            }
+                            else
+                            {
+                                <!-- Moon icon for dark mode -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon">
+                                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                                </svg>
                             }
                         </button>
 
-                        <!-- Notifications Dropdown -->
-                        @if (showNotifications)
-                        {
-                            <div class="absolute top-full right-0 mt-2 w-80 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
-                                 @onclick:stopPropagation="true">
-                                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-                                    <div class="flex items-center justify-between">
-                                        <h3 class="font-semibold text-gray-900 dark:text-white">Notifications</h3>
-                                        <button @onclick="@(() => showNotifications = false)"
-                                                class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                            </svg>
-                                        </button>
+                        <!-- Notifications -->
+                        <div class="relative">
+                            <button @onclick="@(() => showNotifications = !showNotifications)"
+                                    class="relative p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell">
+                                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                                </svg>
+                                @if (notifications > 0)
+                                {
+                                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                        @notifications
+                                    </span>
+                                }
+                            </button>
+
+                            <!-- Notifications Dropdown -->
+                            @if (showNotifications)
+                            {
+                                <div class="absolute top-full right-0 mt-2 w-80 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50"
+                                     @onclick:stopPropagation="true">
+                                    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                                        <div class="flex items-center justify-between">
+                                            <h3 class="font-semibold text-gray-900 dark:text-white">Notifications</h3>
+                                            <button @onclick="@(() => showNotifications = false)"
+                                                    class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="max-h-96 overflow-y-auto">
-                                    @foreach (var notification in notificationItems)
-                                    {
-                                        <div class="p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                            <div class="flex items-start gap-3">
-                                                <div class="p-2 @(notification.Type == "error" ? "bg-red-100 dark:bg-red-900" : notification.Type == "warning" ? "bg-yellow-100 dark:bg-yellow-900" : "bg-blue-100 dark:bg-blue-900") rounded-full">
-                                                    @if (notification.Type == "error")
-                                                    {
-                                                        <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                                        </svg>
-                                                    }
-                                                    else if (notification.Type == "warning")
-                                                    {
-                                                        <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                                                        </svg>
-                                                    }
-                                                    else
-                                                    {
-                                                        <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                        </svg>
-                                                    }
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="text-sm font-medium text-gray-900 dark:text-white">@notification.Title</p>
-                                                    <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">@notification.Message</p>
-                                                    <div class="flex items-center gap-2 mt-2">
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">@notification.Time</p>
-                                                        <span class="text-xs px-2 py-1 rounded-full font-medium @(notification.Severity == "high" ? "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300" : notification.Severity == "medium" ? "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300" : "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300")">
-                                                            @notification.Severity priority
-                                                        </span>
-                                                        @if (notification.Resolved)
+                                    <div class="max-h-96 overflow-y-auto">
+                                        @foreach (var notification in notificationItems)
+                                        {
+                                            <div class="p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                                <div class="flex items-start gap-3">
+                                                    <div class="p-2 @(notification.Type == "error" ? "bg-red-100 dark:bg-red-900" : notification.Type == "warning" ? "bg-yellow-100 dark:bg-yellow-900" : "bg-blue-100 dark:bg-blue-900") rounded-full">
+                                                        @if (notification.Type == "error")
                                                         {
-                                                            <span class="text-xs px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 rounded-full font-medium">
-                                                                Resolved
-                                                            </span>
+                                                            <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                                            </svg>
                                                         }
+                                                        else if (notification.Type == "warning")
+                                                        {
+                                                            <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                                            </svg>
+                                                        }
+                                                        else
+                                                        {
+                                                            <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                            </svg>
+                                                        }
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-sm font-medium text-gray-900 dark:text-white">@notification.Title</p>
+                                                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">@notification.Message</p>
+                                                        <div class="flex items-center gap-2 mt-2">
+                                                            <p class="text-xs text-gray-500 dark:text-gray-400">@notification.Time</p>
+                                                            <span class="text-xs px-2 py-1 rounded-full font-medium @(notification.Severity == "high" ? "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300" : notification.Severity == "medium" ? "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300" : "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300")">
+                                                                @notification.Severity priority
+                                                            </span>
+                                                            @if (notification.Resolved)
+                                                            {
+                                                                <span class="text-xs px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 rounded-full font-medium">
+                                                                    Resolved
+                                                                </span>
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    }
+                                        }
+                                    </div>
+                                    <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                                        <button class="w-full text-center text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium">
+                                            View All Notifications
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                                    <button class="w-full text-center text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium">
-                                        View All Notifications
-                                    </button>
-                                </div>
-                            </div>
-                        }
+                            }
+                        </div>
                     </div>
 
                     <!-- Logout -->
