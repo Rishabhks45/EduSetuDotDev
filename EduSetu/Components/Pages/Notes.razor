@@ -3,25 +3,23 @@
 @using EduSetu.Components.Shared
 @inject NavigationManager NavigationManager
 
-<div class="min-h-screen bg-gray-50 pt-16">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
     <div class="container mx-auto px-4 py-8">
-        <!-- Header -->
         <div class="mb-8">
             <div class="flex items-center gap-3 mb-4">
-                <div class="p-3 bg-primary-100 rounded-xl">
-                    <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-3 bg-primary-100 dark:bg-primary-900 rounded-xl">
+                    <svg class="w-8 h-8 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-4xl font-bold text-gray-800">Study Notes</h1>
-                    <p class="text-gray-600 mt-1">Comprehensive study materials organized by category</p>
+                    <h1 class="text-4xl font-bold text-gray-800 dark:text-white">Study Notes</h1>
+                    <p class="text-gray-600 dark:text-gray-400 mt-1">Comprehensive study materials organized by category</p>
                 </div>
             </div>
         </div>
 
         <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Sidebar -->
             <NotesSidebar SelectedCategory="selectedCategory"
                          OnCategorySelect="@(cat => SelectCategory(cat))"
                          Filters="filters"
@@ -29,33 +27,29 @@
                          OnFilterChange="@(args => HandleFilterChange(args.Item1, args.Item2))"
                          OnClearFilters="@(() => ClearFilters())" />
 
-            <!-- Main Content -->
             <div class="flex-1">
-                <!-- Search and Controls -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-                    <!-- Search Bar -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
                     <div class="relative mb-4">
                         <input type="text" placeholder="Search notes by title, description, tags, or author..."
                                @bind-value="searchQuery" @bind-value:event="oninput"
-                               class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors" />
-                        <svg class="absolute left-4 top-3.5 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors placeholder-gray-500 dark:placeholder-gray-400" />
+                        <svg class="absolute left-4 top-3.5 text-gray-400 dark:text-gray-500 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
 
-                    <!-- Dynamic Filters -->
                     @if (!string.IsNullOrEmpty(selectedCategory) && GetActiveFilters().Any())
                     {
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+                        <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg border border-gray-200 dark:border-gray-700 mb-4">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
                                     </svg>
-                                    <h3 class="font-medium text-gray-800">Filters</h3>
+                                    <h3 class="font-medium text-gray-800 dark:text-white">Filters</h3>
                                 </div>
                                 <button @onclick="ClearFilters"
-                                        class="text-sm text-primary-600 hover:text-primary-700 font-medium">
+                                        class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
                                     Clear All
                                 </button>
                             </div>
@@ -64,11 +58,11 @@
                                 @foreach (var filterType in GetActiveFilters())
                                 {
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             @GetFilterLabel(filterType)
                                         </label>
                                         <select @bind="filters[filterType]" @bind:after="() => StateHasChanged()"
-                                                class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm">
+                                                class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                                             <option value="">All @GetFilterLabel(filterType)s</option>
                                             @if (filterOptions.ContainsKey(filterType))
                                             {
@@ -82,19 +76,18 @@
                                 }
                             </div>
 
-                            <!-- Active Filters Display -->
                             @if (filters.Any(f => !string.IsNullOrEmpty(f.Value)))
                             {
-                                <div class="mt-4 pt-4 border-t border-gray-200">
+                                <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                                     <div class="flex flex-wrap gap-2">
                                         @foreach (var filter in filters)
                                         {
                                             @if (!string.IsNullOrEmpty(filter.Value))
                                             {
-                                                <span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 text-primary-800 text-sm rounded-full">
+                                                <span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-300 text-sm rounded-full">
                                                     @GetFilterLabel(filter.Key): @filter.Value
                                                     <button @onclick="() => ClearFilter(filter.Key)"
-                                                            class="ml-1 hover:text-primary-900">
+                                                            class="ml-1 hover:text-primary-900 dark:hover:text-primary-100">
                                                         ×
                                                     </button>
                                                 </span>
@@ -106,29 +99,26 @@
                         </div>
                     }
 
-                    <!-- Controls -->
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div class="flex items-center gap-4">
-                            <!-- View Mode Toggle -->
-                            <div class="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                            <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
                                 <button @onclick="@(() => SetViewMode("grid"))"
-                                        class="@($"p-2 rounded-md transition-colors {(viewMode == "grid" ? "bg-white text-gray-800 shadow-sm" : "text-gray-600 hover:text-gray-800")}")">
+                                        class="@($"p-2 rounded-md transition-colors {(viewMode == "grid" ? "bg-white dark:bg-gray-800 text-gray-800 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white")}")">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                                     </svg>
                                 </button>
                                 <button @onclick="@(() => SetViewMode("list"))"
-                                        class="@($"p-2 rounded-md transition-colors {(viewMode == "list" ? "bg-white text-gray-800 shadow-sm" : "text-gray-600 hover:text-gray-800")}")">
+                                        class="@($"p-2 rounded-md transition-colors {(viewMode == "list" ? "bg-white dark:bg-gray-800 text-gray-800 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white")}")">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                                     </svg>
                                 </button>
                             </div>
 
-                            <!-- Mobile Filters Toggle -->
                             <button @onclick="ToggleShowFilters"
-                                    class="lg:hidden flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    class="lg:hidden flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg transition-colors">
+                                <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
                                 </svg>
                                 <span>Filters</span>
@@ -136,18 +126,17 @@
                         </div>
 
                         <div class="flex items-center gap-4">
-                            <!-- Sort Controls -->
                             <div class="flex items-center gap-2">
-                                <label class="text-sm font-medium text-gray-700">Sort by:</label>
+                                <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Sort by:</label>
                                 <select @bind="sortBy" @bind:after="() => StateHasChanged()"
-                                        class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm">
+                                        class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                                     <option value="newest">Newest</option>
                                     <option value="popular">Most Popular</option>
                                     <option value="rating">Highest Rated</option>
                                     <option value="downloads">Most Downloaded</option>
                                 </select>
                                 <button @onclick="ToggleSortOrder"
-                                        class="p-2 hover:bg-gray-100 rounded-md transition-colors"
+                                        class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors text-gray-600 dark:text-gray-400"
                                         title="@($"Sort {(sortOrder == "asc" ? "Ascending" : "Descending")}")">
                                     @if (sortOrder == "asc")
                                     {
@@ -167,13 +156,12 @@
                     </div>
                 </div>
 
-                <!-- Results Count and Pagination Info -->
-                <div class="mb-6 flex items-center justify-between">
-                    <p class="text-gray-600">
+                <div class="mb-6 flex items-center justify-between text-gray-600 dark:text-gray-400">
+                    <p>
                         Showing @(startIndex + 1)-@Math.Min(endIndex, filteredNotes.Count) of @filteredNotes.Count notes
                         @if (!string.IsNullOrEmpty(selectedCategory))
                         {
-                            <span class="ml-2 px-2 py-1 bg-primary-100 text-primary-800 text-sm rounded">
+                            <span class="ml-2 px-2 py-1 bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-300 text-sm rounded">
                                 @(char.ToUpper(selectedCategory[0]) + selectedCategory.Substring(1)) Wise
                             </span>
                         }
@@ -181,13 +169,12 @@
                     
                     @if (totalPages > 1)
                     {
-                        <p class="text-sm text-gray-500">
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
                             Page @currentPage of @totalPages
                         </p>
                     }
                 </div>
 
-                <!-- Notes Display -->
                 @if (currentNotes.Any())
                 {
                     @if (viewMode == "grid")
@@ -209,13 +196,12 @@
                         </div>
                     }
 
-                    <!-- Pagination -->
                     @if (totalPages > 1)
                     {
                         <div class="flex items-center justify-center gap-2 mt-8">
                             <button @onclick="() => HandlePageChange(currentPage - 1)"
                                     disabled="@(currentPage == 1)"
-                                    class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                                    class="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                 </svg>
@@ -227,12 +213,12 @@
                                 {
                                     @if (page == "...")
                                     {
-                                        <span class="px-3 py-2 text-gray-500">...</span>
+                                        <span class="px-3 py-2 text-gray-500 dark:text-gray-400">...</span>
                                     }
                                     else
                                     {
                                         <button @onclick="() => HandlePageChange((int)page)"
-                                                class="@($"px-3 py-2 rounded-lg transition-colors {(currentPage == (int)page ? "bg-primary-600 text-white" : "hover:bg-gray-100 text-gray-700")}")">
+                                                class="@($"px-3 py-2 rounded-lg transition-colors {(currentPage == (int)page ? "bg-primary-600 text-white" : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300")}")">
                                             @((int)page)
                                         </button>
                                     }
@@ -241,7 +227,7 @@
 
                             <button @onclick="() => HandlePageChange(currentPage + 1)"
                                     disabled="@(currentPage == totalPages)"
-                                    class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                                    class="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                                 Next
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -253,19 +239,19 @@
                 else
                 {
                     <div class="text-center py-12">
-                        <div class="text-gray-400 mb-4">
+                        <div class="text-gray-400 dark:text-gray-500 mb-4">
                             <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                             </svg>
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">No notes found</h3>
-                        <p class="text-gray-600 mb-4">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No notes found</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">
                             Try adjusting your search terms or filters to find what you"re looking for.
                         </p>
                         @if (filters.Any(f => !string.IsNullOrEmpty(f.Value)))
                         {
                             <button @onclick="ClearFilters"
-                                    class="text-primary-600 hover:text-primary-700 font-medium">
+                                    class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
                                 Clear all filters
                             </button>
                         }
@@ -275,5 +261,3 @@
         </div>
     </div>
 </div>
-
- 

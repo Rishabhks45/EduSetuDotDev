@@ -1,10 +1,9 @@
 @using System.ComponentModel.DataAnnotations
 
 <div class="w-full lg:w-80 space-y-6">
-    <!-- Categories -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex items-center justify-between cursor-pointer mb-4" @onclick="@(() => ToggleSection("categories"))">
-            <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
                 </svg>
@@ -12,13 +11,13 @@
             </h2>
             @if (IsExpanded("categories"))
             {
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
                 </svg>
             }
             else
             {
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
             }
@@ -30,15 +29,15 @@
                 @foreach (var category in categories)
                 {
                     <button @onclick="() => OnCategorySelect.InvokeAsync(category.Id)"
-                            class="@($"w-full flex items-center gap-3 px-4 py-4 rounded-lg transition-colors text-left {(SelectedCategory == category.Id ? "bg-primary-50 text-primary-700 border border-primary-200" : "hover:bg-gray-50 text-gray-700 border border-transparent")}")">
-                        <div class="p-2 rounded-lg bg-white shadow-sm">
+                            class="@($"w-full flex items-center gap-3 px-4 py-4 rounded-lg transition-colors text-left {(SelectedCategory == category.Id ? "bg-primary-50 dark:bg-primary-900 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-700" : "hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-transparent")}")">
+                        <div class="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-sm">
                             @GetCategoryIcon(category.Id)
                         </div>
                         <div class="flex-1">
                             <div class="font-medium">@category.Name</div>
-                            <div class="text-xs text-gray-500 mt-1">@category.Description</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">@category.Description</div>
                         </div>
-                        <span class="text-sm bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
+                        <span class="text-sm bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-full">
                             @category.Count
                         </span>
                     </button>
@@ -48,39 +47,38 @@
 
         @if (!string.IsNullOrEmpty(SelectedCategory))
         {
-            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                <h3 class="text-sm font-medium text-gray-700 mb-2">
+            <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Selected Category
                 </h3>
                 <div class="flex items-center gap-2">
                     @GetCategoryIcon(SelectedCategory)
-                    <span class="text-sm text-primary-700 font-medium">
+                    <span class="text-sm text-primary-700 dark:text-primary-300 font-medium">
                         @categories.FirstOrDefault(c => c.Id == SelectedCategory)?.Name
                     </span>
                 </div>
                 <button @onclick="@(() => OnCategorySelect.InvokeAsync(""))"
-                        class="mt-2 text-xs text-gray-500 hover:text-gray-700">
+                        class="mt-2 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
                     Clear selection
                 </button>
             </div>
         }
     </div>
 
-    <!-- Filters -->
     @foreach (var section in filterSections)
     {
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between cursor-pointer mb-4" @onclick="() => ToggleSection(section.Id)">
-                <h3 class="text-lg font-semibold text-gray-800">@(section.Title)</h3>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">@(section.Title)</h3>
                 @if (IsExpanded(section.Id))
                 {
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
                     </svg>
                 }
                 else
                 {
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 }
@@ -92,7 +90,7 @@
                     @foreach (var filter in section.Filters)
                     {
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 @filter.Label
                             </label>
                             @if (filter.Type == "checkbox")
@@ -100,14 +98,14 @@
                                 <label class="flex items-center gap-2 cursor-pointer">
                                     <input type="checkbox" checked="@(Filters.ContainsKey(filter.Key) && Filters[filter.Key] == "true")"
                                            @onchange="(e) => OnFilterChange.InvokeAsync((filter.Key, e.Value.ToString()))"
-                                           class="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded" />
-                                    <span class="text-sm text-gray-700">@filter.Label</span>
+                                           class="w-4 h-4 text-primary-600 dark:text-primary-500 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700" />
+                                    <span class="text-sm text-gray-700 dark:text-gray-300">@filter.Label</span>
                                 </label>
                             }
                             else
                             {
                                 <select @bind="Filters[filter.Key]" @bind:after="() => OnFilterChange.InvokeAsync((filter.Key, Filters[filter.Key]))"
-                                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm">
+                                        class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                                     <option value="">All @filter.Label</option>
                                     @if (FilterOptions.ContainsKey(filter.Key))
                                     {
@@ -125,47 +123,45 @@
         </div>
     }
 
-    <!-- Clear Filters -->
     @if (Filters.Any(f => !string.IsNullOrEmpty(f.Value)))
     {
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <button @onclick="() => OnClearFilters.InvokeAsync()"
-                    class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-lg font-medium transition-colors">
+                    class="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-3 rounded-lg font-medium transition-colors">
                 Clear All Filters
             </button>
         </div>
     }
 
-    <!-- Quick Stats -->
-    <div class="bg-gradient-to-br from-primary-50 to-secondary-50 rounded-xl border border-primary-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Stats</h3>
-        <div class="space-y-3">
-            <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Total Notes</span>
-                <span class="font-semibold text-gray-800">357</span>
-            </div>
-            <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Board Papers</span>
-                <span class="font-semibold text-gray-800">156</span>
-            </div>
-            <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">University Notes</span>
-                <span class="font-semibold text-gray-800">89</span>
-            </div>
-            <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Exam Materials</span>
-                <span class="font-semibold text-gray-800">67</span>
-            </div>
-            <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">State Content</span>
-                <span class="font-semibold text-gray-800">45</span>
-            </div>
-            <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Avg. Rating</span>
-                <span class="font-semibold text-gray-800">4.6/5</span>
-            </div>
+   <div class="bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-primary-900 dark:to-secondary-900 rounded-xl border border-primary-200 dark:border-primary-800 p-6">
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Quick Stats</h3>
+    <div class="space-y-3">
+        <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600 dark:text-gray-400">Total Notes</span>
+            <span class="font-semibold text-gray-800 dark:text-white">357</span>
+        </div>
+        <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600 dark:text-gray-400">Board Papers</span>
+            <span class="font-semibold text-gray-800 dark:text-white">156</span>
+        </div>
+        <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600 dark:text-gray-400">University Notes</span>
+            <span class="font-semibold text-gray-800 dark:text-white">89</span>
+        </div>
+        <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600 dark:text-gray-400">Exam Materials</span>
+            <span class="font-semibold text-gray-800 dark:text-white">67</span>
+        </div>
+        <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600 dark:text-gray-400">State Content</span>
+            <span class="font-semibold text-gray-800 dark:text-white">45</span>
+        </div>
+        <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600 dark:text-gray-400">Avg. Rating</span>
+            <span class="font-semibold text-gray-800 dark:text-white">4.6/5</span>
         </div>
     </div>
+</div>
 </div>
 
 @code {
@@ -244,22 +240,22 @@
     {
         return categoryId switch
         {
-            "board" => @<svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-            </svg>,
-            "university" => @<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-            </svg>,
-            "exam" => @<svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
-            </svg>,
-            "state" => @<svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            </svg>,
-            _ => @<svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
+            "board" => @<svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+</svg>,
+            "university" => @<svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+</svg>,
+            "exam" => @<svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+</svg>,
+            "state" => @<svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+</svg>,
+            _ => @<svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+</svg>
         };
     }
 
@@ -284,4 +280,4 @@
         public string Label { get; set; } = "";
         public string Type { get; set; } = "select";
     }
-} 
+}

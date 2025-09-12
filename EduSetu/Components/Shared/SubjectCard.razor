@@ -1,23 +1,23 @@
 @using System.ComponentModel.DataAnnotations
 @using EduSetu.Components.Shared
 
-<div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-all duration-200 hover:border-primary-200">
+<div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-md transition-all duration-200 hover:border-primary-200 dark:hover:border-primary-600">
     <div class="flex items-start justify-between mb-4">
         <div class="flex-1">
             <div class="flex items-center gap-2 mb-2">
-                <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
                     @Subject.Code
                 </span>
-                <span class="text-xs font-medium text-primary-700 bg-primary-50 px-2 py-1 rounded capitalize">
+                <span class="text-xs font-medium text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900 px-2 py-1 rounded capitalize">
                     @Subject.Category
                 </span>
             </div>
-            <h3 class="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2 line-clamp-2">
                 @Subject.Name
             </h3>
         </div>
-        <div class="p-2 rounded-full bg-primary-50 ml-4">
-            <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="p-2 rounded-full bg-primary-50 dark:bg-primary-900 ml-4">
+            <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
         </div>
@@ -25,7 +25,7 @@
 
     @if (!string.IsNullOrEmpty(GetCategoryInfo()))
     {
-        <div class="flex items-center gap-2 mb-4 text-sm text-gray-600">
+        <div class="flex items-center gap-2 mb-4 text-sm text-gray-600 dark:text-gray-400">
             @GetCategoryIcon()
             <span>@GetCategoryLabel(): @GetCategoryInfo()</span>
         </div>
@@ -33,15 +33,15 @@
 
     <div class="space-y-3 mb-6">
         <div class="flex items-center gap-2">
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
-            <h4 class="text-sm font-medium text-gray-700">Available Years:</h4>
+            <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Available Years:</h4>
         </div>
         <div class="flex flex-wrap gap-2">
             @foreach (var year in Subject.Years)
             {
-                <span class="px-2 py-1 text-xs font-medium text-primary-700 bg-primary-50 rounded border border-primary-200">
+                <span class="px-2 py-1 text-xs font-medium text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900 rounded border border-primary-200 dark:border-primary-800">
                     @year
                 </span>
             }
@@ -49,7 +49,7 @@
     </div>
 
     <button @onclick="() => OnViewPapers.InvokeAsync(Subject)"
-            class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium">
+            class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary-600 text-white dark:bg-primary-700 dark:text-white rounded-lg hover:bg-primary-700 dark:hover:bg-primary-600 transition-colors font-medium">
         <span>View Papers</span>
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -68,20 +68,20 @@
     {
         return Subject.Category switch
         {
-            "board" => @<svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "board" => @<svg class="w-4 h-4 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
             </svg>,
-            "university" => @<svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "university" => @<svg class="w-4 h-4 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
             </svg>,
-            "exam" => @<svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "exam" => @<svg class="w-4 h-4 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
             </svg>,
-            "state" => @<svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "state" => @<svg class="w-4 h-4 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>,
-            _ => @<svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            _ => @<svg class="w-4 h-4 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
         };
@@ -110,4 +110,4 @@
             _ => "Institution"
         };
     }
-} 
+}
