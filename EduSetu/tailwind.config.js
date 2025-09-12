@@ -6,6 +6,7 @@ module.exports = {
     "./wwwroot/**/*.html",
     "./**/*.razor"
   ],
+  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       colors: {

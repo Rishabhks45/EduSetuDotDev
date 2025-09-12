@@ -24,3 +24,50 @@ window.queryClipboardPermission = function () {
         return Promise.resolve("error");
     }
 };
+
+// ===== Theme Management Functions =====
+window.getThemePreference = function () {
+    try {
+        const savedTheme = localStorage.getItem('theme-preference');
+        if (savedTheme !== null) {
+            return savedTheme === 'dark';
+        }
+        // Default to system preference if no saved preference
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch (e) {
+        console.warn('Failed to get theme preference:', e);
+        return false; // Default to light mode
+    }
+};
+
+window.setThemePreference = function (isDarkMode) {
+    try {
+        localStorage.setItem('theme-preference', isDarkMode ? 'dark' : 'light');
+        
+        // Apply theme to document
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        console.log('Theme preference set to:', isDarkMode ? 'dark' : 'light');
+    } catch (e) {
+        console.warn('Failed to set theme preference:', e);
+    }
+};
+
+// Initialize theme on page load
+if (typeof window.initializeTheme !== "function") {
+    window.initializeTheme = function () {
+        const isDarkMode = window.getThemePreference();
+        window.setThemePreference(isDarkMode);
+    };
+    
+    // Auto-initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', window.initializeTheme);
+    } else {
+        window.initializeTheme();
+    }
+}

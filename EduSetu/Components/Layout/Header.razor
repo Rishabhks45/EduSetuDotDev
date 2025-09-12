@@ -31,9 +31,29 @@
 
             <!-- Auth/User Buttons -->
             <div class="hidden md:flex items-center gap-4">
+                <!-- Theme Toggle Button -->
+                <button class="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" 
+                        @onclick="ToggleTheme" 
+                        title="@(isDarkMode ? "Switch to light mode" : "Switch to dark mode")">
+                    @if (isDarkMode)
+                    {
+                        <!-- Sun icon for light mode -->
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    }
+                    else
+                    {
+                        <!-- Moon icon for dark mode -->
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    }
+                </button>
+                
                 @if (!isAuthenticated)
                 {
-                    <a href="/login" class="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors">
+                    <a href="/login" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
                         </svg>
@@ -60,13 +80,13 @@
                         </button>
                         @if (showUserDropdown)
                         {
-                            <div class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                                <div class="px-4 py-3 border-b border-gray-100">
-                                    <div class="font-semibold">@userName</div>
-                                    <div class="text-xs text-gray-500 truncate">@userEmail</div>
+                            <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                                <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                                    <div class="font-semibold text-gray-900 dark:text-white">@userName</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 truncate">@userEmail</div>
                                 </div>
-                                <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
-                                <button class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100" @onclick="Logout">Logout</button>
+                                <a href="/profile" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Profile</a>
+                                <button class="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" @onclick="Logout">Logout</button>
                             </div>
                         }
                     </div>
@@ -94,17 +114,35 @@
         @if (isMenuOpen)
         {
             <div class="fixed inset-0 bg-black/40 md:hidden" @onclick="ToggleMenu"></div>
-            <div id="mobile-menu" class="md:hidden bg-white mt-4 p-4 rounded-lg shadow-lg relative z-50 max-h-[70vh] overflow-y-auto">
+            <div id="mobile-menu" class="md:hidden bg-white dark:bg-gray-800 mt-4 p-4 rounded-lg shadow-lg relative z-50 max-h-[70vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
                 <nav class="flex flex-col space-y-4">
                     <a href="/" class="nav-link">Home</a>
                     <a href="/pyqs" class="nav-link">PYQs</a>
                     <a href="/notes" class="nav-link">Notes</a>
                     <a href="/videos" class="nav-link">Videos</a>
                     <a href="/contact" class="nav-link">Contact</a>
-                    <div class="pt-4 border-t border-gray-200 space-y-3">
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                        <!-- Theme Toggle for Mobile -->
+                        <button class="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-lg" @onclick="ToggleTheme">
+                            @if (isDarkMode)
+                            {
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                </svg>
+                                <span>Light Mode</span>
+                            }
+                            else
+                            {
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                                </svg>
+                                <span>Dark Mode</span>
+                            }
+                        </button>
+                        
                         @if (!isAuthenticated)
                         {
-                            <a href="/login" class="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors">
+                            <a href="/login" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
                                 </svg>
@@ -119,12 +157,12 @@
                         }
                         else
                         {
-                            <div class="border-b border-gray-100 px-4 py-2">
-                                <div class="font-semibold">@userName</div>
-                                <div class="text-xs text-gray-500 truncate">@userEmail</div>
+                            <div class="border-b border-gray-100 dark:border-gray-700 px-4 py-2">
+                                <div class="font-semibold text-gray-900 dark:text-white">@userName</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 truncate">@userEmail</div>
                             </div>
-                            <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
-                            <button class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100" @onclick="Logout">Logout</button>
+                            <a href="/profile" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors rounded-lg">Profile</a>
+                            <button class="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors rounded-lg" @onclick="Logout">Logout</button>
                         }
                     </div>
                 </nav>
