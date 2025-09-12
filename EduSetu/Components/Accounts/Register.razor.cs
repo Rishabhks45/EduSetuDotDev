@@ -92,27 +92,47 @@ namespace EduSetu.Components.Accounts
 
         private string GetStepClass(int stepIndex)
         {
-            if (currentStep > stepIndex + 1)
-                return "flex items-center justify-center w-10 h-10 rounded-full border-2 bg-primary-600 border-primary-600 text-white";
-            else if (currentStep >= stepIndex + 1)
-                return "flex items-center justify-center w-10 h-10 rounded-full border-2 bg-primary-600 border-primary-600 text-white";
+            var baseClasses = "flex items-center justify-center rounded-full";
+            
+            if (stepIndex < currentStep)
+            {
+                // Completed step
+                return $"{baseClasses} bg-primary-600 dark:bg-primary-700 text-white";
+            }
+            else if (stepIndex == currentStep)
+            {
+                // Current step
+                return $"{baseClasses} bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 border border-primary-600 dark:border-primary-500";
+            }
             else
-                return "flex items-center justify-center w-10 h-10 rounded-full border-2 border-gray-300 text-gray-400";
+            {
+                // Upcoming step
+                return $"{baseClasses} bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600";
+            }
         }
 
         private string GetStepLineClass(int stepIndex)
         {
-            if (currentStep > stepIndex + 1)
-                return "w-32 h-0.5 mx-4 bg-primary-600";
+            var baseClass = "h-[2px]";
+            
+            if (stepIndex < currentStep)
+            {
+                // Completed line
+                return $"{baseClass} bg-primary-600 dark:bg-primary-700";
+            }
             else
-                return "w-32 h-0.5 mx-4 bg-gray-300";
+            {
+                // Upcoming line
+                return $"{baseClass} bg-gray-300 dark:bg-gray-600";
+            }
         }
 
-        private string GetInstitutionTypeClass(string value)
+        private string GetInstitutionTypeClass(string type)
         {
-            return formData.InstitutionType == value
-                ? "border-primary-500 bg-primary-50 text-primary-700"
-                : "border-gray-200 hover:border-gray-300";
+            var baseClasses = "flex items-center justify-center gap-3 p-4 rounded-lg border-2 transition-colors";
+            return formData.InstitutionType == type
+                ? $"{baseClasses} bg-primary-50 dark:bg-primary-900/50 border-primary-500 dark:border-primary-700 text-primary-700 dark:text-primary-300"
+                : $"{baseClasses} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700";
         }
 
         private void TogglePasswordVisibility()
