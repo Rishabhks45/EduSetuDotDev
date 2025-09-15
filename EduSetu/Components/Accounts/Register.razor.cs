@@ -1,3 +1,4 @@
+using EduSetu.Domain.Enums;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
 
@@ -5,10 +6,13 @@ namespace EduSetu.Components.Accounts
 {
     public partial class Register
     {
+        private UserRole selectedUserRole = UserRole.Student;
+
         private RegisterFormData formData = new();
         private bool showPassword = false;
         private bool showConfirmPassword = false;
         private bool isLoading = false;
+        private bool Cancel = false;
         private int currentStep = 1;
         private string interestInput = "";
 
@@ -214,5 +218,7 @@ namespace EduSetu.Components.Accounts
 
             isLoading = false;
         }
+        
+
     }
 }

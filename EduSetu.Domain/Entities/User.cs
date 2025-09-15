@@ -19,6 +19,7 @@ namespace EduSetu.Domain.Entities
         public string Password { get; set; } = string.Empty;
         public UserRole Role { get; set; }
         public DateTime? LastLoginAt { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public string? ProfilePictureUrl { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Timezone { get; set; }
