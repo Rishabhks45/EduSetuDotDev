@@ -24,7 +24,7 @@ namespace EduSetu.Components.Layout
             if (isAuthenticated)
             {
                 userName = user.Identity?.Name ?? user.FindFirst("name")?.Value ?? user.FindFirst("given_name")?.Value;
-                userEmail = user.FindFirst(c => c.Type == "email" || c.Type == System.Security.Claims.ClaimTypes.Email)?.Value;
+                userEmail = user.FindFirst(c => c.Type == "email" || c.Type == ClaimTypes.Email)?.Value;
             }
         }
 

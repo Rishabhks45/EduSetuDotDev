@@ -12,7 +12,7 @@
     <div class="container mx-auto px-4">
         <div class="flex justify-between items-center">
             <!-- Logo -->
-            <a href="/" class="flex items-center gap-2 text-primary-600 font-bold text-xl">
+            <a href="/" class="flex items-center gap-2 text-primary-300 font-bold text-xl">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
@@ -22,11 +22,11 @@
 
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center space-x-8">
-                <a href="/" class="nav-link">Home</a>
-                <a href="/pyqs" class="nav-link">PYQs</a>
-                <a href="/notes" class="nav-link">Notes</a>
-                <a href="/videos" class="nav-link">Videos</a>
-                <a href="/contact" class="nav-link">Contact</a>
+                <NavLink href="/" Match="NavLinkMatch.All" class="nav-link dark:text-white">Home</NavLink>
+                <NavLink href="/pyqs" class="nav-link dark:text-white">PYQs</NavLink>
+                <NavLink href="/notes" class="nav-link dark:text-white">Notes</NavLink>
+                <NavLink href="/videos" class="nav-link dark:text-white">Videos</NavLink>
+                <NavLink href="/contact" class="nav-link dark:text-white">Contact</NavLink>
             </nav>
 
             <!-- Auth/User Buttons -->
@@ -73,7 +73,7 @@
                             <svg class="w-7 h-7 rounded-full bg-primary-100 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
-                            <span class="font-medium">@userName</span>
+                            <span class="font-medium dark:text-white">@userName</span>
                             <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
@@ -94,7 +94,7 @@
             </div>
 
             <!-- Mobile Menu Button -->
-            <button class="md:hidden text-gray-600" @onclick="ToggleMenu" aria-label="Toggle menu" aria-expanded="@isMenuOpen" aria-controls="mobile-menu">
+            <button class="md:hidden text-gray-600 dark:text-white text-primary-200" @onclick="ToggleMenu" aria-label="Toggle menu" aria-expanded="@isMenuOpen" aria-controls="mobile-menu">
                 @if (isMenuOpen)
                 {
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,14 +113,14 @@
         <!-- Mobile Menu -->
         @if (isMenuOpen)
         {
-            <div class="fixed inset-0 bg-black/40 md:hidden" @onclick="ToggleMenu"></div>
+            <div class="fixed inset-0 bg-black/40 md:hidden " @onclick="ToggleMenu"></div>
             <div id="mobile-menu" class="md:hidden bg-white dark:bg-gray-800 mt-4 p-4 rounded-lg shadow-lg relative z-50 max-h-[70vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
                 <nav class="flex flex-col space-y-4">
-                    <a href="/" class="nav-link">Home</a>
-                    <a href="/pyqs" class="nav-link">PYQs</a>
-                    <a href="/notes" class="nav-link">Notes</a>
-                    <a href="/videos" class="nav-link">Videos</a>
-                    <a href="/contact" class="nav-link">Contact</a>
+                    <NavLink href="/" Match="NavLinkMatch.All" class="nav-link dark:text-white">Home</NavLink>
+                    <NavLink href="/pyqs" class="nav-link dark:text-white">PYQs</NavLink>
+                    <NavLink href="/notes" class="nav-link dark:text-white">Notes</NavLink>
+                    <NavLink href="/videos" class="nav-link dark:text-white">Videos</NavLink>
+                    <NavLink href="/contact" class="nav-link dark:text-white">Contact</NavLink>
                     <div class="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
                         <!-- Theme Toggle for Mobile -->
                         <button class="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors rounded-lg" @onclick="ToggleTheme">

@@ -1,7 +1,8 @@
 @inject NavigationManager NavigationManager
-
-
 @page "/"
+@using Microsoft.AspNetCore.Components.Authorization
+
+
 <PageTitle>Home - EduSetu</PageTitle>
 
 <section class="relative min-h-[700px] flex items-center bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-600 dark:from-primary-800 dark:via-primary-900 dark:to-secondary-800 text-white overflow-hidden">
@@ -32,6 +33,8 @@
                 </p>
             </div>
 
+            <AuthorizeView>
+                <NotAuthorized>
             <div class="mb-8">
                 <div class="bg-white/10 dark:bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/20 dark:border-white/10">
                     <h3 class="text-xl font-semibold mb-4">Get Started in Seconds</h3>
@@ -51,7 +54,8 @@
                     </p>
                 </div>
             </div>
-
+                </NotAuthorized>
+            </AuthorizeView>
             <div class="mb-12">
                 <form @onsubmit="HandleHeroSearch" class="max-w-2xl mx-auto">
                     <div class="relative">
