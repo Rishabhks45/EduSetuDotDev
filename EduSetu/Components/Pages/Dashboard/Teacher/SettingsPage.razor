@@ -3,6 +3,8 @@
 @using EduSetu.Components.Layout
 @layout TeacherLayout
 @inject IJSRuntime JSRuntime
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Teacher")]
 
 <PageTitle>Settings - Teacher Dashboard</PageTitle>
 

@@ -2,6 +2,8 @@
 @layout TeacherLayout
 @using EduSetu.Components.Layout
 @using EduSetu.Components.Shared
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Teacher")]
 
 <div class="space-y-6">
     <!-- Stats Grid -->
