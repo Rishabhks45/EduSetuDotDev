@@ -4,37 +4,37 @@
 
 <PageTitle>Video Details - EduSetu</PageTitle>
 
-<div class="min-h-screen bg-gray-50 pt-16">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
     <div class="container mx-auto px-4 py-8">
         @if (isLoading)
         {
             <div class="flex items-center justify-center min-h-[300px]">
                 <div class="text-center">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-                    <p class="text-gray-600">Loading video...</p>
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
+                    <p class="text-gray-600 dark:text-gray-400">Loading video...</p>
                 </div>
             </div>
         }
         else if (video == null)
         {
             <div class="text-center py-12">
-                <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-16 h-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
-                <h3 class="text-xl font-semibold text-gray-800 mb-2">Video not found</h3>
-                <p class="text-gray-600 mb-6">The video you are looking for does not exist or has been removed.</p>
-                <NavLink href="/videos" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Video not found</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-6">The video you are looking for does not exist or has been removed.</p>
+                <NavLink href="/videos" class="bg-primary-600 dark:bg-primary-700 hover:bg-primary-700 dark:hover:bg-primary-800 text-white px-6 py-3 rounded-lg font-medium transition-colors">
                     Back to Videos
                 </NavLink>
             </div>
         }
         else
         {
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-3xl mx-auto">
-                <h1 class="text-3xl font-bold text-gray-800 mb-4">@video.Title</h1>
-                <div class="flex items-center gap-4 mb-4 text-sm text-gray-500">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 max-w-3xl mx-auto">
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-4">@video.Title</h1>
+                <div class="flex items-center gap-4 mb-4 text-sm text-gray-500 dark:text-gray-400">
                     <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                         </svg>
                         @video.Author
@@ -46,13 +46,13 @@
                         @FormatDate(video.UploadDate)
                     </span>
                     <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4 text-yellow-400 fill-current" fill="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 text-yellow-400 dark:text-yellow-300 fill-current" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
                         </svg>
                         @video.Rating
                     </span>
                 </div>
-                <div class="mb-6 text-gray-600">
+                <div class="mb-6 text-gray-600 dark:text-gray-400">
                     <span class="font-medium">Subject:</span> @video.Subject &nbsp;|&nbsp;
                     <span class="font-medium">Course:</span> @video.Course
                 </div>
@@ -62,16 +62,14 @@
                         Your browser does not support the video tag.
                     </video>
                 </div>
-                <div class="prose max-w-none mb-8">
+                <div class="prose dark:prose-invert max-w-none mb-8">
                     @video.Description
                 </div>
                 <div class="flex gap-4">
-                    <button class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">Download</button>
-                    <NavLink href="/videos" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium transition-colors">Back to Videos</NavLink>
+                    <button class="bg-primary-600 dark:bg-primary-700 hover:bg-primary-700 dark:hover:bg-primary-800 text-white px-6 py-2 rounded-lg font-medium transition-colors">Download</button>
+                    <NavLink href="/videos" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-2 rounded-lg font-medium transition-colors">Back to Videos</NavLink>
                 </div>
             </div>
         }
     </div>
 </div>
-
- 

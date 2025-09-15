@@ -2,24 +2,23 @@
 @using System.ComponentModel.DataAnnotations
 @inject NavigationManager NavigationManager
 
-<div class="min-h-screen bg-gray-50 pt-16">
-    <!-- Header -->
-    <div class="bg-white shadow-sm border-b">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
+    <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="py-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Announcements</h1>
-                        <p class="text-gray-600 mt-1">Stay updated with the latest news and important information</p>
+                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Announcements</h1>
+                        <p class="text-gray-600 dark:text-gray-400 mt-1">Stay updated with the latest news and important information</p>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <button @onclick="ShowFilters" class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                        <button @onclick="ShowFilters" class="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
                             </svg>
                             Filter
                         </button>
-                        <button @onclick="RefreshAnnouncements" class="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                        <button @onclick="RefreshAnnouncements" class="flex items-center gap-2 px-4 py-2 bg-primary-600 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-700 dark:hover:bg-primary-800 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                             </svg>
@@ -31,15 +30,14 @@
         </div>
     </div>
 
-    <!-- Filters -->
     @if (showFilters)
     {
-        <div class="bg-white border-b border-gray-200">
+        <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                 <div class="flex items-center space-x-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                        <select @bind="selectedCategory" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+                        <select @bind="selectedCategory" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                             <option value="">All Categories</option>
                             <option value="academic">Academic</option>
                             <option value="exam">Exam Updates</option>
@@ -49,8 +47,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                        <select @bind="selectedPriority" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
+                        <select @bind="selectedPriority" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                             <option value="">All Priorities</option>
                             <option value="high">High</option>
                             <option value="medium">Medium</option>
@@ -58,15 +56,15 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
-                        <select @bind="selectedDateRange" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date Range</label>
+                        <select @bind="selectedDateRange" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                             <option value="all">All Time</option>
                             <option value="today">Today</option>
                             <option value="week">This Week</option>
                             <option value="month">This Month</option>
                         </select>
                     </div>
-                    <button @onclick="ApplyFilters" class="mt-6 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                    <button @onclick="ApplyFilters" class="mt-6 px-4 py-2 bg-primary-600 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-700 dark:hover:bg-primary-800 transition-colors">
                         Apply Filters
                     </button>
                 </div>
@@ -74,29 +72,25 @@
         </div>
     }
 
-    <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Main Announcements List -->
             <div class="lg:col-span-2 space-y-6">
                 @if (isLoading)
                 {
                     <div class="flex items-center justify-center py-12">
-                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 dark:border-primary-400"></div>
                     </div>
                 }
                 else
                 {
                     @foreach (var announcement in filteredAnnouncements)
                     {
-                        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
                             <div class="flex items-start space-x-4">
-                                <!-- Priority Indicator -->
                                 <div class="flex-shrink-0">
                                     <div class="@GetPriorityColor(announcement.Priority) w-3 h-3 rounded-full"></div>
                                 </div>
 
-                                <!-- Content -->
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center space-x-2 mb-2">
                                         <span class="@GetCategoryBadgeColor(announcement.Category) inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
@@ -104,15 +98,15 @@
                                         </span>
                                         @if (announcement.IsNew)
                                         {
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300">
                                                 NEW
                                             </span>
                                         }
-                                        <span class="text-sm text-gray-500">@announcement.PublishDate.ToString("MMM dd, yyyy")</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">@announcement.PublishDate.ToString("MMM dd, yyyy")</span>
                                     </div>
 
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">@announcement.Title</h3>
-                                    <p class="text-gray-600 mb-4">@announcement.Summary</p>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">@announcement.Title</h3>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">@announcement.Summary</p>
 
                                     @if (!string.IsNullOrEmpty(announcement.ImageUrl))
                                     {
@@ -122,11 +116,11 @@
                                     }
 
                                     <div class="flex items-center justify-between">
-                                        <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                        <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
                                             <span>By @announcement.Author</span>
                                             <span>@announcement.ReadTime min read</span>
                                         </div>
-                                        <button @onclick="@(() => ReadAnnouncement(announcement))" class="text-primary-600 hover:text-primary-700 font-medium text-sm">
+                                        <button @onclick="@(() => ReadAnnouncement(announcement))" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium text-sm">
                                             Read More →
                                         </button>
                                     </div>
@@ -135,20 +129,19 @@
                         </div>
                     }
 
-                    <!-- Pagination -->
                     @if (totalPages > 1)
                     {
                         <div class="flex items-center justify-center space-x-2 mt-8">
-                            <button @onclick="PreviousPage" disabled="@(currentPage == 1)" class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button @onclick="PreviousPage" disabled="@(currentPage == 1)" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
                                 Previous
                             </button>
                             @for (int i = 1; i <= totalPages; i++)
                             {
-                                <button @onclick="@(() => GoToPage(i))" class="px-3 py-2 border rounded-lg @(i == currentPage ? "bg-primary-600 text-white border-primary-600" : "border-gray-300 text-gray-700 hover:bg-gray-50")">
+                                <button @onclick="@(() => GoToPage(i))" class="px-3 py-2 border rounded-lg @(i == currentPage ? "bg-primary-600 dark:bg-primary-700 text-white border-primary-600 dark:border-primary-700" : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700")">
                                     @i
                                 </button>
                             }
-                            <button @onclick="NextPage" disabled="@(currentPage == totalPages)" class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button @onclick="NextPage" disabled="@(currentPage == totalPages)" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
                                 Next
                             </button>
                         </div>
@@ -204,4 +197,3 @@
         </div>
     </div>
 </div>
-

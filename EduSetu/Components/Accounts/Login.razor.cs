@@ -8,7 +8,6 @@ using MediatR;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Options;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace EduSetu.Components.Accounts
@@ -50,7 +49,17 @@ namespace EduSetu.Components.Accounts
         private async Task CheckAuthenticationState()
         {
             AuthenticationState authState = await AuthProvider.GetAuthenticationStateAsync();
-            if (authState.User.Identity?.IsAuthenticated == true && !IsLogoutEvent)
+            
+            // If this is a logout event, show logout message and clear any cached data
+            if (IsLogoutEvent)
+            {
+                successMessage = "You have been successfully logged out.";
+                // Clear any cached authentication data
+                await TryLoadSavedEmail();
+                return;
+            }
+            
+            if (authState.User.Identity?.IsAuthenticated == true)
             {
                 // Check for return URL
                 Uri uri = new Uri(Navigation.Uri);
@@ -168,6 +177,7 @@ namespace EduSetu.Components.Accounts
             showPassword = !showPassword;
         }
 
+        #region Google SignIn
         private void HandleGoogleLogin()
         {
             Uri uri = new Uri(Navigation.Uri);
@@ -182,5 +192,6 @@ namespace EduSetu.Components.Accounts
             
             Navigation.NavigateTo(googleLoginUrl, forceLoad: true);
         }
+        #endregion
     }
 }

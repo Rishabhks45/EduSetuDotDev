@@ -2,7 +2,8 @@
 @using EduSetu.Components.Layout
 @using EduSetu.Domain.Enums
 @layout AdminLayout
-
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "SuperAdmin")]
 <PageTitle>Admin Security - EduSetu</PageTitle>
 
 <div class="space-y-6">

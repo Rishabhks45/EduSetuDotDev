@@ -3,10 +3,12 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inject NavigationManager NavigationManager
 @inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.JSInterop
 @inject IJSRuntime JSRuntime
 @implements IAsyncDisposable
 
+@attribute [Authorize(Roles = "Super Admin")]
 <PageTitle>Admin Dashboard - EduSetu</PageTitle>
 
 <div class="h-screen bg-gray-50 dark:bg-gray-900 flex overflow-hidden" @onclick="@(() => showNotifications = false)">

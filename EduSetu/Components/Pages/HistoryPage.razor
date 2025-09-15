@@ -2,24 +2,23 @@
 @using System.ComponentModel.DataAnnotations
 @inject NavigationManager NavigationManager
 
-<div class="min-h-screen bg-gray-50 pt-16">
-    <!-- Header -->
-    <div class="bg-white shadow-sm border-b">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
+    <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="py-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Activity History</h1>
-                        <p class="text-gray-600 mt-1">Track your learning journey and activity</p>
+                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Activity History</h1>
+                        <p class="text-gray-600 dark:text-gray-400 mt-1">Track your learning journey and activity</p>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <button @onclick="ExportHistory" class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                        <button @onclick="ExportHistory" class="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
                             Export
                         </button>
-                        <button @onclick="ClearHistory" class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                        <button @onclick="ClearHistory" class="flex items-center gap-2 px-4 py-2 bg-red-600 dark:bg-red-700 text-white rounded-lg hover:bg-red-700 dark:hover:bg-red-800 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                             </svg>
@@ -31,13 +30,12 @@
         </div>
     </div>
 
-    <!-- Filters -->
-    <div class="bg-white border-b border-gray-200 ">
+    <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex items-center space-x-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Activity Type</label>
-                    <select @bind="SelectedActivityType" @bind:event="oninput" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Activity Type</label>
+                    <select @bind="SelectedActivityType" @bind:event="oninput" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                         <option value="">All Activities</option>
                         <option value="download">Downloads</option>
                         <option value="upload">Uploads</option>
@@ -47,8 +45,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
-                    <select @bind="SelectedDateRange" @bind:event="oninput" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date Range</label>
+                    <select @bind="SelectedDateRange" @bind:event="oninput" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                         <option value="all">All Time</option>
                         <option value="today">Today</option>
                         <option value="week">This Week</option>
@@ -57,8 +55,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
-                    <select @bind="SortBy" @bind:event="oninput" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sort By</label>
+                    <select @bind="SortBy" @bind:event="oninput" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                         <option value="date">Date</option>
                         <option value="type">Type</option>
                         <option value="duration">Duration</option>
@@ -68,83 +66,77 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            <!-- Left Column - Stats & Summary -->
             <div class="lg:col-span-1 space-y-6">
-                <!-- Activity Summary -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Activity Summary</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Activity Summary</h3>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-600">Total Activities</span>
-                            <span class="font-semibold text-gray-900">@summary.TotalActivities</span>
+                            <span class="text-gray-600 dark:text-gray-400">Total Activities</span>
+                            <span class="font-semibold text-gray-900 dark:text-white">@summary.TotalActivities</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-600">Study Hours</span>
-                            <span class="font-semibold text-gray-900">@summary.TotalStudyHours hrs</span>
+                            <span class="text-gray-600 dark:text-gray-400">Study Hours</span>
+                            <span class="font-semibold text-gray-900 dark:text-white">@summary.TotalStudyHours hrs</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-600">Downloads</span>
-                            <span class="font-semibold text-gray-900">@summary.TotalDownloads</span>
+                            <span class="text-gray-600 dark:text-gray-400">Downloads</span>
+                            <span class="font-semibold text-gray-900 dark:text-white">@summary.TotalDownloads</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-600">Uploads</span>
-                            <span class="font-semibold text-gray-900">@summary.TotalUploads</span>
+                            <span class="text-gray-600 dark:text-gray-400">Uploads</span>
+                            <span class="font-semibold text-gray-900 dark:text-white">@summary.TotalUploads</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-600">This Week</span>
-                            <span class="font-semibold text-gray-900">@summary.ThisWeekActivities</span>
+                            <span class="text-gray-600 dark:text-gray-400">This Week</span>
+                            <span class="font-semibold text-gray-900 dark:text-white">@summary.ThisWeekActivities</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Weekly Activity Chart -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Weekly Activity</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Weekly Activity</h3>
                     <div class="space-y-3">
                         @foreach (var day in weeklyActivity)
                         {
                             <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-600">@day.Day</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">@day.Day</span>
                                 <div class="flex items-center space-x-2">
-                                    <div class="w-20 bg-gray-200 rounded-full h-2">
-                                        <div class="bg-primary-600 h-2 rounded-full" style="width: @(day.Percentage)%"></div>
+                                    <div class="w-20 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                        <div class="bg-primary-600 dark:bg-primary-500 h-2 rounded-full" style="width: @(day.Percentage)%"></div>
                                     </div>
-                                    <span class="text-xs text-gray-500">@day.Count</span>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">@day.Count</span>
                                 </div>
                             </div>
                         }
                     </div>
                 </div>
 
-                <!-- Top Subjects -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Subjects</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Subjects</h3>
                     <div class="space-y-3">
                         @foreach (var subject in topSubjects)
                         {
                             <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-600">@subject.Name</span>
-                                <span class="font-semibold text-gray-900">@subject.Count</span>
+                                <span class="text-sm text-gray-600 dark:text-gray-400">@subject.Name</span>
+                                <span class="font-semibold text-gray-900 dark:text-white">@subject.Count</span>
                             </div>
                         }
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column - Activity Timeline -->
             <div class="lg:col-span-3">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold text-gray-900">Activity Timeline</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Activity Timeline</h3>
                         <div class="flex items-center space-x-2">
-                            <button @onclick="PreviousPage" disabled="@(currentPage == 1)" class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button @onclick="PreviousPage" disabled="@(currentPage == 1)" class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
                                 Previous
                             </button>
-                            <span class="text-sm text-gray-500">Page @currentPage of @totalPages</span>
-                            <button @onclick="NextPage" disabled="@(currentPage == totalPages)" class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Page @currentPage of @totalPages</span>
+                            <button @onclick="NextPage" disabled="@(currentPage == totalPages)" class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
                                 Next
                             </button>
                         </div>
@@ -153,8 +145,7 @@
                     <div class="space-y-4">
                         @foreach (var activity in paginatedActivities)
                         {
-                            <div class="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                                <!-- Activity Icon -->
+                            <div class="flex items-start space-x-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <div class="flex-shrink-0">
                                     <div class="@GetActivityIconColor(activity.Type) w-10 h-10 rounded-full flex items-center justify-center">
                                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,20 +173,19 @@
                                     </div>
                                 </div>
 
-                                <!-- Activity Details -->
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center space-x-2 mb-1">
                                         <span class="@GetActivityBadgeColor(activity.Type) inline-flex items-center px-2 py-1 rounded-full text-xs font-medium">
                                             @activity.Type
                                         </span>
-                                        <span class="text-sm text-gray-500">@activity.Timestamp.ToString("MMM dd, yyyy 'at' HH:mm")</span>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">@activity.Timestamp.ToString("MMM dd, yyyy 'at' HH:mm")</span>
                                     </div>
-                                    <h4 class="text-sm font-medium text-gray-900 mb-1">@activity.Title</h4>
-                                    <p class="text-sm text-gray-600 mb-2">@activity.Description</p>
+                                    <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-1">@activity.Title</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">@activity.Description</p>
                                     
                                     @if (activity.Duration.HasValue)
                                     {
-                                        <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                        <div class="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
                                             <span>Duration: @activity.Duration.Value.TotalMinutes.ToString("F1") min</span>
                                             @if (activity.FileSize != null)
                                             {
@@ -205,9 +195,8 @@
                                     }
                                 </div>
 
-                                <!-- Action Buttons -->
                                 <div class="flex-shrink-0">
-                                    <button @onclick="@(() => ViewActivityDetails(activity))" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                                    <button @onclick="@(() => ViewActivityDetails(activity))" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm font-medium">
                                         Details
                                     </button>
                                 </div>
@@ -219,5 +208,3 @@
         </div>
     </div>
 </div>
-
- 

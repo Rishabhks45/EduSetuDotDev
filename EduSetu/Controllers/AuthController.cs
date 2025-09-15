@@ -33,6 +33,7 @@ namespace EduSetu.Controllers
             _EncryptionSettings = encryptionSettings;
         }
 
+        #region SignIn User
         /// <summary>
         /// Completes the sign-in process using traditional MVC with HttpContext
         /// This is used for the Blazor authentication flow after CQRS validation
@@ -65,14 +66,14 @@ namespace EduSetu.Controllers
 
             // Create claims for the authenticated user
             List<Claim> claims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, getUserResponse.Payload.UserId ?? ""),
-            new(ClaimTypes.Name, getUserResponse.Payload.FullName ?? ""),
-            new(ClaimTypes.Email, getUserResponse.Payload.Email ?? ""),
-            new(ClaimTypes.GivenName, getUserResponse.Payload.FirstName ?? ""),
-            new(ClaimTypes.Surname, getUserResponse.Payload.LastName ?? ""),
-            new(ClaimTypes.Role, getUserResponse.Payload.Role ?? "")
-        };
+            {
+                new(ClaimTypes.NameIdentifier, getUserResponse.Payload.UserId ?? ""),
+                new(ClaimTypes.Name, getUserResponse.Payload.FullName ?? ""),
+                new(ClaimTypes.Email, getUserResponse.Payload.Email ?? ""),
+                new(ClaimTypes.GivenName, getUserResponse.Payload.FirstName ?? ""),
+                new(ClaimTypes.Surname, getUserResponse.Payload.LastName ?? ""),
+                new(ClaimTypes.Role, getUserResponse.Payload.Role ?? "")
+            };
 
             // Create claims identity
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -132,24 +133,41 @@ namespace EduSetu.Controllers
 
             return Redirect(redirectUrl);
         }
+        #endregion
 
 
-
-
+        #region Logout User
 
         /// <summary>
-        /// Handles user logout with BroadcastChannel cross-tab logout support
+        /// Handles user logout with proper session cleanup
         /// </summary>
         /// <returns>Redirect to login page</returns>
         [HttpGet("logout")]
         [AllowAnonymous]
         public async Task<IActionResult> LogOut()
         {
+            // Clear authentication cookie
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            
+            // Clear any remember me cookies
+            if (Request.Cookies.ContainsKey("rememberedEmail"))
+            {
+                Response.Cookies.Delete("rememberedEmail");
+            }
+            
+            // Clear the EduSetuAuth cookie explicitly
+            Response.Cookies.Delete("EduSetuAuth", new CookieOptions
+            {
+                Path = "/",
+                Domain = Request.Host.Host
+            });
 
-            return Redirect("/login");
+            // Redirect to login with logout event parameter
+            return Redirect("/login?event=logout");
         }
+        #endregion
 
+        #region Google SignUp
         /// <summary>
         /// Initiates the Google login process
         /// </summary>
@@ -163,7 +181,10 @@ namespace EduSetu.Controllers
             var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
+        #endregion
 
+
+        #region google Data Saving
         /// <summary>
         /// Handles the response from Google after authentication
         /// </summary>
@@ -213,15 +234,15 @@ namespace EduSetu.Controllers
             }
 
             // Create claims for the authenticated user
-            var claims = new List<Claim>
-    {
-        new(ClaimTypes.NameIdentifier, getUserResponse.Payload.UserId ?? ""),
-        new(ClaimTypes.Name, getUserResponse.Payload.FullName ?? name ?? ""),
-        new(ClaimTypes.Email, getUserResponse.Payload.Email ?? email),
-        new(ClaimTypes.GivenName, getUserResponse.Payload.FirstName ?? firstName ?? ""),
-        new(ClaimTypes.Surname, getUserResponse.Payload.LastName ?? lastName ?? ""),
-        new(ClaimTypes.Role, string.IsNullOrWhiteSpace(getUserResponse.Payload.Role) ? UserRole.Student.ToString() : getUserResponse.Payload.Role)
-    };
+                var claims = new List<Claim>
+                {
+                    new(ClaimTypes.NameIdentifier, getUserResponse.Payload.UserId ?? ""),
+                    new(ClaimTypes.Name, getUserResponse.Payload.FullName ?? name ?? ""),
+                    new(ClaimTypes.Email, getUserResponse.Payload.Email ?? email),
+                    new(ClaimTypes.GivenName, getUserResponse.Payload.FirstName ?? firstName ?? ""),
+                    new(ClaimTypes.Surname, getUserResponse.Payload.LastName ?? lastName ?? ""),
+                    new(ClaimTypes.Role, string.IsNullOrWhiteSpace(getUserResponse.Payload.Role) ? UserRole.Student.ToString() : getUserResponse.Payload.Role)
+                };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
@@ -257,5 +278,6 @@ namespace EduSetu.Controllers
             }
             return Redirect(dashboardUrl);
         }
+        #endregion
     }
 }

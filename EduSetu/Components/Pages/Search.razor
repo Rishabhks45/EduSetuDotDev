@@ -5,68 +5,62 @@
 
 <PageTitle>Search Results - EduSetu</PageTitle>
 
-<div class="min-h-screen bg-gray-50 pt-16">
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
     <div class="container mx-auto px-4 py-8">
         @if (isLoading)
         {
-            <!-- Loading State -->
             <div class="flex items-center justify-center min-h-[400px]">
                 <div class="text-center">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-                    <p class="text-gray-600">Searching for results...</p>
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 dark:border-primary-400 mx-auto mb-4"></div>
+                    <p class="text-gray-600 dark:text-gray-400">Searching for results...</p>
                 </div>
             </div>
         }
         else
         {
-            <!-- Header -->
             <div class="mb-8">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="p-3 bg-primary-100 rounded-xl">
-                        <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="p-3 bg-primary-100 dark:bg-primary-900 rounded-xl">
+                        <svg class="w-8 h-8 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-4xl font-bold text-gray-800">Search Results</h1>
-                        <p class="text-gray-600 mt-1">
+                        <h1 class="text-4xl font-bold text-gray-800 dark:text-white">Search Results</h1>
+                        <p class="text-gray-600 dark:text-gray-400 mt-1">
                             @(searchQuery != null ? $"Results for \"{searchQuery}\"" : "Browse all study materials")
                         </p>
                     </div>
                 </div>
             </div>
 
-            <!-- Search Bar -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
                 <form @onsubmit="HandleNewSearch" class="mb-4">
                     <div class="relative">
                         <input type="text"
                                @bind="searchQuery"
                                placeholder="Search for notes, videos, or previous year papers..."
-                               class="w-full pl-12 pr-32 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors" />
-                        <svg class="absolute left-4 top-3.5 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="w-full pl-12 pr-32 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400" />
+                        <svg class="absolute left-4 top-3.5 text-gray-400 dark:text-gray-500 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                         <button type="submit"
-                                class="absolute right-2 top-1.5 bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                                class="absolute right-2 top-1.5 bg-primary-600 dark:bg-primary-700 hover:bg-primary-700 dark:hover:bg-primary-800 text-white px-6 py-2 rounded-lg font-medium transition-colors">
                             Search
                         </button>
                     </div>
                 </form>
 
-                <!-- Filters and Controls -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div class="flex items-center gap-4">
-                        <!-- Type Filter -->
-                        <select @bind="filterType" @bind:after="ApplyFiltersAndSorting" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm">
+                        <select @bind="filterType" @bind:after="ApplyFiltersAndSorting" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                             <option value="">All Types</option>
                             <option value="notes">Notes</option>
                             <option value="video">Videos</option>
                             <option value="pyq">PYQs</option>
                         </select>
 
-                        <!-- Subject Filter -->
-                        <select @bind="filterSubject" @bind:after="ApplyFiltersAndSorting" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm">
+                        <select @bind="filterSubject" @bind:after="ApplyFiltersAndSorting" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                             <option value="">All Subjects</option>
                             @foreach (var subject in uniqueSubjects)
                             {
@@ -74,16 +68,15 @@
                             }
                         </select>
 
-                        <!-- View Mode Toggle -->
-                        <div class="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                        <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
                             <button @onclick="@(() => SetViewMode("grid"))" 
-                                    class="p-2 rounded-md transition-colors @(viewMode == "grid" ? "bg-white text-gray-800 shadow-sm" : "text-gray-600 hover:text-gray-800")">
+                                    class="p-2 rounded-md transition-colors @(viewMode == "grid" ? "bg-white dark:bg-gray-800 text-gray-800 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white")">
                                 <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                                 </svg>
                             </button>
                             <button @onclick="@(() => SetViewMode("list"))" 
-                                    class="p-2 rounded-md transition-colors @(viewMode == "list" ? "bg-white text-gray-800 shadow-sm" : "text-gray-600 hover:text-gray-800")">
+                                    class="p-2 rounded-md transition-colors @(viewMode == "list" ? "bg-white dark:bg-gray-800 text-gray-800 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white")">
                                 <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                                 </svg>
@@ -92,17 +85,16 @@
                     </div>
 
                     <div class="flex items-center gap-4">
-                        <!-- Sort Controls -->
                         <div class="flex items-center gap-2">
-                            <label class="text-sm font-medium text-gray-700">Sort by:</label>
-                            <select @bind="sortBy" @bind:after="ApplyFiltersAndSorting" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Sort by:</label>
+                            <select @bind="sortBy" @bind:after="ApplyFiltersAndSorting" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                                 <option value="relevance">Relevance</option>
                                 <option value="newest">Newest</option>
                                 <option value="popular">Most Popular</option>
                                 <option value="rating">Highest Rated</option>
                             </select>
                             <button @onclick="ToggleSortOrder" 
-                                    class="p-2 hover:bg-gray-100 rounded-md transition-colors" 
+                                    class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors text-gray-600 dark:text-gray-400" 
                                     title="@($"Sort {(sortOrder == "asc" ? "Ascending" : "Descending")}")">
                                 @if (sortOrder == "asc")
                                 {
@@ -122,21 +114,19 @@
                 </div>
             </div>
 
-            <!-- Results Count -->
             <div class="mb-6 flex items-center justify-between">
-                <p class="text-gray-600">
+                <p class="text-gray-600 dark:text-gray-400">
                     Showing @(startIndex + 1)-@(Math.Min(endIndex, filteredResults.Count)) of @filteredResults.Count results
                 </p>
                 
                 @if (totalPages > 1)
                 {
-                    <p class="text-sm text-gray-500">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
                         Page @currentPage of @totalPages
                     </p>
                 }
             </div>
 
-            <!-- Results -->
             @if (currentResults.Count > 0)
             {
                 @if (viewMode == "grid")
@@ -144,7 +134,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                         @foreach (var result in currentResults)
                         {
-                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-200">
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-all duration-200">
                                 <div class="relative h-48 overflow-hidden">
                                     <img src="@result.Thumbnail" alt="@result.Title" class="w-full h-full object-cover" />
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
@@ -158,26 +148,26 @@
 
                                     @if (!string.IsNullOrEmpty(result.Duration))
                                     {
-                                        <div class="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                        <div class="absolute bottom-3 right-3 bg-black/70 dark:bg-gray-900/70 text-white text-xs px-2 py-1 rounded">
                                             @result.Duration
                                         </div>
                                     }
                                 </div>
 
                                 <div class="p-6">
-                                    <h3 class="font-semibold text-lg mb-2 text-gray-800 line-clamp-2">
+                                    <h3 class="font-semibold text-lg mb-2 text-gray-800 dark:text-white line-clamp-2">
                                         @result.Title
                                     </h3>
                                     
-                                    <p class="text-sm text-gray-600 mb-3">
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
                                         @result.Subject • @result.Course
                                     </p>
 
-                                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
                                         @result.Description
                                     </p>
 
-                                    <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                                    <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
                                         <span class="flex items-center gap-1">
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -193,7 +183,7 @@
                                     </div>
 
                                     <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-3 text-sm text-gray-500">
+                                        <div class="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
                                             <span class="flex items-center gap-1">
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -214,11 +204,11 @@
                                                 <svg class="w-3 h-3 text-yellow-400 fill-current" fill="currentColor" viewBox="0 0 24 24">
                                                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
                                                 </svg>
-                                                @result.Rating
+                                                <span class="text-gray-700 dark:text-gray-300">@result.Rating</span>
                                             </span>
                                         </div>
                                         
-                                        <button @onclick="@(() => ViewResult(result))" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                        <button @onclick="@(() => ViewResult(result))" class="bg-primary-600 dark:bg-primary-700 hover:bg-primary-700 dark:hover:bg-primary-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                                             @(result.Type == "video" ? "Watch" : "View")
                                         </button>
                                     </div>
@@ -232,7 +222,7 @@
                     <div class="space-y-4 mb-8">
                         @foreach (var result in currentResults)
                         {
-                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+                            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all duration-200">
                                 <div class="flex gap-6">
                                     <div class="w-32 h-20 flex-shrink-0 overflow-hidden rounded-lg">
                                         <img src="@result.Thumbnail" alt="@result.Title" class="w-full h-full object-cover" />
@@ -250,20 +240,20 @@
                                                     </span>
                                                 </div>
                                                 
-                                                <h3 class="font-semibold text-lg text-gray-800 mb-1">
+                                                <h3 class="font-semibold text-lg text-gray-800 dark:text-white mb-1">
                                                     @result.Title
                                                 </h3>
                                                 
-                                                <p class="text-sm text-gray-600 mb-2">
+                                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
                                                     @result.Subject • @result.Course
                                                 </p>
 
-                                                <p class="text-gray-600 text-sm mb-3 line-clamp-2">
+                                                <p class="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
                                                     @result.Description
                                                 </p>
                                             </div>
 
-                                            <div class="flex items-center gap-4 text-sm text-gray-500 ml-4">
+                                            <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 ml-4">
                                                 <span class="flex items-center gap-1">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -284,13 +274,13 @@
                                                     <svg class="w-3.5 h-3.5 text-yellow-400 fill-current" fill="currentColor" viewBox="0 0 24 24">
                                                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
                                                     </svg>
-                                                    @result.Rating
+                                                    <span class="text-gray-700 dark:text-gray-300">@result.Rating</span>
                                                 </span>
                                             </div>
                                         </div>
 
                                         <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-4 text-xs text-gray-500">
+                                            <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                                                 <span class="flex items-center gap-1">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -309,7 +299,7 @@
                                                 }
                                             </div>
 
-                                            <button @onclick="@(() => ViewResult(result))" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                                            <button @onclick="@(() => ViewResult(result))" class="bg-primary-600 dark:bg-primary-700 hover:bg-primary-700 dark:hover:bg-primary-800 text-white px-6 py-2 rounded-lg font-medium transition-colors">
                                                 @(result.Type == "video" ? "Watch" : "View")
                                             </button>
                                         </div>
@@ -320,13 +310,12 @@
                     </div>
                 }
 
-                <!-- Pagination -->
                 @if (totalPages > 1)
                 {
                     <div class="flex items-center justify-center gap-2 mt-8">
                         <button @onclick="@(() => SetCurrentPage(currentPage - 1))"
                                 disabled="@(currentPage == 1)"
-                                class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                                class="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-700 dark:text-gray-300">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                             </svg>
@@ -338,12 +327,12 @@
                             {
                                 @if (page == "...")
                                 {
-                                    <span class="px-3 py-2 text-gray-500">...</span>
+                                    <span class="px-3 py-2 text-gray-500 dark:text-gray-400">...</span>
                                 }
                                 else
                                 {
                                     <button @onclick="@(() => SetCurrentPage((int)page))"
-                                            class="px-3 py-2 rounded-lg transition-colors @(currentPage == (int)page ? "bg-primary-600 text-white" : "hover:bg-gray-100 text-gray-700")">
+                                            class="px-3 py-2 rounded-lg transition-colors @(currentPage == (int)page ? "bg-primary-600 dark:bg-primary-700 text-white" : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300")">
                                         @(page)
                                     </button>
                                 }
@@ -352,7 +341,7 @@
 
                         <button @onclick="@(() => SetCurrentPage(currentPage + 1))"
                                 disabled="@(currentPage == totalPages)"
-                                class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                                class="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-700 dark:text-gray-300">
                             Next
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -363,23 +352,22 @@
             }
             else
             {
-                <!-- No Results -->
                 <div class="text-center py-12">
                     <div class="mb-4">
-                        <svg class="w-16 h-16 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-16 h-16 text-gray-400 dark:text-gray-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">No results found</h3>
-                    <p class="text-gray-600 mb-6">Try adjusting your search criteria or browse our categories below.</p>
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">No results found</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Try adjusting your search criteria or browse our categories below.</p>
                     <div class="flex flex-wrap justify-center gap-4">
-                        <NavLink href="/notes" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                        <NavLink href="/notes" class="bg-primary-600 dark:bg-primary-700 hover:bg-primary-700 dark:hover:bg-primary-800 text-white px-6 py-3 rounded-lg font-medium transition-colors">
                             Browse Notes
                         </NavLink>
-                        <NavLink href="/videos" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                        <NavLink href="/videos" class="bg-primary-600 dark:bg-primary-700 hover:bg-primary-700 dark:hover:bg-primary-800 text-white px-6 py-3 rounded-lg font-medium transition-colors">
                             Browse Videos
                         </NavLink>
-                        <NavLink href="/pyqs" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                        <NavLink href="/pyqs" class="bg-primary-600 dark:bg-primary-700 hover:bg-primary-700 dark:hover:bg-primary-800 text-white px-6 py-3 rounded-lg font-medium transition-colors">
                             Browse PYQs
                         </NavLink>
                     </div>
@@ -668,16 +656,16 @@
     {
         return type switch
         {
-            "notes" => @<svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "notes" => @<svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
             </svg>,
-            "video" => @<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "video" => @<svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
             </svg>,
-            "pyq" => @<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            "pyq" => @<svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>,
-            _ => @<svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            _ => @<svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
         };
@@ -687,10 +675,10 @@
     {
         return type switch
         {
-            "notes" => "bg-blue-50 text-blue-700 border-blue-200",
-            "video" => "bg-red-50 text-red-700 border-red-200",
-            "pyq" => "bg-green-50 text-green-700 border-green-200",
-            _ => "bg-gray-50 text-gray-700 border-gray-200"
+            "notes" => "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/50 dark:text-blue-300 dark:border-blue-700",
+            "video" => "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/50 dark:text-red-300 dark:border-red-700",
+            "pyq" => "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700",
+            _ => "bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600"
         };
     }
 
@@ -768,4 +756,4 @@
         public DateTime UploadDate { get; set; }
         public List<string> Tags { get; set; } = new();
     }
-} 
+}
