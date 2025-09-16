@@ -27,3 +27,52 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+/* Put this in site.css or your Tailwind overrides */
+
+/* site.css or app.css (after Tailwind import) */
+/* Apply to all InputText rendered inputs */
+input.valid,
+input.modified,
+input.input-validation-error {
+    display: block;
+    width: 100%;
+    padding-left: 2.5rem; /* pl-10 */
+    padding-right: 0.75rem; /* pr-3 */
+    height: 40px;
+    border: 0 !important;
+    border-bottom: 2px solid #d1d5db !important; /* border-gray-300 */
+    background: transparent !important;
+    color: #1a202c; /* text-gray-900 */
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+    input.valid:focus,
+    input.modified:focus,
+    input.input-validation-error:focus {
+        border-bottom: 2px solid #2563eb !important; /* border-primary-500 */
+    }
+
+/* InputSelect */
+select.valid,
+select.modified,
+select.input-validation-error {
+    display: block;
+    width: 100%;
+    padding-left: 0.75rem;
+    padding-right: 2rem;
+    height: 40px;
+    border: 0 !important;
+    border-bottom: 2px solid #d1d5db !important;
+    background: transparent !important;
+    color: #1a202c;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
+    select.valid:focus,
+    select.modified:focus,
+    select.input-validation-error:focus {
+        border-bottom: 2px solid #2563eb !important;
+    }

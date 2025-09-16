@@ -209,20 +209,21 @@ namespace EduSetu.Controllers
 
             // Lookup user in your DB using CQRS
 
-            string tempPassword = CommonHelper.GenerateTemporaryPassword();
-            string hashedPassword = await _PasswordEncryptionService.EncryptPasswordAsync(tempPassword, _EncryptionSettings.Value.MasterKey);
+            //string tempPassword = CommonHelper.GenerateTemporaryPassword();
+            //string hashedPassword = await _PasswordEncryptionService.EncryptPasswordAsync(tempPassword, _EncryptionSettings.Value.MasterKey);
 
             var getUserRequest = new GetCurrentUserRequest(new GetCurrentUserDto { Email = email });
             var getUserResponse = await _mediator.Send(getUserRequest);
             if (getUserResponse.HasError || getUserResponse.Payload == null)
             {
                 // Register the user automatically
-                var registerRequest = new RegisterUserRequest(new RegisterUserDto {
+                var registerRequest = new RegisterUserRequest(new StudentDTOs
+                {
                     Email = email,
                     FirstName = firstName ?? string.Empty,
                     LastName = lastName ?? string.Empty,
                     Role = UserRole.Student, // Default role
-                    Password = hashedPassword // Random password for Google
+                   //Password = hashedPassword // Random password for Google
                 });
                 var registerResponse = await _mediator.Send(registerRequest);
                 if (registerResponse.HasError)

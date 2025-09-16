@@ -1,4 +1,8 @@
+using EduSetu.Application.Features.Authentication;
+using EduSetu.Application.Features.Authentication.Request;
 using EduSetu.Domain.Enums;
+using EduSetu.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,15 +10,88 @@ namespace EduSetu.Components.Accounts
 {
     public partial class Register
     {
+        [Inject] private IMediator Mediator { get; set; } = default!;
+        [Inject] private INotificationService NotificationService { get; set; } = default!;
+
+
         private UserRole selectedUserRole = UserRole.Student;
 
         private RegisterFormData formData = new();
+        private StudentDTOs StudentformData { get; set; } = new();
         private bool showPassword = false;
         private bool showConfirmPassword = false;
         private bool isLoading = false;
-        private bool Cancel = false;
         private int currentStep = 1;
         private string interestInput = "";
+
+
+        private async Task HandleStudentSubmitAsync()
+        {
+            var Response = await Mediator.Send(new RegisterUserRequest(StudentformData));
+
+            if (!Response.HasError)
+            {
+                // Registration successful, redirect to login page
+                NavigationManager.NavigateTo("/login?registered=true");
+                NotificationService.Success("Registration successful! Please log in.");
+            }
+            else
+            {
+                // Handle registration failure (e.g., show error message)
+                if (Response.Errors.Count > 0)
+                    NotificationService.Error($"Registration failed: {Response.Errors[0].Message}");
+                else
+                    NotificationService.Error("Registration failed: Unknown error");
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         private (string Title, string Description)[] steps = {
         ("Personal Info", "Basic personal details"),

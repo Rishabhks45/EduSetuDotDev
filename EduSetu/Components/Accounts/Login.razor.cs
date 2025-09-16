@@ -4,6 +4,7 @@ using EduSetu.Application.Common.Settings;
 using EduSetu.Application.Features.Authentication;
 using EduSetu.Application.Features.Authentication.Request;
 using EduSetu.Domain.Enums;
+using EduSetu.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -20,7 +21,7 @@ namespace EduSetu.Components.Accounts
         [Inject] private NavigationManager Navigation { get; set; } = default!;
         [Inject] private AuthenticationStateProvider AuthProvider { get; set; } = default!;
         [Inject] private IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
-        [Inject] private IPasswordEncryptionService _passwordEncryptionService { get; set; } = default!;
+        [Inject] private INotificationService NotificationService { get; set; } = default!;
 
         private LoginDto loginRequest = new();
         private string errorMessage = string.Empty;
@@ -154,6 +155,12 @@ namespace EduSetu.Components.Accounts
             System.Collections.Specialized.NameValueCollection queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
             string? returnUrl = queryParams["returnUrl"];
 
+            // Show success notification before navigation
+            NotificationService.Success("Login successful! Redirecting...");
+            
+            // Small delay to ensure notification is shown
+            await Task.Delay(100);
+            
             string signInUrl = $"/api/auth/signin?token={loginResponse.Payload?.LoginToken}";
             if (!string.IsNullOrEmpty(returnUrl))
             {

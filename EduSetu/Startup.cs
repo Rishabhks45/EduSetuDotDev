@@ -9,6 +9,8 @@ using EduSetu.Infrastructure.DependencyInjection;
 using FluentValidation;
 using EduSetu.Application.Features.Authentication;
 using System.Security.Claims;
+using EduSetu.Services.Interfaces;
+using EduSetu.Services.Implementations;
 
 public class Startup
 {
@@ -99,6 +101,8 @@ public class Startup
 
         services.AddControllers();
         services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
+        
+        services.AddSingleton<INotificationService, NotificationService>();
     }
 
     public void Configure(WebApplication app, IWebHostEnvironment env)

@@ -22,7 +22,6 @@ namespace EduSetu.Domain.Entities
         public DateTime? DateOfBirth { get; set; }
         public string? ProfilePictureUrl { get; set; }
         public string? PhoneNumber { get; set; }
-        public string? Timezone { get; set; }
         public string? InstituteName { get; set; }
 
         // Full name computed property

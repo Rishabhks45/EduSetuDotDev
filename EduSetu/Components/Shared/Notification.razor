@@ -1,0 +1,224 @@
+﻿@namespace EduSetu.Components.Shared
+@using EduSetu.Services.Implementations
+@using EduSetu.Services.Interfaces
+@using System.Linq
+
+<div class="notification-container">
+    @foreach (var notification in _notifications)
+    {
+        <div class="k-notification @notification.CssClass" style="bottom: @(notification.BottomOffset)px;">
+            <span class="notification-message">@notification.Message</span>
+            <button @onclick="() => HideNotification(notification.Id)" class="k-notification-close">
+                ×
+            </button>
+        </div>
+    }
+</div>
+
+<style>
+    .notification-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 10000;
+    }
+
+    .notification-container .k-notification {
+        min-width: 350px;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        font-size: 14px;
+        padding: 10px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        animation: slideIn 0.4s ease-out;
+        position: fixed;
+        overflow: hidden;
+        right: 20px;
+    }
+
+    .notification-container .k-notification.k-notification-success {
+        border-left: 4px solid #28a745;
+        background-color: #d2f3dc;
+        color: #155724;
+    }
+
+    .notification-container .k-notification.k-notification-error {
+        border-left: 4px solid #dc3545;
+        background-color: #fbd2d5;
+        color: #721c24;
+    }
+
+    .notification-container .k-notification.k-notification-warning {
+        border-left: 4px solid #ffc107;
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .notification-container .k-notification.k-notification-info {
+        border-left: 4px solid #17a2b8;
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .notification-container .k-notification .k-notification-close {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        background: transparent;
+        border: none;
+        font-size: 18px;
+        color: #999;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .notification-container .k-notification .k-notification-close:hover {
+        color: #000;
+    }
+
+    .notification-message {
+        flex: 1;
+        padding-right: 30px;
+    }
+
+    /* Mobile responsive styles */
+    @@media (max-width: 768px) {
+        .notification-container {
+            bottom: 10px;
+            right: 10px;
+            left: 10px;
+            width: auto;
+        }
+
+        .notification-container .k-notification {
+            min-width: auto;
+            width: 100%;
+            max-width: 100%;
+            font-size: 13px;
+            padding: 8px;
+            right: 0;
+        }
+    }
+
+
+    /* Small mobile devices */
+    @@media (max-width: 480px) {
+        .notification-container .k-notification {
+            padding: 6px;
+            font-size: 12px;
+            gap: 8px;
+        }
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        @@keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    }
+</style>
+
+@code {
+    private List<NotificationItem> _notifications = new();
+    private int _nextId = 1;
+
+    [Inject] public INotificationService NotificationService { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        if (NotificationService is NotificationService concreteService)
+        {
+            concreteService.OnNotify += HandleShowNotification;
+        }
+    }
+
+    private async void HandleShowNotification(NotificationMessage notification)
+    {
+        await InvokeAsync(() =>
+        {
+            ShowNotification(notification);
+        });
+    }
+
+    private void ShowNotification(NotificationMessage notification)
+    {
+        var notificationItem = new NotificationItem
+        {
+            Id = _nextId++,
+            Message = notification.Message,
+            CssClass = notification.Type switch
+            {
+                "success" => "k-notification-success",
+                "error" => "k-notification-error",
+                "warning" => "k-notification-warning",
+                _ => "k-notification-info"
+            },
+            BottomOffset = 20 + (_notifications.Count * 60) // Stack notifications with 60px spacing
+        };
+
+        _notifications.Add(notificationItem);
+        InvokeAsync(StateHasChanged);
+        _ = HideAfterDelay(notificationItem.Id);
+    }
+
+    private async Task HideNotification(int id)
+    {
+        var notification = _notifications.FirstOrDefault(n => n.Id == id);
+        if (notification != null)
+        {
+            _notifications.Remove(notification);
+            // Recalculate positions for remaining notifications
+            RecalculatePositions();
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void RecalculatePositions()
+    {
+        for (int i = 0; i < _notifications.Count; i++)
+        {
+            _notifications[i].BottomOffset = 20 + (i * 60);
+        }
+    }
+
+    private async Task HideAfterDelay(int id)
+    {
+        await Task.Delay(5000);
+        await HideNotification(id);
+    }
+
+    public void Dispose()
+    {
+        if (NotificationService is NotificationService concreteService)
+        {
+            concreteService.OnNotify -= HandleShowNotification;
+        }
+    }
+
+    private class NotificationItem
+    {
+        public int Id { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public string CssClass { get; set; } = string.Empty;
+        public int BottomOffset { get; set; }
+    }
+}

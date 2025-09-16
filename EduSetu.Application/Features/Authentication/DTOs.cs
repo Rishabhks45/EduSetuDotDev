@@ -1,3 +1,4 @@
+using EduSetu.Domain.Enums;
 using FluentValidation;
 
 namespace EduSetu.Application.Features.Authentication;
@@ -283,3 +284,97 @@ public sealed class ResetPasswordRequestDtoValidator : AbstractValidator<ResetPa
 }
 
 #endregion
+
+
+#region DTOs For Student
+public class StudentDTOs
+{
+    public string Email { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public DateTime? DateOfBirth { get; set; }
+    public string LastName { get; set; } = string.Empty; public string? PhoneNumber { get; set; }
+    public UserRole Role { get; set; } = UserRole.Student;
+    public string Password { get; set; } = string.Empty;
+    public string ConfirmPassword { get; set; } = string.Empty;
+}
+#endregion
+
+// validator for StudentDTOs
+public sealed class StudentDTOsValidator : AbstractValidator<StudentDTOs>
+{
+    public StudentDTOsValidator()
+    {
+        RuleFor(x => x.Email)
+            .NotEmpty()
+            .WithMessage("Email is required")
+            .DependentRules(() =>
+            {
+                RuleFor(x => x.Email)
+                    .Matches(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$")
+                    .WithMessage("Invalid email address format")
+                    .DependentRules(() =>
+                    {
+                        RuleFor(x => x.Email)
+                            .MaximumLength(255)
+                            .WithMessage("Email must not exceed 255 characters");
+                    });
+            });
+        RuleFor(x => x.FirstName)
+            .NotEmpty()
+            .WithMessage("First name is required")
+            .MaximumLength(100)
+            .WithMessage("First name must not exceed 100 characters");
+        RuleFor(x => x.LastName)
+            .NotEmpty()
+            .WithMessage("Last name is required")
+            .MaximumLength(100)
+            .WithMessage("Last name must not exceed 100 characters");
+        RuleFor(x => x.PhoneNumber)
+            .NotEmpty()
+            .WithMessage("Phone Number is required")
+            .MaximumLength(15)
+            .WithMessage("Phone number must not exceed 15 characters")
+            .When(x => !string.IsNullOrEmpty(x.PhoneNumber));
+        RuleFor(x => x.Password)
+            .NotEmpty().WithMessage("Password is required")
+            .DependentRules(() =>
+            {
+                RuleFor(x => x.Password)
+                    .MinimumLength(8).WithMessage("Password must be at least 8 characters long") //Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.
+                    .MaximumLength(32).WithMessage("Password must not exceed 32 characters") //Password must not exceed 32 characters
+                    .DependentRules(() =>
+                    {
+                        RuleFor(x => x.Password)
+                            .Matches(@"[A-Z]").WithMessage("Password must contain at least 1 uppercase letter")
+                            .DependentRules(() =>
+                            {
+                                RuleFor(x => x.Password)
+                                    .Matches(@"[a-z]").WithMessage("Password must contain at least 1 lowercase letter")
+                                    .DependentRules(() =>
+                                    {
+                                        RuleFor(x => x.Password)
+                                            .Matches(@"\d").WithMessage("Password must contain at least 1 number")
+                                            .DependentRules(() =>
+                                            {
+                                                RuleFor(x => x.Password)
+                                                    .Matches(@"[@$!%*?&]").WithMessage("Password must contain at least 1 special character");
+                                            });
+                                    });
+                            });
+                    });
+            });
+
+        RuleFor(x => x.ConfirmPassword)
+            .NotEmpty()
+            .WithMessage("Confirm password is required.")
+            .DependentRules(() =>
+            {
+                RuleFor(x => x.ConfirmPassword)
+                    .Equal(x => x.Password)
+                    .WithMessage("Passwords do not match.");
+            });
+    }
+}
+
+
+
