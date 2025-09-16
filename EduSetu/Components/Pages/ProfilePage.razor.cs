@@ -8,6 +8,10 @@ namespace EduSetu.Components.Pages
         private UserStats stats = new();
         private List<ActivityItem> recentActivities = new();
         private List<UploadItem> recentUploads = new();
+        
+        // State management for showing/hiding sections
+        private string activeSection = "uploads"; // Default to uploads
+        private bool showSettingsDropdown = false;
 
         protected override void OnInitialized()
         {
@@ -54,6 +58,37 @@ namespace EduSetu.Components.Pages
         private void UploadContent()
         {
             NavigationManager.NavigateTo("/profile/uploads");
+        }
+
+        private void SetActiveSection(string section)
+        {
+            activeSection = section;
+            showSettingsDropdown = false; // Close dropdown when switching sections
+        }
+
+        private void ToggleSettingsDropdown()
+        {
+            showSettingsDropdown = !showSettingsDropdown;
+        }
+
+        private void ChangePassword()
+        {
+            SetActiveSection("change-password");
+        }
+
+        private void DeleteAccount()
+        {
+            SetActiveSection("delete-account");
+        }
+
+        private void CloseChangePassword()
+        {
+            SetActiveSection("none");
+        }
+
+        private void CloseDeleteAccount()
+        {
+            SetActiveSection("none");
         }
 
         public class UserProfile
