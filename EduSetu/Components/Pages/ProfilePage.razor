@@ -10,8 +10,12 @@
         <div class="py-6 sm:py-8">
             <div class="flex flex-col sm:flex-row items-center sm:space-x-6">
                 <div class="relative flex-shrink-0">
-                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl font-bold">
-                        @if (!string.IsNullOrEmpty(user?.FirstName))
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl font-bold overflow-hidden">
+                        @if (isEditingProfile && !string.IsNullOrEmpty(editProfilePhoto))
+                        {
+                            <img src="@editProfilePhoto" alt="Profile" class="w-full h-full object-cover" />
+                        }
+                        else if (!string.IsNullOrEmpty(user?.FirstName))
                         {
                             @(user!.FirstName[0].ToString().ToUpper())
                         }
@@ -22,17 +26,49 @@
                             </svg>
                         }
                     </div>
-                    <button class="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
-                        <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                    </button>
+                    @if (isEditingProfile)
+                    {
+                        <label for="profile-photo-upload" class="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow cursor-pointer">
+                            <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </label>
+                        <input type="file" id="profile-photo-upload" accept="image/*" class="hidden" @onchange="HandleProfilePhotoChange" />
+                    }
+                    else
+                    {
+                        <button class="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
+                            <svg class="w-4 h-4 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </button>
+                    }
                 </div>
 
                 <div class="flex-1 text-center sm:text-left mt-4 sm:mt-0">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50">@(user?.FirstName ?? "User") @(user?.LastName ?? "")</h1>
-                    <p class="text-gray-600 dark:text-gray-400 mt-1">@(user?.Email ?? "user@example.com")</p>
+                    @if (isEditingProfile)
+                    {
+                        <div class="space-y-2">
+                            <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                                <input type="text" @bind="editFirstName" 
+                                       class="w-[150px] text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 bg-transparent border-0 outline-none border-b-2 border-gray-400 border-gray-400 dark:border-gray-500 focus:border-primary-500 focus:border-b-2 transition-all duration-200 px-1 py-0" 
+                                       placeholder="First Name" />
+                                <input type="text" @bind="editLastName" 
+                                           class="w-[150px] text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 bg-transparent border-0 outline-none border-b-2 border-gray-400 border-gray-400 dark:border-gray-500 focus:border-primary-500 focus:border-gray-400 transition-all duration-200 px-1 py-0"
+                                       placeholder="Last Name" />
+                            </div>
+                            <input type="email" @bind="editEmail" 
+                                       class=" text-gray-600 dark:text-gray-400 bg-transparent border-none outline-none border-b-2 border-gray-400 border-gray-400 dark:border-gray-500 focus:border-primary-500 focus:border-gray-400 transition-all duration-200 px-1 py-0 w-full sm:w-auto"
+                                   placeholder="Email address" />
+                        </div>
+                    }
+                    else
+                    {
+                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50">@(user?.FirstName ?? "User") @(user?.LastName ?? "")</h1>
+                        <p class="text-gray-600 dark:text-gray-400 mt-1">@(user?.Email ?? "user@example.com")</p>
+                    }
                     <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-start space-y-2 sm:space-y-0 sm:space-x-4 mt-3">
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,12 +81,30 @@
                 </div>
 
                 <div class="mt-6 sm:mt-0 flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-3">
-                    <button @onclick="@(() => EditProfile())" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                        </svg>
-                        Edit Profile
-                    </button>
+                    @if (isEditingProfile)
+                    {
+                        <button @onclick="SaveProfile" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Save Changes
+                        </button>
+                        <button @onclick="CancelEditProfile" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            Cancel
+                        </button>
+                    }
+                    else
+                    {
+                        <button @onclick="@(() => EditProfile())" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            Edit Profile
+                        </button>
+                    }
                     <button @onclick="@(() => UploadContent())" class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>

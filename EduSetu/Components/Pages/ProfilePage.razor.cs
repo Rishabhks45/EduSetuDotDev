@@ -12,6 +12,13 @@ namespace EduSetu.Components.Pages
         // State management for showing/hiding sections
         private string activeSection = "uploads"; // Default to uploads
         private bool showSettingsDropdown = false;
+        
+        // Profile editing state
+        private bool isEditingProfile = false;
+        private string editFirstName = "";
+        private string editLastName = "";
+        private string editEmail = "";
+        private string editProfilePhoto = "";
 
         protected override void OnInitialized()
         {
@@ -52,7 +59,48 @@ namespace EduSetu.Components.Pages
 
         private void EditProfile()
         {
-            NavigationManager.NavigateTo("/profile/settings");
+            isEditingProfile = true;
+            // Initialize edit fields with current values
+            editFirstName = user?.FirstName ?? "";
+            editLastName = user?.LastName ?? "";
+            editEmail = user?.Email ?? "";
+            editProfilePhoto = ""; // You can set a default profile photo URL here
+        }
+
+        private void SaveProfile()
+        {
+            // Update user profile with edited values
+            if (user != null)
+            {
+                user.FirstName = editFirstName;
+                user.LastName = editLastName;
+                user.Email = editEmail;
+                // Handle profile photo update here
+            }
+            
+            isEditingProfile = false;
+            // TODO: Save to database/API
+        }
+
+        private void CancelEditProfile()
+        {
+            isEditingProfile = false;
+            // Reset edit fields to original values
+            editFirstName = user?.FirstName ?? "";
+            editLastName = user?.LastName ?? "";
+            editEmail = user?.Email ?? "";
+            editProfilePhoto = "";
+        }
+
+        private void HandleProfilePhotoChange(ChangeEventArgs e)
+        {
+            // Handle profile photo upload
+            // TODO: Implement file upload logic
+            // For now, just store the file name
+            if (e.Value != null)
+            {
+                editProfilePhoto = e.Value.ToString() ?? "";
+            }
         }
 
         private void UploadContent()
