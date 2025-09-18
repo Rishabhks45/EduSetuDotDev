@@ -111,6 +111,53 @@ namespace EduSetu.Components.Accounts
         "Delhi University", "Mumbai University", "Bangalore University", "IIT Bombay", "IIT Delhi",
         "CBSE Schools", "ICSE Schools", "State Board Schools", "Private Institutions"
     };
+        private string[] qualifications = {
+    "High School (10th)",
+    "Intermediate (12th)",
+    "Diploma",
+    "Undergraduate (Bachelor’s)",
+    "Postgraduate (Master’s)",
+    "Doctorate (PhD)",
+    "Other"
+};
+        private string[] specializations = {
+    "Computer Science / IT",
+    "Electronics & Communication",
+    "Electrical Engineering",
+    "Mechanical Engineering",
+    "Civil Engineering",
+    "Chemical Engineering",
+    "Biotechnology",
+    "Architecture",
+    "Medical / Health Sciences",
+    "Pharmacy",
+    "Management / MBA",
+    "Commerce",
+    "Arts / Humanities",
+    "Science (Physics / Chemistry / Math)",
+    "Law",
+    "Education",
+    "Other"
+};
+        private string[] certifications = {
+    "CTET (Central Teacher Eligibility Test)",
+    "State TET (Teacher Eligibility Test)",
+    "B.Ed (Bachelor of Education)",
+    "M.Ed (Master of Education)",
+    "Diploma in Elementary Education (D.El.Ed)",
+    "NTT (Nursery Teacher Training)",
+    "PTT (Primary Teacher Training)",
+    "BTC (Basic Training Certificate)",
+    "Ph.D. in Education",
+    "UGC NET (National Eligibility Test)",
+    "SET (State Eligibility Test)",
+    "Montessori Training",
+    "Special Education Certification",
+    "Language Teaching Certification (TESOL/TEFL)",
+    "Other"
+};
+
+
         private string[] courses = {
         "B.Tech Computer Science", "B.Tech Engineering", "MBBS", "B.Sc", "B.Com", "B.A",
         "M.Tech", "MBA", "Class 10", "Class 11", "Class 12", "JEE Preparation", "NEET Preparation"
