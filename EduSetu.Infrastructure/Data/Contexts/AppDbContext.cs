@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using EduSetu.Application.Common.Interfaces;
 using EduSetu.Domain.Entities;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace EduSetu.Infrastructure.Data.Contexts
 {
@@ -12,14 +13,18 @@ namespace EduSetu.Infrastructure.Data.Contexts
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<CoachingDetails> CoachingDetails { get; set; }
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
         public DatabaseFacade Database => base.Database;
+        public ChangeTracker ChangeTracker => base.ChangeTracker;
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             return await base.SaveChangesAsync(cancellationToken);
         }
+
+        public EntityEntry Entry(object entity) => base.Entry(entity);
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

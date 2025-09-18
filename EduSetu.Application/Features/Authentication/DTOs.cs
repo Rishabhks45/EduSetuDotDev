@@ -289,6 +289,7 @@ public sealed class ResetPasswordRequestDtoValidator : AbstractValidator<ResetPa
 #region DTOs For Student
 public class StudentDTOs
 {
+    public Guid id { get; set; } 
     public string Email { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;
     public DateTime? DateOfBirth { get; set; }

@@ -21,8 +21,15 @@ namespace EduSetu.Domain.Entities
         public DateTime? LastLoginAt { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string? ProfilePictureUrl { get; set; }
+        public string? Username { get; set; }
         public string? PhoneNumber { get; set; }
         public string? InstituteName { get; set; }
+        public QualificationType? qualificationType { get; set; }
+        public Specialization? Specialization { get; set; }
+        public TeachingExperience? teachingExperience { get; set; }
+        public Certifications? certifications { get; set; }
+        //public PreferredTeachingMode? PreferredTeachingMode { get; set; }
+
 
         // Full name computed property
         public string FullName => $"{FirstName} {LastName}".Trim();

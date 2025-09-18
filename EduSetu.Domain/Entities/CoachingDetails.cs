@@ -6,6 +6,8 @@ public class CoachingDetails : BaseEntity
 {
     public string InstituteName { get; set; } = string.Empty;
 
+    public Guid TeacherId { get; set; }
+
     public PreferredTeachingMode PreferredTeachingMode { get; set; }
 
     public int NumberOfStudents { get; set; }
