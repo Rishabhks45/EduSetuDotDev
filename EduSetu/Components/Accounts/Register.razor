@@ -692,7 +692,7 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                           d="M12 3c4.97 0 9 4.03 9 9s-4.03 9-9 9-9-4.03-9-9 4.03-9 9-9zM2.05 11h19.9M12 2.05v19.9" />
                                                 </svg>
-                                                <InputSelect id="modeOfCoaching" @bind-Value="InstituteformData.ModeOfCoaching"
+                                                <InputSelect id="modeOfCoaching" @bind-Value="InstituteformData.PreferredTeachingMode"
                                                              class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2
                                                                                   border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500
                                                                                   bg-transparent text-gray-900 dark:text-white my-custom-input"
@@ -706,7 +706,7 @@
                                                     }
                                                 </InputSelect>
                                             </div>
-                                            <ValidationMessage For="@(() => InstituteformData.ModeOfCoaching)" class="text-red-500 dark:text-red-400 text-sm" />
+                                            <ValidationMessage For="@(() => InstituteformData.PreferredTeachingMode)" class="text-red-500 dark:text-red-400 text-sm" />
                                         </div>
 
                                         <!-- Number of Students -->
@@ -723,7 +723,7 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                           d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m10-7a4 4 0 11-8 0 4 4 0 018 0zM7 10a4 4 0 100-8 4 4 0 000 8z" />
                                                 </svg>
-                                                <InputNumber @bind-Value="InstituteformData.NumberOfStudents"
+                                                <InputText @bind-Value="InstituteformData.NumberOfStudentsText"
                                                              class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2
                                                                   border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500
                                                                   bg-transparent text-gray-900 dark:text-white"

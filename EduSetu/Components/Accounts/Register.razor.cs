@@ -1,5 +1,6 @@
 using EduSetu.Application.Features.Authentication;
 using EduSetu.Application.Features.Authentication.Request;
+using EduSetu.Application.Features.TeacherRegister;
 using EduSetu.Domain.Enums;
 using EduSetu.Services.Interfaces;
 using MediatR;
@@ -18,7 +19,7 @@ namespace EduSetu.Components.Accounts
         private UserRole selectedUserRole = UserRole.Student;
 
         private RegisterFormData formData = new();
-        private Institute InstituteformData = new();
+        private CoachingDetailsDto InstituteformData = new();
         private StudentDTOs StudentformData { get; set; } = new();
         private bool showPassword = false;
         private bool showConfirmPassword = false;

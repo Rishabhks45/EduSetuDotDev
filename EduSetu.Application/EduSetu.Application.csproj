@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Features\Authentication\Infrastructure\" />
+    <Folder Include="Features\TeacherRegister\Infrastructure\" />
   </ItemGroup>
 
   <ItemGroup>
