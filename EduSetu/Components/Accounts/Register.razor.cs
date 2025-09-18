@@ -17,6 +17,7 @@ namespace EduSetu.Components.Accounts
         private UserRole selectedUserRole = UserRole.Student;
 
         private RegisterFormData formData = new();
+        private Institute InstituteformData = new();
         private StudentDTOs StudentformData { get; set; } = new();
         private bool showPassword = false;
         private bool showConfirmPassword = false;
@@ -95,9 +96,8 @@ namespace EduSetu.Components.Accounts
 
         private (string Title, string Description)[] steps = {
         ("Personal Info", "Basic personal details"),
-        ("Academic Info", "Educational background"),
-        ("Account Setup", "Username and password"),
-        ("Preferences", "Interests and bio")
+        ("Education Details", "Educational background"),
+        ("Coaching Details", "Username and password")
     };
 
         private (string Value, string Label)[] institutionTypes = {
@@ -167,9 +167,26 @@ namespace EduSetu.Components.Accounts
 
             [Required(ErrorMessage = "You must agree to the terms and conditions")]
             public bool AgreeToTerms { get; set; } = false;
-
+            
             public bool SubscribeNewsletter { get; set; } = true;
         }
+
+        public class Institute
+        {
+            public int Id { get; set; }
+
+            public string InstituteName { get; set; } = null!;
+            public string ModeOfCoaching { get; set; } = null!;
+            public int NumberOfStudents { get; set; }
+            public string Address { get; set; } = null!;
+            public string City { get; set; } = null!;
+            public string State { get; set; } = null!;
+            public string PinCode { get; set; } = null!;
+
+            public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+            public DateTime? UpdatedAt { get; set; }
+        }
+
 
         private string GetStepClass(int stepIndex)
         {
