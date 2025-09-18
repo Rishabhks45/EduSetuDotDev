@@ -7,13 +7,6 @@
 @using Microsoft.AspNetCore.Components.Forms
 @inject NavigationManager NavigationManager
 
-<style>
-    input:valid {
-        border-color: inherit !important;
-        box-shadow: none !important;
-    }
-
-</style>
 <div class="min-h-screen flex flex-col md:flex-row">
     <!-- Left Section - Branding -->
     <div class="w-full md:w-1/2 flex items-center justify-center bg-blue-50 dark:bg-blue-900 p-8">
@@ -79,7 +72,8 @@
                     dark:bg-gray-700 border-0 border-b-2
                     border-gray-300 dark:border-gray-600
                     focus:outline-none focus:border-primary-500
-                    bg-transparent text-gray-900 dark:text-white">
+                    bg-transparent text-gray-900 dark:text-white
+                    dark:focus:border-gray-300">
                             <option value="@UserRole.Student">@UserRole.Student</option>
                             <option value="@UserRole.Teacher">@UserRole.Teacher</option>
                         </InputSelect>
@@ -140,8 +134,8 @@
                                         <!-- Input with underline only -->
                                         <InputText id="firstName" @bind-Value="StudentformData.FirstName"
                                                    class="block w-full pl-10 pr-3 h-[40px]
-                                                                          border-0 border-b-2 border-gray-300 dark:border-gray-600
-                                                                          focus:outline-none focus:border-primary-500
+                                                                          border-0 border-b-2 border-gray-300 dark:border-gray-600 
+                                                                                  focus:outline-none focus:border-primary-500 dark:focus:border-gray-300
                                                                           bg-transparent text-gray-900 dark:text-white"
                                                    placeholder="Enter your first name" />
                                     </div>
@@ -166,7 +160,8 @@
                                                    class="block w-full pl-10 pr-3 h-[40px]
                                                                               border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                               focus:outline-none focus:border-primary-500
-                                                                              bg-transparent text-gray-900 dark:text-white"
+                                                                              bg-transparent text-gray-900 dark:text-white
+                                                                              dark:focus:border-gray-300"
                                                    placeholder="Enter your last name" />
                                     </div>
                                     <ValidationMessage For="@(() => StudentformData.LastName)" class="text-red-500 dark:text-red-400 text-sm" />
@@ -187,7 +182,8 @@
                                                    class="block w-full pl-10 pr-3 h-[40px]
                                                                           border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                           focus:outline-none focus:border-primary-500
-                                                                          bg-transparent text-gray-900 dark:text-white"
+                                                                          bg-transparent text-gray-900 dark:text-white
+                                                                          dark:focus:border-gray-300"
                                                    placeholder="Enter your email address" />
                                     </div>
                                     <ValidationMessage For="@(() => StudentformData.Email)" class="text-red-500 dark:text-red-400 text-sm" />
@@ -208,7 +204,8 @@
                                                    class="block w-full pl-10 pr-3 h-[40px]
                                                                           border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                           focus:outline-none focus:border-primary-500
-                                                                          bg-transparent text-gray-900 dark:text-white"
+                                                                          bg-transparent text-gray-900 dark:text-white
+                                                                          dark:focus:border-gray-300"
                                                    placeholder="Enter phone number (optional)" />
                                     </div>
                                     <ValidationMessage For="@(() => StudentformData.PhoneNumber)" class="text-red-500 dark:text-red-400 text-sm" />
@@ -229,7 +226,8 @@
                                                    class="block w-full pl-10 pr-3 h-[40px]
                                                                           border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                           focus:outline-none focus:border-primary-500
-                                                                          bg-transparent text-gray-900 dark:text-white" />
+                                                                          bg-transparent text-gray-900 dark:text-white
+                                                                          dark:focus:border-gray-300" />
                                     </div>
                                     <ValidationMessage For="@(() => StudentformData.DateOfBirth)" class="text-red-500 dark:text-red-400 text-sm" />
                                 </div>
@@ -249,7 +247,8 @@
                                                    class="block w-full pl-10 pr-3 h-[40px]
                                                                           border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                           focus:outline-none focus:border-primary-500
-                                                                          bg-transparent text-gray-900 dark:text-white"
+                                                                          bg-transparent text-gray-900 dark:text-white
+                                                                          dark:focus:border-gray-300"
                                                    placeholder="Enter password" />
                                     </div>
                                     <ValidationMessage For="@(() => StudentformData.Password)" class="text-red-500 dark:text-red-400 text-sm" />
@@ -270,7 +269,8 @@
                                                    class="block w-full pl-10 pr-3 h-[40px]
                                                                           border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                           focus:outline-none focus:border-primary-500
-                                                                          bg-transparent text-gray-900 dark:text-white"
+                                                                          bg-transparent text-gray-900 dark:text-white
+                                                                          dark:focus:border-gray-300"
                                                    placeholder="Confirm password" />
                                     </div>
                                     <ValidationMessage For="@(() => StudentformData.ConfirmPassword)" class="text-red-500 dark:text-red-400 text-sm" />
@@ -356,7 +356,8 @@
                                                            class="block w-full pl-10 pr-3 h-[40px]
                                                                                           border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                                           focus:outline-none focus:border-primary-500
-                                                                                          bg-transparent text-gray-900 dark:text-white"
+                                                                                          bg-transparent text-gray-900 dark:text-white
+                                                                                          dark:focus:border-gray-300"
                                                            placeholder="Enter your first name" />
                                             </div>
                                             <ValidationMessage For="@(() => formData.FirstName)" class="text-red-500 dark:text-red-400 text-sm" />
@@ -376,7 +377,8 @@
                                                            class="block w-full pl-10 pr-3 h-[40px]
                                                                                                   border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                                                   focus:outline-none focus:border-primary-500
-                                                                                                  bg-transparent text-gray-900 dark:text-white"
+                                                                                                  bg-transparent text-gray-900 dark:text-white
+                                                                                                  dark:focus:border-gray-300"
                                                            placeholder="Enter your last name" />
                                             </div>
                                             <ValidationMessage For="@(() => formData.LastName)" class="text-red-500 dark:text-red-400 text-sm" />
@@ -396,7 +398,8 @@
                                                            class="block w-full pl-10 pr-3 h-[40px]
                                                                                                   border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                                                   focus:outline-none focus:border-primary-500
-                                                                                                  bg-transparent text-gray-900 dark:text-white"
+                                                                                                  bg-transparent text-gray-900 dark:text-white
+                                                                                                  dark:focus:border-gray-300"
                                                            placeholder="Enter your email address" />
                                             </div>
                                             <ValidationMessage For="@(() => formData.Email)" class="text-red-500 dark:text-red-400 text-sm" />
@@ -416,7 +419,8 @@
                                                            class="block w-full pl-10 pr-3 h-[40px]
                                                                                                   border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                                                   focus:outline-none focus:border-primary-500
-                                                                                                  bg-transparent text-gray-900 dark:text-white"
+                                                                                                  bg-transparent text-gray-900 dark:text-white
+                                                                                                  dark:focus:border-gray-300"
                                                            placeholder="Enter phone number (optional)" />
                                             </div>
                                             <ValidationMessage For="@(() => formData.PhoneNumber)" class="text-red-500 dark:text-red-400 text-sm" />
@@ -436,7 +440,8 @@
                                                                class="block w-full pl-10 pr-3 h-[40px]
                                                                                                   border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                                                   focus:outline-none focus:border-primary-500
-                                                                                                  bg-transparent text-gray-900 dark:text-white"
+                                                                                                  bg-transparent text-gray-900 dark:text-white
+                                                                                                  dark:focus:border-gray-300"
                                                                placeholder="Choose a unique username" />
                                                 </div>
                                                 <ValidationMessage For="@(() => formData.Username)" class="text-red-500 dark:text-red-400 text-sm" />
@@ -457,7 +462,8 @@
                                                            class="block w-full pl-10 pr-3 h-[40px]
                                                                                                   border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                                                   focus:outline-none focus:border-primary-500
-                                                                                                  bg-transparent text-gray-900 dark:text-white"
+                                                                                                  bg-transparent text-gray-900 dark:text-white
+                                                                                                  dark:focus:border-gray-300"
                                                            placeholder="Create a strong password" />
                                                 <button type="button" @onclick="TogglePasswordVisibility"
                                                         class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -493,7 +499,8 @@
                                                            class="block w-full pl-10 pr-3 h-[40px]
                                                                                                   border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                                                   focus:outline-none focus:border-primary-500
-                                                                                                  bg-transparent text-gray-900 dark:text-white"
+                                                                                                  bg-transparent text-gray-900 dark:text-white
+                                                                                                  dark:focus:border-gray-300"
                                                            placeholder="Confirm your password" />
                                                 <button type="button" @onclick="ToggleConfirmPasswordVisibility"
                                                         class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -540,7 +547,8 @@
                                                     </svg>
                                                 </div>
                                                 <InputSelect id="institution" name="institution" @bind-value="formData.Institution"
-                                                             class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 bg-transparent text-gray-900 dark:text-white">
+                                                             class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 bg-transparent text-gray-900 dark:text-white
+                                                             dark:focus:border-gray-300">
                                                     <option value="">Select Institution</option>
                                                     @foreach (var institution in institutions)
                                                     {
@@ -563,7 +571,8 @@
                                                     </svg>
                                                 </div>
                                                 <InputSelect id="course" name="course" @bind-value="formData.Course"
-                                                             class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 bg-transparent text-gray-900 dark:text-white">
+                                                             class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 bg-transparent text-gray-900 dark:text-white
+                                                             dark:focus:border-gray-300">
                                                     <option value="">Select Course</option>
                                                     @foreach (var course in courses)
                                                     {
@@ -579,7 +588,8 @@
                                                 Teaching Experience *
                                             </label>
                                             <InputSelect id="year" name="year" @bind-value="formData.Year"
-                                                         class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 bg-transparent text-gray-900 dark:text-white">
+                                                         class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 bg-transparent text-gray-900 dark:text-white
+                                                         dark:focus:border-gray-300">
                                                 @foreach (var year in years)
                                                 {
                                                     <option value="@year">@year</option>
@@ -591,7 +601,8 @@
                                                 Certifications
                                             </label>
                                             <InputSelect id="year" name="year" @bind-value="formData.Year"
-                                                         class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 bg-transparent text-gray-900 dark:text-white">
+                                                         class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 bg-transparent text-gray-900 dark:text-white
+                                                         dark:focus:border-gray-300">
                                                 @foreach (var year in years)
                                                 {
                                                     <option value="@year">@year</option>
@@ -626,7 +637,8 @@
                                                 <InputText id="instituteName" @bind-Value="InstituteformData.InstituteName"
                                                            class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2
                                                           border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500
-                                                          bg-transparent text-gray-900 dark:text-white"
+                                                          bg-transparent text-gray-900 dark:text-white
+                                                          dark:focus:border-gray-300"
                                                            placeholder="Enter institute name" />
                                             </div>
                                             <ValidationMessage For="@(() => InstituteformData.InstituteName)" class="text-red-500 dark:text-red-400 text-sm" />
