@@ -5,6 +5,7 @@ using EduSetu.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace EduSetu.Components.Accounts
 {
@@ -23,7 +24,6 @@ namespace EduSetu.Components.Accounts
         private bool showConfirmPassword = false;
         private bool isLoading = false;
         private int currentStep = 1;
-        private string interestInput = "";
 
 
         private async Task HandleStudentSubmitAsync()
@@ -46,9 +46,13 @@ namespace EduSetu.Components.Accounts
             }
         }
 
-
-
-
+     // Get Enum Discription
+        private string GetEnumDescription<T>(T value) where T : Enum
+        {
+            var field = typeof(T).GetField(value.ToString());
+            var attribute = field?.GetCustomAttribute<DisplayAttribute>();
+            return attribute != null ? attribute.Name! : value.ToString();
+        }
 
 
 
@@ -100,75 +104,6 @@ namespace EduSetu.Components.Accounts
         ("Coaching Details", "Username and password")
     };
 
-        private (string Value, string Label)[] institutionTypes = {
-        ("school", "School"),
-        ("university", "University/College"),
-        ("other", "Other")
-    };
-
-        private string[] boards = { "CBSE", "ICSE", "State Board", "IB", "NIOS" };
-        private string[] institutions = {
-        "Delhi University", "Mumbai University", "Bangalore University", "IIT Bombay", "IIT Delhi",
-        "CBSE Schools", "ICSE Schools", "State Board Schools", "Private Institutions"
-    };
-        private string[] qualifications = {
-    "High School (10th)",
-    "Intermediate (12th)",
-    "Diploma",
-    "Undergraduate (Bachelor’s)",
-    "Postgraduate (Master’s)",
-    "Doctorate (PhD)",
-    "Other"
-};
-        private string[] specializations = {
-    "Computer Science / IT",
-    "Electronics & Communication",
-    "Electrical Engineering",
-    "Mechanical Engineering",
-    "Civil Engineering",
-    "Chemical Engineering",
-    "Biotechnology",
-    "Architecture",
-    "Medical / Health Sciences",
-    "Pharmacy",
-    "Management / MBA",
-    "Commerce",
-    "Arts / Humanities",
-    "Science (Physics / Chemistry / Math)",
-    "Law",
-    "Education",
-    "Other"
-};
-        private string[] certifications = {
-    "CTET (Central Teacher Eligibility Test)",
-    "State TET (Teacher Eligibility Test)",
-    "B.Ed (Bachelor of Education)",
-    "M.Ed (Master of Education)",
-    "Diploma in Elementary Education (D.El.Ed)",
-    "NTT (Nursery Teacher Training)",
-    "PTT (Primary Teacher Training)",
-    "BTC (Basic Training Certificate)",
-    "Ph.D. in Education",
-    "UGC NET (National Eligibility Test)",
-    "SET (State Eligibility Test)",
-    "Montessori Training",
-    "Special Education Certification",
-    "Language Teaching Certification (TESOL/TEFL)",
-    "Other"
-};
-
-
-        private string[] courses = {
-        "B.Tech Computer Science", "B.Tech Engineering", "MBBS", "B.Sc", "B.Com", "B.A",
-        "M.Tech", "MBA", "Class 10", "Class 11", "Class 12", "JEE Preparation", "NEET Preparation"
-    };
-        private string[] semesters = { "Semester 1", "Semester 2", "Semester 3", "Semester 4", "Semester 5", "Semester 6", "Semester 7", "Semester 8" };
-        private string[] years = { "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015" };
-        private string[] subjectInterests = {
-        "Physics", "Chemistry", "Mathematics", "Biology", "Computer Science", "English",
-        "History", "Geography", "Economics", "Political Science", "Psychology", "Philosophy",
-        "Engineering", "Medicine", "Business", "Arts", "Literature", "Music", "Sports"
-    };
 
         public class RegisterFormData
         {
@@ -271,14 +206,7 @@ namespace EduSetu.Components.Accounts
                 return $"{baseClass} bg-gray-300 dark:bg-gray-600";
             }
         }
-
-        private string GetInstitutionTypeClass(string type)
-        {
-            var baseClasses = "flex items-center justify-center gap-3 p-4 rounded-lg border-2 transition-colors";
-            return formData.InstitutionType == type
-                ? $"{baseClasses} bg-primary-50 dark:bg-primary-900/50 border-primary-500 dark:border-primary-700 text-primary-700 dark:text-primary-300"
-                : $"{baseClasses} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700";
-        }
+           
 
         private void TogglePasswordVisibility()
         {
@@ -290,36 +218,7 @@ namespace EduSetu.Components.Accounts
             showConfirmPassword = !showConfirmPassword;
         }
 
-        private void SelectInstitutionType(string type)
-        {
-            formData.InstitutionType = type;
-            StateHasChanged();
-        }
-
-        private void AddInterest()
-        {
-            if (!string.IsNullOrWhiteSpace(interestInput) && !formData.Interests.Contains(interestInput.Trim()))
-            {
-                formData.Interests.Add(interestInput.Trim());
-                interestInput = "";
-                StateHasChanged();
-            }
-        }
-
-        private void RemoveInterest(string interest)
-        {
-            formData.Interests.Remove(interest);
-            StateHasChanged();
-        }
-
-        private void AddSubjectInterest(string subject)
-        {
-            if (!formData.Interests.Contains(subject))
-            {
-                formData.Interests.Add(subject);
-                StateHasChanged();
-            }
-        }
+       
 
         private void NextStep()
         {

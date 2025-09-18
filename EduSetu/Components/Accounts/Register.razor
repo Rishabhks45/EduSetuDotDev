@@ -295,6 +295,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                                         </svg>
                                     }
+
                                     <span>@(isLoading ? "Creating Account..." : "Create Account")</span>
                                 </button>
                             </div>
@@ -545,13 +546,15 @@
                                                     <svg class="h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                                     </svg>
-                                                </div>
-                                                <InputSelect id="institution" name="institution" @bind-value="formData.Institution"
+                                                </div>                                             
+                                                <InputSelect id="institution" name="institution" @bind-Value="formData.Institution"
                                                              class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 bg-transparent text-gray-900 dark:text-white dark:focus:border-gray-300">
                                                     <option value="">Select Institution</option>
-                                                    @foreach (var qualification in Enum.GetValues(typeof(QualificationType)))
+                                                    @foreach (QualificationType qualification in Enum.GetValues(typeof(QualificationType)))
                                                     {
-                                                        <option value="@qualification">@qualification</option>
+                                                        <option value="@qualification">
+                                                            @GetEnumDescription(qualification)
+                                                        </option>
                                                     }
                                                 </InputSelect>
                                             </div>
@@ -572,11 +575,12 @@
                                                 <InputSelect id="course" name="course" @bind-value="formData.Course"
                                                              class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 bg-transparent text-gray-900 dark:text-white
                                                                      dark:focus:border-gray-300">
-                                                    <option value="">Select Course</option>
-                                                    @foreach (var specialization in Enum.GetValues(typeof(Specialization)))
-
+                                                    <option value="">Select Course</option>                                                   
+                                                    @foreach (Specialization specialization in Enum.GetValues(typeof(Specialization)))
                                                     {
-                                                        <option value="@specialization">@specialization</option>
+                                                        <option value="@specialization">
+                                                            @GetEnumDescription(specialization)
+                                                        </option>
                                                     }
                                                 </InputSelect>
                                             </div>
@@ -596,10 +600,18 @@
                                                           d="M12 20V6.5a2.5 2.5 0 00-2.5-2.5H4v16h7.5a.5.5 0 01.5.5zm0 0V6.5a2.5 2.5 0 012.5-2.5H20v16h-7.5a.5.5 0 00-.5.5z" />
                                                 </svg>
 
-                                                <InputText id="year" name="year" @bind-value="formData.Year"
+                                                <InputSelect id="year" name="year" @bind-value="formData.Year"
                                                            class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 bg-transparent text-gray-900 dark:text-white
                                                                  dark:focus:border-gray-300"
-                                                           placeholder="Enter Teaching Experience " />
+                                                           placeholder="Enter Teaching Experience " >
+                                                    <option value="" selected>Select Experience</option>                                                  
+                                                    @foreach (TeachingExperience experience in Enum.GetValues(typeof(TeachingExperience)))
+                                                    {
+                                                        <option value="@experience">
+                                                            @GetEnumDescription(experience)
+                                                        </option>
+                                                    }
+                                                       </InputSelect>
                                             </div>
 
                                         </div>
@@ -621,10 +633,12 @@
                                                 <InputSelect @bind-value="formData.Board"
                                                              class="block w-full pl-10 pr-8 h-[40px] dark:bg-gray-700 border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500 bg-transparent text-gray-900 dark:text-white
                                                                                  dark:focus:border-gray-300">
-                                                    <option value="">Select Certifications</option>
-                                                    @foreach (var certification in Enum.GetValues(typeof(Certifications)))
+                                                    <option value="">Select Certifications</option>                                                   
+                                                    @foreach (Certifications certification in Enum.GetValues(typeof(Certifications)))
                                                     {
-                                                        <option value="@certification">@certification</option>
+                                                        <option value="@certification">
+                                                            @GetEnumDescription(certification)
+                                                        </option>
                                                     }
                                                 </InputSelect>
 
@@ -683,12 +697,13 @@
                                                                                   border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary-500
                                                                                   bg-transparent text-gray-900 dark:text-white my-custom-input"
                                                              placeholder="Enter mode of coaching (Online/Offline)">
-                                                    <option value="">Select Mode of Coaching</option>
-                                                    @foreach (var preferredTeachingMode in Enum.GetValues(typeof(PreferredTeachingMode)))
+                                                    <option value="">Select Mode of Coaching</option>                                                  
+                                                    @foreach (PreferredTeachingMode preferredTeachingMode in Enum.GetValues(typeof(PreferredTeachingMode)))
                                                     {
-                                                        <option value="@preferredTeachingMode">@preferredTeachingMode</option>
+                                                        <option value="@preferredTeachingMode">
+                                                            @GetEnumDescription(preferredTeachingMode)
+                                                        </option>
                                                     }
-
                                                 </InputSelect>
                                             </div>
                                             <ValidationMessage For="@(() => InstituteformData.ModeOfCoaching)" class="text-red-500 dark:text-red-400 text-sm" />
@@ -752,8 +767,7 @@
                                                          class="absolute left-2 top-2 w-5 h-5 text-gray-500"
                                                          fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                              d="M3 21h18M9 8h6m-6 4h6m-7 8V5a2 2 0 012-2h2a2 2 0
-                             012 2v15" />
+                                                              d="M3 21h18M9 8h6m-6 4h6m-7 8V5a2 2 0 012-2h2a2 2 0 012 2v15" />
                                                     </svg>
                                                 </div>
                                                 <InputText id="city" @bind-Value="InstituteformData.City"
