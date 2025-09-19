@@ -88,25 +88,76 @@
                 }
                 else
                 {
-                    <div class="relative">
-                        <button class="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors focus:outline-none" @onclick="ToggleUserDropdown">
-                            <svg class="w-7 h-7 rounded-full bg-primary-100 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
+                    <div class="relative" @ref="dropdownContainer">
+                        <button class="flex items-center gap-3 text-gray-700 hover:text-primary-600 transition-colors focus:outline-none p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" 
+                                @onclick="ToggleUserDropdown">
+                            <!-- Profile Image Container -->
+                            <div class="w-8 h-8 rounded-full overflow-hidden ring-2 ring-primary-200 dark:ring-primary-800 flex-shrink-0">
+                                @if (string.IsNullOrEmpty(UserProfileUrl))
+                                {
+                                    <div class="w-full h-full bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 flex items-center justify-center text-sm font-medium">
+                                        @(userName?.Substring(0, 1).ToUpper())
+                                    </div>
+                                }
+                                else if (IsProfileImageExists())
+                                {
+                                    <img src="@UserProfileUrl" 
+                                         alt="@userName" 
+                                         class="w-full h-full object-cover"
+                                         onerror="this.onerror=null; this.src='images/default-avatar.png';" />
+                                }
+                            </div>
+                            <!-- User Info -->
                             <span class="font-medium dark:text-white">@userName</span>
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
+
                         @if (showUserDropdown)
                         {
-                            <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
-                                <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                                    <div class="font-semibold text-gray-900 dark:text-white">@userName</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400 truncate">@userEmail</div>
+                            <div class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
+                                <!-- User Info Header -->
+                                <div class="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3">
+                                    <!-- Profile Image in Dropdown -->
+                                    <div class="w-10 h-10 rounded-full overflow-hidden ring-2 ring-primary-200 dark:ring-primary-800 flex-shrink-0">
+                                        @if (string.IsNullOrEmpty(UserProfileUrl))
+                                        {
+                                            <div class="w-full h-full bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 flex items-center justify-center text-sm font-medium">
+                                                @(userName?.Substring(0, 1).ToUpper())
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <img src="@UserProfileUrl" 
+                                                 alt="@userName" 
+                                                 class="w-full h-full object-cover"
+                                                 onerror="this.onerror=null; this.src='images/default-avatar.png';" />
+                                        }
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="font-semibold text-gray-900 dark:text-white truncate">@userName</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400 truncate">@userEmail</div>
+                                    </div>
                                 </div>
-                                <a href="/profile" class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Profile</a>
-                                <button class="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" @onclick="Logout">Logout</button>
+                                <!-- Menu Items -->
+                                <div class="py-1">
+                                    <NavLink href="/profile" 
+                                            class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                                            @onclick="() => { showUserDropdown = false; }">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                        <span>Profile</span>
+                                    </NavLink>
+                                    <button class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors" 
+                                            @onclick="async () => { showUserDropdown = false; await Task.Delay(100); Logout(); }">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                        </svg>
+                                        <span>Logout</span>
+                                    </button>
+                                </div>
                             </div>
                         }
                     </div>

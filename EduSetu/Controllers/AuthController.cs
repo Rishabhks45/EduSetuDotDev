@@ -72,7 +72,9 @@ namespace EduSetu.Controllers
                 new(ClaimTypes.Email, getUserResponse.Payload.Email ?? ""),
                 new(ClaimTypes.GivenName, getUserResponse.Payload.FirstName ?? ""),
                 new(ClaimTypes.Surname, getUserResponse.Payload.LastName ?? ""),
-                new(ClaimTypes.Role, getUserResponse.Payload.Role ?? "")
+                new(ClaimTypes.Role, getUserResponse.Payload.Role ?? ""),
+                new("ProfilePictureUrl", getUserResponse.Payload.ProfilePictureUrl ?? "")
+
             };
 
             // Create claims identity

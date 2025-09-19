@@ -1,13 +1,13 @@
 // ===== Scroll Listener for Header Toggle =====
 if (typeof window.addScrollListener !== "function") {
-    window.addScrollListener = function (dotNetHelper) {
-        console.log("Scroll listener added");
-        window.addEventListener("scroll", function () {
-            const isScrolled = window.scrollY > 5;
-            console.log("Scroll position:", window.scrollY, "isScrolled:", isScrolled);
-            dotNetHelper.invokeMethodAsync("OnScroll", isScrolled);
-        });
-    };
+window.addScrollListener = function (dotNetHelper) {
+    console.log("Scroll listener added");
+    window.addEventListener("scroll", function () {
+        const isScrolled = window.scrollY > 5;
+        console.log("Scroll position:", window.scrollY, "isScrolled:", isScrolled);
+        dotNetHelper.invokeMethodAsync("OnScroll", isScrolled);
+    });
+};
 }
 
 // ===== Safe Permissions API Helper =====
@@ -262,3 +262,55 @@ window.compressAndReturnImageBase64 = async (inputFileElementId) => {
 
 
 //-------------- end image crop --------////
+
+
+// ===== Header Component Reference Management =====
+
+// Global reference to the header component
+
+
+if (typeof window.setHeaderReference !== 'function') {
+    window.setHeaderReference = function (reference) {
+        dotNetReference = reference;
+    };
+}
+
+if (typeof window.setHeaderUserInfo !== 'function') {
+    window.setHeaderUserInfo = function (userName, useremail, profileUrl) {
+        if (dotNetReference) {
+            dotNetReference.invokeMethodAsync('SetUserInfo', userName, useremail, profileUrl);
+            return true;
+        }
+        return false;
+    };
+}
+
+// ===== Dropdown Management (merged from dropdown.js) =====
+
+let dropdownElement = null;
+let dropdownComponentRef = null;
+let dropdownClickHandler = null;
+
+if (typeof window.initializeDropdown !== 'function') {
+    window.initializeDropdown = function (element, dotNetRef) {
+        dropdownElement = element;
+        dropdownComponentRef = dotNetRef;
+
+        // Remove any existing event listener
+        if (dropdownClickHandler) {
+            document.removeEventListener('click', dropdownClickHandler);
+        }
+
+        // Create new click handler
+        dropdownClickHandler = function (event) {
+            // Check if the click is outside the dropdown container
+            if (dropdownElement && !dropdownElement.contains(event.target)) {
+                // Call the Blazor component to close the dropdown
+                dropdownComponentRef.invokeMethodAsync('CloseDropdown');
+            }
+        };
+
+        // Add event listener to document
+        document.addEventListener('click', dropdownClickHandler);
+    };
+}

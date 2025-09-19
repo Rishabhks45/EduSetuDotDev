@@ -51,6 +51,7 @@ internal sealed class GetCurrentUserRequestHandler(
             Email = user.Email,
             FirstName = user.FirstName,
             LastName = user.LastName,
+            ProfilePictureUrl = user.ProfilePictureUrl,
             FullName = $"{user.FirstName} {user.LastName}",
             Role = user.Role.ToString()
         };

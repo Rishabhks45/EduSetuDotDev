@@ -25,6 +25,7 @@ public class Startup
     {
         services.AddRazorComponents()
             .AddInteractiveServerComponents()
+            .AddInteractiveServerComponents()
             .AddCircuitOptions(options => { options.DetailedErrors = true; });
 
         services.AddDbContext<AppDbContext>(options =>

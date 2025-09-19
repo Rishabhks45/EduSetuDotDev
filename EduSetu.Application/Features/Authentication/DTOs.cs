@@ -135,6 +135,7 @@ public class UserInfo
 {
     public string UserId { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;
+    public string? ProfilePictureUrl { get; set; }
     public string LastName { get; set; } = string.Empty;
     private string _email = string.Empty;
     public string Email

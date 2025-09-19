@@ -255,6 +255,7 @@ namespace EduSetu.Components.Pages
                 NotificationService.Success("Profile updated successfully!");
 
                 // Update header information via JavaScript
+                await JSRuntime.InvokeVoidAsync("setHeaderUserInfo", record.FullName, record.Email, record.ProfilePictureUrl);
 
                 isEditing = false;
                 selectedFile = null;
