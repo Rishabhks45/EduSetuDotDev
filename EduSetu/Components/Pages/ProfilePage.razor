@@ -1,6 +1,7 @@
 @page "/profile"
 @inherits BaseComponent
 @using System.ComponentModel.DataAnnotations
+@using Blazored.FluentValidation
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
 
@@ -23,7 +24,7 @@
                                 else
                                 {
                                     <span>@GetUserInitials()</span>
-                                }                               
+                                }
                             </div>
                             @if (isEditingProfile)
                             {
@@ -258,37 +259,141 @@
                                     </div>
                                 </div>
 
-                                <form class="space-y-4">
-                                    <div>
-                                        <label for="current-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                            Current Password
-                                        </label>
-                                        <input type="password" id="current-password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white" placeholder="Enter your current password">
+                                <EditForm Model="@passwordFormData" OnValidSubmit="@ChangePasswordAsync" class="space-y-6">
+                                    <FluentValidationValidator />
+
+                                    <div class="space-y-4">
+                                        <!-- Current Password -->
+                                        <div>
+                                            <label for="current-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Current Password
+                                            </label>
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                    </svg>
+                                                </div>
+                                                <InputText @bind-Value="passwordFormData.CurrentPassword"
+                                                           type="@(showCurrentPassword ? "text" : "password")"
+                                                           id="current-password"
+                                                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                                           placeholder="••••••••" />
+                                                <button type="button" class="absolute right-3 top-3 text-text-secondary hover:text-text-primary" @onclick="@(() => TogglePasswordVisibility("current"))">
+                                                    <i class="fas @(showCurrentPassword ? "fa-eye-slash" : "fa-eye")"></i>
+                                                </button>
+                                            </div>
+                                            <ValidationMessage For="@(() => passwordFormData.CurrentPassword)"
+                                                               class="mt-1.5 text-sm text-red-500 dark:text-red-400" />
+                                        </div>
+
+                                        <!-- New Password -->
+                                        <div>
+                                            <label for="new-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                New Password
+                                            </label>
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                    </svg>
+                                                </div>
+                                                <InputText @bind-Value="passwordFormData.NewPassword"
+                                                           @oninput="ValidatePassword"
+                                                           type="@(showNewPassword ? "text" : "password")"
+                                                           id="new-password"
+                                                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                                           placeholder="••••••••" />
+                                                <button type="button" class="absolute right-3 top-3 text-text-secondary hover:text-text-primary" @onclick="@(() => TogglePasswordVisibility("new"))">
+                                                    <i class="fas @(showNewPassword ? "fa-eye-slash" : "fa-eye")"></i>
+                                                </button>
+                                            </div>
+                                            <ValidationMessage For="@(() => passwordFormData.NewPassword)"
+                                                               class="mt-1.5 text-sm text-red-500 dark:text-red-400" />
+                                            @if (isVisibleCheckBox)
+                                            {
+                                                <!-- Password strength checklist -->
+                                                <div class="mt-2 text-xs">
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="far @(hasMinLength ? "fa-check-square text-brand-cyan-dark" : "fa-square text-gray-400")"></i>
+                                                        <span>At least 8 characters</span>
+                                                    </div>
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="far @(hasUppercase ? "fa-check-square text-brand-cyan-dark" : "fa-square text-gray-400")"></i>
+                                                        <span>At least 1 uppercase letter</span>
+                                                    </div>
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="far @(hasNumber ? "fa-check-square text-brand-cyan-dark" : "fa-square text-gray-400")"></i>
+                                                        <span>At least 1 number</span>
+                                                    </div>
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="far @(hasSpecialChar ? "fa-check-square text-brand-cyan-dark" : "fa-square text-gray-400")"></i>
+                                                        <span>At least 1 special character</span>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <!-- Confirm Password -->
+                                        <div>
+                                            <label for="confirm-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                Confirm New Password
+                                            </label>
+                                            <div class="relative">
+                                                <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                    </svg>
+                                                </div>
+                                                <InputText @bind-Value="passwordFormData.ConfirmPassword"
+                                                           type="@(showConfirmPassword ? "text" : "password")"
+                                                           id="confirm-password"
+                                                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                                           placeholder="••••••••" />
+                                                <button type="button" class="absolute right-3 top-3 text-text-secondary hover:text-text-primary" @onclick="@(() => TogglePasswordVisibility("confirm"))">
+                                                    <i class="fas @(showConfirmPassword ? "fa-eye-slash" : "fa-eye")"></i>
+                                                </button>
+                                            </div>
+                                            <ValidationMessage For="@(() => passwordFormData.ConfirmPassword)"
+                                                               class="mt-1.5 text-sm text-red-500 dark:text-red-400" />
+                                        </div>
                                     </div>
 
-                                    <div>
-                                        <label for="new-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                            New Password
-                                        </label>
-                                        <input type="password" id="new-password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white" placeholder="Enter your new password">
-                                    </div>
-
-                                    <div>
-                                        <label for="confirm-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                            Confirm New Password
-                                        </label>
-                                        <input type="password" id="confirm-password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white" placeholder="Confirm your new password">
-                                    </div>
-
-                                    <div class="flex items-center justify-end space-x-3 pt-4">
-                                        <button type="button" @onclick="CloseChangePassword" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    <!-- Action Buttons -->
+                                    <div class="flex items-center justify-end gap-3 pt-6">
+                                        <button type="button"
+                                                @onclick="CloseChangePassword"
+                                                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                             Cancel
                                         </button>
-                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors">
-                                            Update Password
+                                        <button type="submit"
+                                                class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors flex items-center gap-2"
+                                                disabled="@isChangingPassword">
+                                            @if (!isChangingPassword)
+                                            {
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0
+                                             00-2-2H6a2 2 0 00-2 2v6a2 2 0 002
+                                             2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                </svg>
+                                                <span>Update Password</span>
+                                            }
+                                            else
+                                            {
+                                                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                            stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor"
+                                                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4
+                                             4H4z"></path>
+                                                </svg>
+                                                <span>Updating...</span>
+                                            }
                                         </button>
+
                                     </div>
-                                </form>
+                                </EditForm>
                             </div>
                         </div>
                         break;

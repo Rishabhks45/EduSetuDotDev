@@ -46,4 +46,25 @@ public class Repository
         var rowsAffected = await _ctx.SaveChangesAsync(cancellationToken);
         return rowsAffected > 0;
     }
+
+    public async Task<bool> ChangePasswordAsync(Guid userId, string newPassword, Session session, CancellationToken cancellationToken)
+    {
+        _ctx.ChangeTracker.Clear();
+
+        var userToUpdate = new User
+        {
+            Id = userId,
+            Password = newPassword,
+            LastModifiedBy = session.UserId,
+            LastModifiedDate = DateTime.UtcNow
+        };
+
+        _ctx.Users.Attach(userToUpdate);
+        _ctx.Entry(userToUpdate).Property(nameof(User.Password)).IsModified = true;
+        _ctx.Entry(userToUpdate).Property(nameof(User.LastModifiedBy)).IsModified = true;
+        _ctx.Entry(userToUpdate).Property(nameof(User.LastModifiedDate)).IsModified = true;
+
+        var rowsAffected = await _ctx.SaveChangesAsync(cancellationToken);
+        return rowsAffected > 0;
+    }
 }

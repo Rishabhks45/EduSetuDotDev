@@ -25,10 +25,24 @@ namespace EduSetu.Components.Pages
 
         // form data
         private UpdateProfileDto record = new();
+        private ChangePasswordDto passwordFormData = new();
+
+        private bool showCurrentPassword = false;
+        private bool showNewPassword = false;
+        private bool showConfirmPassword = false;
+
+        // For Check Password validation
+        bool isVisibleCheckBox = false;
+        bool hasMinLength;
+        bool hasUppercase;
+        bool hasNumber;
+        bool hasSpecialChar;
+        bool isPasswordValid => hasMinLength && hasUppercase && hasNumber && hasSpecialChar;
 
         private bool isEditing = false;
         private string? ImageUrlToView;
         private bool showViewProfileImageModal = false;
+    private bool isChangingPassword = false;
         private bool isCropping = false;
         private bool showCropModal = false;
         private bool isSaving = false;
@@ -268,11 +282,63 @@ namespace EduSetu.Components.Pages
             }
         }
 
+        private async Task ChangePasswordAsync()
+        {
+            isChangingPassword = true;
+
+            var response = await Mediator.Send(new ChangePasswordRequest(passwordFormData, session));
+            if (response.HasError)
+            {
+                ShowErrorModal(response.Errors);
+                isChangingPassword = false;
+                return;
+            }
+
+            passwordFormData = new();
+            NotificationService.Success("Password changed successfully!");
+            isChangingPassword = false;
+            activeSection = "uploads"; // Default to uploads
+           // HideChangePasswordModal();
+        }
+
+        private void TogglePasswordVisibility(string field)
+        {
+            switch (field)
+            {
+                case "current":
+                    showCurrentPassword = !showCurrentPassword;
+                    break;
+                case "new":
+                    showNewPassword = !showNewPassword;
+                    break;
+                case "confirm":
+                    showConfirmPassword = !showConfirmPassword;
+                    break;
+            }
+        }
 
 
+        #region For Checkbox. Password validation method
 
+        private void ValidatePassword(ChangeEventArgs e)
+        {
+            isVisibleCheckBox = true;
+            var password = e.Value?.ToString() ?? string.Empty;
 
-
+            hasMinLength = password.Length >= 8;
+            hasUppercase = password.Any(char.IsUpper);
+            hasNumber = password.Any(char.IsDigit);
+            hasSpecialChar = password.Any(ch => !char.IsLetterOrDigit(ch));
+            if (!isPasswordValid)
+            {
+                isVisibleCheckBox = true;
+            }
+            else
+            {
+                isVisibleCheckBox = false;
+            }
+        }
+        #endregion
 
 
 
