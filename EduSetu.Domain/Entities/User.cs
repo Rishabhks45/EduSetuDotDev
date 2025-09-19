@@ -23,7 +23,6 @@ namespace EduSetu.Domain.Entities
         public string? ProfilePictureUrl { get; set; }
         public string? Username { get; set; }
         public string? PhoneNumber { get; set; }
-        public string? InstituteName { get; set; }
         public QualificationType? qualificationType { get; set; }
         public Specialization? Specialization { get; set; }
         public TeachingExperience? teachingExperience { get; set; }
@@ -47,7 +46,6 @@ namespace EduSetu.Domain.Entities
             Email = email?.Trim() ?? string.Empty;
             Password = password?.Trim() ?? string.Empty;
             Role = role;
-            InstituteName = instituteName?.Trim() ?? string.Empty;
         }
     }
 

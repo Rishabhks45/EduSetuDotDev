@@ -330,12 +330,21 @@ public sealed class StudentDTOsValidator : AbstractValidator<StudentDTOs>
             .WithMessage("Last name is required")
             .MaximumLength(100)
             .WithMessage("Last name must not exceed 100 characters");
+        // Phone Number
         RuleFor(x => x.PhoneNumber)
-            .NotEmpty()
-            .WithMessage("Phone Number is required")
-            .MaximumLength(15)
-            .WithMessage("Phone number must not exceed 15 characters")
-            .When(x => !string.IsNullOrEmpty(x.PhoneNumber));
+     .NotEmpty().WithMessage("Phone number is required")
+     .DependentRules(() =>
+     {
+         RuleFor(x => x.PhoneNumber)
+             .Matches(@"^[0-9]{10}$")
+             .WithMessage("Phone number must be exactly 10 digits")
+             .DependentRules(() =>
+             {
+                 RuleFor(x => x.PhoneNumber)
+                     .Must(num => !new[] { "0000000000", "1234567890" }.Contains(num))
+                     .WithMessage("Phone number is invalid");
+             });
+     });
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required")
             .DependentRules(() =>

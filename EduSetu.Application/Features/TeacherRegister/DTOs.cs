@@ -107,6 +107,19 @@ public class TeacherRegisterValidator : AbstractValidator<TeacherRegister>
                             .WithMessage("Email must not exceed 255 characters");
                     });
             });
+            RuleFor(x => x.Username)
+            .NotEmpty().WithMessage("Username is required")
+            .DependentRules(() =>
+            {
+                RuleFor(x => x.Username)
+                    .MinimumLength(4).WithMessage("Username must be at least 4 characters long")
+                    .MaximumLength(20).WithMessage("Username must not exceed 20 characters")
+                    .DependentRules(() =>
+                    {
+                        RuleFor(x => x.Username)
+                            .Matches(@"^[a-zA-Z0-9_]+$").WithMessage("Username can only contain letters, numbers, and underscores");
+                    });
+            });
 
         // Phone Number
         RuleFor(x => x.PhoneNumber)

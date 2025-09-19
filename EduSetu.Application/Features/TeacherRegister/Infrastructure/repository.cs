@@ -22,17 +22,27 @@ public class repository
                                                   x.Id != excludeId &&
                                                   x.RowStatus != RowStatus.Deleted, cancellationToken);
     }
-    // check if coaching institute name already exists
-    public async Task<bool> InstituteExistsAsync(Guid excludeId, string instituteName, CancellationToken cancellationToken)
+    // check if user already exists
+    public async Task<bool> UserNameExistsAsync( string username, CancellationToken cancellationToken)
     {
-        return await _Ctx.Users.AsNoTracking().AnyAsync(x => x.InstituteName == instituteName &&
-                                                  x.Id != excludeId &&
+        return await _Ctx.Users.AsNoTracking().AnyAsync(x => x.Username == username &&
+                                                  x.RowStatus != RowStatus.Deleted, cancellationToken);
+    }
+    // check if coaching institute name already exists
+    public async Task<bool> InstituteNameExistsAsync( string instituteName, CancellationToken cancellationToken)
+    {
+        return await _Ctx.CoachingDetails.AsNoTracking().AnyAsync(x => x.InstituteName == instituteName &&                                                  
+                                                  x.RowStatus != RowStatus.Deleted, cancellationToken);
+    }
+    // check if coaching institute name already exists
+    public async Task<bool> InstituteExistsAsync( Guid instituteId, CancellationToken cancellationToken)
+    {
+        return await _Ctx.Users.AsNoTracking().AnyAsync(x => x.Id == instituteId &&                                                  
                                                   x.RowStatus != RowStatus.Deleted, cancellationToken);
     }
 
 
-    // Register Teacher and Institute Details
-    public async Task<bool> AddTeacherAsync(TeacherRegister TeacherReg, CancellationToken cancellationToken)
+    public async Task<Guid> AddTeacherAsync(TeacherRegister TeacherReg, CancellationToken cancellationToken)
     {
         DateTime currentTime = DateTime.UtcNow;
 
@@ -40,9 +50,10 @@ public class repository
 
         if (user.Id == Guid.Empty)
         {
-            user.Id = Guid.NewGuid();
+            user.Id = TeacherReg.Id;
             user.CreatedDate = currentTime;
             user.Password = TeacherReg.Password;
+            user.RowStatus = RowStatus.Active;
             user.Role = UserRole.Teacher;
             _Ctx.Users.Add(user);
         }
@@ -68,40 +79,48 @@ public class repository
         }
 
         var rowsAffected = await _Ctx.SaveChangesAsync(cancellationToken);
-        return rowsAffected > 0;
+        return rowsAffected > 0 ? user.Id : Guid.Empty;
     }
 
     //Register Institute Details
     public async Task<bool> AddInstituteAsync(CoachingDetailsDto coachingDetails, CancellationToken cancellationToken)
     {
-        DateTime currentTime = DateTime.UtcNow;
-        var coaching = coachingDetails.Adapt<CoachingDetails>();
-        if (coaching.Id == Guid.Empty)
+        try
         {
-            coaching.Id = Guid.NewGuid();
-            coaching.CreatedDate = currentTime;
-            coaching.RowStatus = RowStatus.Active;
-            coaching.CreatedBy = coachingDetails.TeacherId;
-            _Ctx.CoachingDetails.Add(coaching);
+            DateTime currentTime = DateTime.UtcNow;
+            var coaching = coachingDetails.Adapt<CoachingDetails>();
+            if (coaching.Id == Guid.Empty)
+            {
+                coaching.Id = Guid.NewGuid();
+                coaching.CreatedDate = currentTime;
+                coaching.RowStatus = RowStatus.Active;
+                coaching.CreatedBy = coachingDetails.TeacherId;
+                _Ctx.CoachingDetails.Add(coaching);
+            }
+            else
+            {
+                _Ctx.ChangeTracker.Clear();
+                _Ctx.CoachingDetails.Attach(coaching);
+                var entry = _Ctx.Entry(coaching);
+                entry.Property(nameof(CoachingDetails.InstituteName)).IsModified = true;
+                entry.Property(nameof(CoachingDetails.PreferredTeachingMode)).IsModified = true;
+                entry.Property(nameof(CoachingDetails.NumberOfStudents)).IsModified = true;
+                entry.Property(nameof(CoachingDetails.Address)).IsModified = true;
+                entry.Property(nameof(CoachingDetails.City)).IsModified = true;
+                entry.Property(nameof(CoachingDetails.State)).IsModified = true;
+                entry.Property(nameof(CoachingDetails.PinCode)).IsModified = true;
+                entry.Property(nameof(CoachingDetails.RowStatus)).IsModified = true;
+                entry.Property(nameof(CoachingDetails.CreatedBy)).IsModified = true;
+                entry.Property(nameof(CoachingDetails.LastModifiedBy)).IsModified = true;
+                entry.Property(nameof(CoachingDetails.LastModifiedDate)).IsModified = true;
+            }
+            var rowsAffected = await _Ctx.SaveChangesAsync(cancellationToken);
+            return rowsAffected > 0;
         }
-        else
+        catch(Exception mess)
         {
-            _Ctx.ChangeTracker.Clear();
-            _Ctx.CoachingDetails.Attach(coaching);
-            var entry = _Ctx.Entry(coaching);
-            entry.Property(nameof(CoachingDetails.InstituteName)).IsModified = true;
-            entry.Property(nameof(CoachingDetails.PreferredTeachingMode)).IsModified = true;
-            entry.Property(nameof(CoachingDetails.NumberOfStudents)).IsModified = true;
-            entry.Property(nameof(CoachingDetails.Address)).IsModified = true;
-            entry.Property(nameof(CoachingDetails.City)).IsModified = true;
-            entry.Property(nameof(CoachingDetails.State)).IsModified = true;
-            entry.Property(nameof(CoachingDetails.PinCode)).IsModified = true;
-            entry.Property(nameof(CoachingDetails.RowStatus)).IsModified = true;
-            entry.Property(nameof(CoachingDetails.CreatedBy)).IsModified = true;
-            entry.Property(nameof(CoachingDetails.LastModifiedBy)).IsModified = true;
-            entry.Property(nameof(CoachingDetails.LastModifiedDate)).IsModified = true;
+            var msg = mess.Message;
+            return false;
         }
-       var rowsAffected = await _Ctx.SaveChangesAsync(cancellationToken);
-        return rowsAffected > 0;
     }
 }

@@ -438,7 +438,7 @@
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                                         </svg>
                                                     </div>
-                                                    <InputText id="username" name="username" @bind-value="TeacherformData.Username"
+                                                    <InputText id="username" type="text" name="username" @bind-value="TeacherformData.Username"
                                                                class="block w-full pl-10 pr-3 h-[40px]
                                                                                                                   border-0 border-b-2 border-gray-300 dark:border-gray-600
                                                                                                                   focus:outline-none focus:border-primary-500
@@ -529,7 +529,7 @@
                                             Step @currentStep of @steps.Length
                                         </div>
 
-                                        <div class="flex gap-3">
+                                        <div class="flex gap-3 mt-4">
                                             @if (currentStep > 1)
                                             {
                                                 <button type="button" @onclick="PreviousStep"
@@ -583,7 +583,7 @@
                                     <div class="mb-6">
                                     </div>
 
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                                         <div>
                                             <label for="institution" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                                 Highest Qualification *
@@ -712,7 +712,29 @@
                                                 <button type="submit"
                                                         disabled="@isLoading"
                                                         class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors disabled:opacity-50 dark:bg-primary-700 dark:hover:bg-primary-800">
-                                                    Next
+                                                    @if (isLoading)
+                                                    {
+                                                        <div class="flex items-center gap-2">
+                                                            <!-- Up/down loading animation -->
+                                                            <div class="relative h-5 w-5">
+                                                                <div class="absolute animate-bounce top-0 left-1/2 transform -translate-x-1/2">
+                                                                    <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                                                                    </svg>
+                                                                </div>
+                                                                <div class="absolute animate-bounce bottom-0 left-1/2 transform -translate-x-1/2" style="animation-delay: 150ms;">
+                                                                    <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                                                                    </svg>
+                                                                </div>
+                                                            </div>
+                                                            <span>Saving...</span>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>Next</span>
+                                                    }
                                                 </button>
                                             }
                                             else

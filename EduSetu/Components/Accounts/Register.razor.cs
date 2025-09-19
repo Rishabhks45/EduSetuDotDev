@@ -49,7 +49,7 @@ namespace EduSetu.Components.Accounts
             }
         }
 
-     // Get Enum Discription
+        // Get Enum Discription
         private string GetEnumDescription<T>(T value) where T : Enum
         {
             var field = typeof(T).GetField(value.ToString());
@@ -66,6 +66,7 @@ namespace EduSetu.Components.Accounts
 
         private async Task HandleTeacherSubmitAsync()
         {
+            isLoading = true;
             //add EducationDetails dto into TeacherformData dto
             TeacherformData.Specialization = EducationformData.Specialization;
             TeacherformData.qualificationType = EducationformData.qualificationType;
@@ -77,22 +78,35 @@ namespace EduSetu.Components.Accounts
                 // Registration successful, redirect to login page
                 //NavigationManager.NavigateTo("/login?registered=true");
                 NotificationService.Success("User Create successful! .");
+                InstituteformData.TeacherId = Response.Payload;
+                isLoading = false;
                 NextStep();
             }
             else
             {
                 // Handle registration failure (e.g., show error message)
                 if (Response.Errors.Count > 0)
+                {
                     NotificationService.Error($"Registration failed: {Response.Errors[0].Message}");
+                    InstituteformData.TeacherId = Guid.Empty;
+                    isLoading = false;
+
+                }
                 else
+                {
+                    isLoading = false;
                     NotificationService.Error("Registration failed: Unknown error");
+                }
+                   
             }
+            isLoading = false;
         }
 
 
         // Coaching Details Steps
         private async Task HandleCoachingDetailsSubmitAsync()
         {
+            isLoading = true;
             var Response = await Mediator.Send(new RegisterCoachingDetailsRequest(InstituteformData));
 
             if (!Response.HasError)
@@ -100,16 +114,24 @@ namespace EduSetu.Components.Accounts
                 // Registration successful, redirect to login page
                 NavigationManager.NavigateTo("/login?registered=true");
                 NotificationService.Success("Registration successful! Please log in.");
+                isLoading = false;
             }
             else
             {
                 // Handle registration failure (e.g., show error message)
                 if (Response.Errors.Count > 0)
+                {
                     NotificationService.Error($"Registration failed: {Response.Errors[0].Message}");
+                    isLoading = false;
+                }
                 else
+                {
                     NotificationService.Error("Registration failed: Unknown error");
+                    isLoading = false;
+                }
             }
-        }   
+            isLoading = false;
+        }
 
         private (string Title, string Description)[] steps = {
         ("Personal Info", "Basic personal details"),
@@ -118,12 +140,12 @@ namespace EduSetu.Components.Accounts
     };
 
 
-        
+
 
         private string GetStepClass(int stepIndex)
         {
             var baseClasses = "flex items-center justify-center rounded-full";
-            
+
             if (stepIndex < currentStep)
             {
                 // Completed step
@@ -144,7 +166,7 @@ namespace EduSetu.Components.Accounts
         private string GetStepLineClass(int stepIndex)
         {
             var baseClass = "h-[2px]";
-            
+
             if (stepIndex < currentStep)
             {
                 // Completed line
@@ -156,7 +178,7 @@ namespace EduSetu.Components.Accounts
                 return $"{baseClass} bg-gray-300 dark:bg-gray-600";
             }
         }
-           
+
 
         private void TogglePasswordVisibility()
         {
@@ -168,7 +190,7 @@ namespace EduSetu.Components.Accounts
             showConfirmPassword = !showConfirmPassword;
         }
 
-       
+
 
         private void NextStep()
         {
@@ -193,8 +215,8 @@ namespace EduSetu.Components.Accounts
             // Simulate Google signup
             Console.WriteLine("Google signup clicked");
         }
-              
-        
+
+
 
     }
 }

@@ -10,7 +10,7 @@ namespace EduSetu.Application.Features.TeacherRegister.Requests;
 
 public sealed record RegisterTeacherRequest(TeacherRegister teacherData) : IRequest<RegisterTeacherResponse>;
 
-public sealed class RegisterTeacherResponse : AppResult { }
+public sealed class RegisterTeacherResponse : AppResult<Guid> { }
 
 internal sealed class RegisterTeacherRequestHandler : IRequestHandler<RegisterTeacherRequest, RegisterTeacherResponse>
 {
@@ -33,31 +33,36 @@ internal sealed class RegisterTeacherRequestHandler : IRequestHandler<RegisterTe
         RegisterTeacherResponse result = new RegisterTeacherResponse();
 
         var UserExists = await _Repository.UserExistsAsync(request.teacherData.Id, request.teacherData.Email, cancellationToken);
+        var UserNameExists = await _Repository.UserNameExistsAsync( request.teacherData.Email, cancellationToken);
         if (UserExists)
         {
             result.Failure(ErrorCode.Conflict, "User already exists");
             return result;
         }
+        if (UserNameExists)
+        {
+            result.Failure(ErrorCode.Conflict, "Username already exists");
+            return result;
+        }
 
         if (request.teacherData.Id == Guid.Empty)
         {
-            tempPassword = CommonHelper.GenerateTemporaryPassword();
-            request.teacherData.Password = await _PasswordEncryptionService.EncryptPasswordAsync(tempPassword, _EncryptionSettings.Value.MasterKey);
+           // tempPassword = CommonHelper.GenerateTemporaryPassword();
+            request.teacherData.Password = await _PasswordEncryptionService.EncryptPasswordAsync(request.teacherData.Password, _EncryptionSettings.Value.MasterKey);
         }
         else
         {
             tempPassword = await _PasswordEncryptionService.EncryptPasswordAsync(request.teacherData.Password!, _EncryptionSettings.Value.MasterKey);
         }
 
-        var isUpserted = await _Repository.AddTeacherAsync(request.teacherData, cancellationToken);
-        if (!isUpserted)
+        Guid teacherId = await _Repository.AddTeacherAsync(request.teacherData, cancellationToken);
+        if (teacherId == Guid.Empty)
         {
             result.Failure(ErrorCode.BadRequest, "Failed to add teacher details");
             return result;
         }
 
-        result.Success();
-        
+        result.Success(teacherId);
         return result;
     }
 }
