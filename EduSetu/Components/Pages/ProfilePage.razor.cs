@@ -26,6 +26,7 @@ namespace EduSetu.Components.Pages
         // form data
         private UpdateProfileDto record = new();
         private ChangePasswordDto passwordFormData = new();
+        private DeleteAccountModel deleteAccountModel = new();
 
         private bool showCurrentPassword = false;
         private bool showNewPassword = false;
@@ -49,6 +50,8 @@ namespace EduSetu.Components.Pages
         private IBrowserFile? selectedFile;
         private string cropImageError = string.Empty;
         private string? originalProfilePictureUrl;
+        private string? DELETE = "DELETE";
+        private string? bindDelete = string.Empty;
 
         private UserProfile? user;
         private UserStats stats = new();
@@ -299,6 +302,39 @@ namespace EduSetu.Components.Pages
             isChangingPassword = false;
             activeSection = "uploads"; // Default to uploads
            // HideChangePasswordModal();
+        }
+
+        private async Task DeleteUserAsync()
+        {
+            isChangingPassword = true;
+            bool isDelete = await DeletePermission();
+            if (isDelete)
+            {
+                var response = await Mediator.Send(new DeleteUserProfileRequest(deleteAccountModel, session));
+                if (response.HasError)
+                {
+                    ShowErrorModal(response.Errors);
+                    isChangingPassword = false;
+                    return;
+                }
+
+                passwordFormData = new();
+                NotificationService.Success("Password changed successfully!");
+                isChangingPassword = false;
+                activeSection = "uploads"; // Default to uploads
+                                           // HideChangePasswordModal();
+            }
+            else
+            {
+                NotificationService.Error("Type DELETE to confirm account deletion.");
+                isChangingPassword = false;
+            }
+
+        }
+
+        private async Task<bool> DeletePermission()
+        {
+            return (DELETE == deleteAccountModel.DeleteConfirmation ? true : false);
         }
 
         private void TogglePasswordVisibility(string field)

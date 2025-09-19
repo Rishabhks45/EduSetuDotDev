@@ -67,4 +67,21 @@ public class Repository
         var rowsAffected = await _ctx.SaveChangesAsync(cancellationToken);
         return rowsAffected > 0;
     }
+
+    // Soft delete user
+    public async Task<bool> DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        _ctx.ChangeTracker.Clear();
+        var userToDelete = new User
+        {
+            Id = userId,
+            RowStatus = RowStatus.Deleted,
+            LastModifiedDate = DateTime.UtcNow
+        };
+        _ctx.Users.Attach(userToDelete);
+        _ctx.Entry(userToDelete).Property(nameof(User.RowStatus)).IsModified = true;
+        _ctx.Entry(userToDelete).Property(nameof(User.LastModifiedDate)).IsModified = true;
+        var rowsAffected = await _ctx.SaveChangesAsync(cancellationToken);
+        return rowsAffected > 0;
+    }
 }

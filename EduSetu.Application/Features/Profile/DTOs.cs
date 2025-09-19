@@ -184,3 +184,30 @@ public class ChangePasswordDtoValidator : AbstractValidator<ChangePasswordDto>
 }
 
 #endregion
+
+#region  Delete Account DTOs
+public class DeleteAccountModel
+{
+    public string Password { get; set; } = string.Empty;
+    public string DeleteConfirmation { get; set; } = string.Empty;
+    public bool UnderstandDeletion { get; set; } = false;
+
+}
+/// Validator for DeleteAccountModel 
+ 
+public class DeleteAccountModelValidator : AbstractValidator<DeleteAccountModel>
+{
+    public DeleteAccountModelValidator()
+    {
+        RuleFor(x => x.Password)
+            .NotEmpty()
+            .WithMessage("Please enter your password to confirm.");
+        RuleFor(x => x.DeleteConfirmation)
+            .Equal("DELETE")
+            .WithMessage("You must type 'DELETE' to confirm account deletion.");
+        RuleFor(x => x.UnderstandDeletion)
+            .Equal(true)
+            .WithMessage("You must acknowledge that you understand the consequences of deleting your account.");
+    }
+}
+#endregion

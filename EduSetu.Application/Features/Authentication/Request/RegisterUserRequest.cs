@@ -42,7 +42,7 @@ internal sealed class RegisterUserRequestHandler : IRequestHandler<RegisterUserR
         RegisterUserResponse result = new RegisterUserResponse();
 
         // Check if user already exists
-        var exists = await _Ctx.Users.AnyAsync(u => u.Email == request.UserData.Email, cancellationToken);
+        var exists = await _Ctx.Users.AnyAsync(u => u.Email == request.UserData.Email && u.RowStatus !=RowStatus.Deleted, cancellationToken);
         if (exists)
         {
             result.Failure(ErrorCode.Conflict, "User already exists");
