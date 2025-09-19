@@ -27,13 +27,33 @@
                 <NavLink href="/notes" class="nav-link dark:text-white">Notes</NavLink>
                 <NavLink href="/videos" class="nav-link dark:text-white">Videos</NavLink>
                 <NavLink href="/contact" class="nav-link dark:text-white">Contact</NavLink>
+                <AuthorizeView Roles="SuperAdmin">
+                    <Authorized>
+                        <NavLink href="/admin/dashboard" class="flex items-center gap-2 nav-link dark:text-white">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            </svg>
+                            <span>Dashboard</span>
+                        </NavLink>
+                    </Authorized>
+                </AuthorizeView>
+                <AuthorizeView Roles="Teacher">
+                    <Authorized>
+                        <NavLink href="/teacher/dashboard" class="flex items-center gap-2 nav-link dark:text-white">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            </svg>
+                            <span>Dashboard</span>
+                        </NavLink>
+                    </Authorized>
+                </AuthorizeView>
             </nav>
 
             <!-- Auth/User Buttons -->
             <div class="hidden md:flex items-center gap-4">
                 <!-- Theme Toggle Button -->
-                <button class="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" 
-                        @onclick="ToggleTheme" 
+                <button class="p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                        @onclick="ToggleTheme"
                         title="@(isDarkMode ? "Switch to light mode" : "Switch to dark mode")">
                     @if (isDarkMode)
                     {
@@ -50,7 +70,7 @@
                         </svg>
                     }
                 </button>
-                
+
                 @if (!isAuthenticated)
                 {
                     <a href="/login" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
@@ -139,7 +159,7 @@
                                 <span>Dark Mode</span>
                             }
                         </button>
-                        
+
                         @if (!isAuthenticated)
                         {
                             <a href="/login" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
