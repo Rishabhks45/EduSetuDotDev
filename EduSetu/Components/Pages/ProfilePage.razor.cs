@@ -1,27 +1,62 @@
+using EduSetu.Application.Common.DTOs;
+using EduSetu.Application.Common.Helpers;
+using EduSetu.Application.Features.Profile;
+using EduSetu.Application.Features.Profile.Requests;
+using EduSetu.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace EduSetu.Components.Pages
 {
-    public partial class ProfilePage
+    public partial class ProfilePage : BaseComponent
     {
+        [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+        [Inject] private IMediator Mediator { get; set; } = default!;
+        [Inject] private AuthenticationStateProvider AuthProvider { get; set; } = default!;
+        [Inject] private INotificationService NotificationService { get; set; } = default!;
+        [Inject] private IFileUploadService FileUploadService { get; set; } = default!;
+        [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+        private Session session = new Session();
+
+        // form data
+        private UpdateProfileDto record = new();
+
+        private bool isEditing = false;
+        private string? ImageUrlToView;
+        private bool showViewProfileImageModal = false;
+        private bool isCropping = false;
+        private bool showCropModal = false;
+        private bool isSaving = false;
+        private IBrowserFile? selectedFile;
+        private string cropImageError = string.Empty;
+        private string? originalProfilePictureUrl;
+
         private UserProfile? user;
         private UserStats stats = new();
         private List<ActivityItem> recentActivities = new();
         private List<UploadItem> recentUploads = new();
-        
+
         // State management for showing/hiding sections
         private string activeSection = "uploads"; // Default to uploads
         private bool showSettingsDropdown = false;
-        
-        // Profile editing state
-        private bool isEditingProfile = false;
-        private string editFirstName = "";
-        private string editLastName = "";
-        private string editEmail = "";
-        private string editProfilePhoto = "";
 
-        protected override void OnInitialized()
+        // Profile editing state
+        private bool isEditingProfile = false;  
+
+
+        protected override async Task OnInitializedAsync()
         {
+            await ShowLoaderAsync();
+
+            await CheckAuthenticationState();
+            await LoadUserProfileAsync();
+            await HideLoaderAsync();
+
             // Simulate loading current user data (replace with real user fetching logic)
             user = new UserProfile
             {
@@ -57,52 +92,226 @@ namespace EduSetu.Components.Pages
             };
         }
 
-        private void EditProfile()
+        private async Task CheckAuthenticationState()
         {
-            isEditingProfile = true;
-            // Initialize edit fields with current values
-            editFirstName = user?.FirstName ?? "";
-            editLastName = user?.LastName ?? "";
-            editEmail = user?.Email ?? "";
-            editProfilePhoto = ""; // You can set a default profile photo URL here
+            AuthenticationState authState = await AuthProvider.GetAuthenticationStateAsync();
+            if (authState.User.Identity?.IsAuthenticated == true)
+            {
+                var currentUserId = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                session.UserId = Guid.TryParse(currentUserId, out Guid userId) ? userId : Guid.Empty;
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/login", replace: true);
+            }
         }
 
-        private void SaveProfile()
+        private string GetUserInitials()
         {
-            // Update user profile with edited values
-            if (user != null)
-            {
-                user.FirstName = editFirstName;
-                user.LastName = editLastName;
-                user.Email = editEmail;
-                // Handle profile photo update here
-            }
-            
-            isEditingProfile = false;
-            // TODO: Save to database/API
+            return CommonHelper.GetUserInitials(record?.FirstName, record?.LastName);
         }
+
+        private async Task LoadUserProfileAsync()
+        {
+            var response = await Mediator.Send(new GetUserProfileRequest(session));
+            if (response.HasError)
+            {
+                ShowErrorModal(response.Errors);
+                await HideLoaderAsync();
+                return;
+            }
+
+            record = response.Payload ?? new();
+            originalProfilePictureUrl = record.ProfilePictureUrl;
+
+
+        }
+        private async Task HandleFileSelected(InputFileChangeEventArgs e)
+        {
+            try
+            {
+                isCropping = true;
+                showCropModal = true;
+                var base64Image = await JSRuntime.InvokeAsync<string>("compressAndReturnImageBase64", "profilePictureInput");
+                isCropping = false;
+                if (!string.IsNullOrEmpty(base64Image))
+                {
+                    await JSRuntime.InvokeVoidAsync("showCropper", base64Image); // Your cropper
+                }
+            }
+            catch (Exception ex)
+            {
+                cropImageError = $"Client-side error: {ex.Message}";
+            }
+        }
+
+
+        private byte[] CropedImage { get; set; }
+        private async Task CropImageAsync()
+        {
+            try
+            {
+                isCropping = true;
+                cropImageError = string.Empty;
+
+                // Get cropped image from JavaScript cropper
+                string? croppedImageBase64 = await JSRuntime.InvokeAsync<string>("getCroppedImageBase64", TimeSpan.FromSeconds(10));
+
+                if (string.IsNullOrEmpty(croppedImageBase64))
+                {
+                    cropImageError = "Failed to get cropped image data";
+                    return;
+                }
+                record.ImageBytes = croppedImageBase64;
+                if (croppedImageBase64.Contains(","))
+                    CropedImage = Convert.FromBase64String(croppedImageBase64.Split(',')[1]);
+                HideCropModal();
+
+                NotificationService.Success("Image cropped successfully!");
+            }
+            catch (TaskCanceledException)
+            {
+                cropImageError = "Image cropping operation timed out";
+                NotificationService.Error(cropImageError);
+            }
+            catch (Exception ex)
+            {
+                cropImageError = $"Error cropping image: {ex.Message}";
+                NotificationService.Error(cropImageError);
+            }
+            finally
+            {
+                isCropping = false;
+            }
+        }
+        private void HideCropModal()
+        {
+            showCropModal = false;
+            cropImageError = string.Empty;
+
+            // Clean up cropper when modal is closed
+            _ = JSRuntime.InvokeVoidAsync("destroyCropper");
+        }
+
+        private bool IsProfileImageExists()
+        {
+            if (string.IsNullOrEmpty(record.ProfilePictureUrl))
+            {
+                return false;
+            }
+
+            return FileUploadService.FileExists(record.ProfilePictureUrl);
+        }
+
+             
+
+        private void HideViewProfileImageModal()
+        {
+            ImageUrlToView = null;
+            showViewProfileImageModal = false;
+        }
+
+
+
+
+
+
+        private async Task HandleSubmitAsync()
+        {
+            isSaving = true;
+
+            try
+            {
+                string? fileToDelete = null;
+
+                if (CropedImage != null && CropedImage.Length > 0)
+                {
+                    if (!string.IsNullOrEmpty(originalProfilePictureUrl))
+                    {
+                        fileToDelete = originalProfilePictureUrl;
+                    }
+
+                    record.ProfilePictureUrl = await FileUploadService.HandleFileUploadInByteAsync(CropedImage);
+                    //record.ImageBytes = null;
+                }
+                else if (record.ProfilePictureUrl == null && !string.IsNullOrEmpty(originalProfilePictureUrl))
+                {
+                    fileToDelete = originalProfilePictureUrl;
+                }
+
+                var response = await Mediator.Send(new UpdateUserProfileRequest(record, session));
+                if (response.HasError)
+                {
+                    ShowErrorModal(response.Errors);
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(fileToDelete))
+                {
+                    await FileUploadService.DeleteFileAsync(fileToDelete);
+                }
+
+                // Show success message
+                NotificationService.Success("Profile updated successfully!");
+
+                // Update header information via JavaScript
+
+                isEditing = false;
+                selectedFile = null;
+                originalProfilePictureUrl = null;
+            }
+            finally
+            {
+                isSaving = false;
+                isEditingProfile = false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        private void EditProfile()
+        {
+            isEditingProfile = true;            
+        }
+        
 
         private void CancelEditProfile()
         {
-            isEditingProfile = false;
-            // Reset edit fields to original values
-            editFirstName = user?.FirstName ?? "";
-            editLastName = user?.LastName ?? "";
-            editEmail = user?.Email ?? "";
-            editProfilePhoto = "";
+            isEditingProfile = false;           
         }
-
-        private void HandleProfilePhotoChange(ChangeEventArgs e)
-        {
-            // Handle profile photo upload
-            // TODO: Implement file upload logic
-            // For now, just store the file name
-            if (e.Value != null)
-            {
-                editProfilePhoto = e.Value.ToString() ?? "";
-            }
-        }
-
+        
         private void UploadContent()
         {
             NavigationManager.NavigateTo("/profile/uploads");

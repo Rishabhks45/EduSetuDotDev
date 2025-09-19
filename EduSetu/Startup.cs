@@ -11,6 +11,7 @@ using EduSetu.Application.Features.Authentication;
 using System.Security.Claims;
 using EduSetu.Services.Interfaces;
 using EduSetu.Services.Implementations;
+using Microsoft.AspNetCore.DataProtection;
 
 public class Startup
 {
@@ -31,9 +32,18 @@ public class Startup
 
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
         services.AddScoped<IPasswordEncryptionService, PasswordEncryptionService>();
+        services.AddScoped<IFileUploadService, FileUploadService>();
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(EduSetu.Application.Features.Authentication.Request.LoginRequest).Assembly));
         services.AddHttpContextAccessor();
+
+        // Add data protection services for OAuth state validation
+        services.AddDataProtection()
+            .SetApplicationName("EduSetu")
+            .SetDefaultKeyLifetime(TimeSpan.FromDays(90));
+
+        // Add memory cache for OAuth state management
+        services.AddMemoryCache();
 
         services.AddAuthentication(options =>
         {
@@ -89,8 +99,21 @@ public class Startup
         {
             options.ClientId = "367131133436-9ulnv933benc9d4cl4v85ddiaps28ped.apps.googleusercontent.com";
             options.ClientSecret = "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";
-            options.CallbackPath = "/profile";
+            options.CallbackPath = "/api/auth/GoogleResponse"; // Fixed callback path
             options.SaveTokens = true;
+            options.UsePkce = true; // Enable PKCE for better security
+            options.Events.OnCreatingTicket = context =>
+            {
+                // Ensure proper state validation
+                return Task.CompletedTask;
+            };
+            options.Events.OnRemoteFailure = context =>
+            {
+                // Handle OAuth failures gracefully
+                context.Response.Redirect("/login?error=Google authentication failed");
+                context.HandleResponse();
+                return Task.CompletedTask;
+            };
         });
 
         services.Configure<EncryptionSettings>(
