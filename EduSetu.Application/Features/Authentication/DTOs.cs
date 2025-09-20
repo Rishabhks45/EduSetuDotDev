@@ -296,6 +296,7 @@ public class StudentDTOs
     public DateTime? DateOfBirth { get; set; }
     public string LastName { get; set; } = string.Empty; public string? PhoneNumber { get; set; }
     public UserRole Role { get; set; } = UserRole.Student;
+    public RowStatus RowStatus { get; set; } = RowStatus.Active;
     public string Password { get; set; } = string.Empty;
     public string ConfirmPassword { get; set; } = string.Empty;
 }

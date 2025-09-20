@@ -31,6 +31,7 @@ namespace EduSetu.Components.Accounts
 
         private async Task HandleStudentSubmitAsync()
         {
+            isLoading = true;
             var Response = await Mediator.Send(new RegisterUserRequest(StudentformData));
 
             if (!Response.HasError)
@@ -38,15 +39,22 @@ namespace EduSetu.Components.Accounts
                 // Registration successful, redirect to login page
                 NavigationManager.NavigateTo("/login?registered=true");
                 NotificationService.Success("Registration successful! Please log in.");
+                isLoading = false;
             }
             else
             {
                 // Handle registration failure (e.g., show error message)
                 if (Response.Errors.Count > 0)
-                    NotificationService.Error($"Registration failed: {Response.Errors[0].Message}");
+                {
+                NotificationService.Error($"Registration failed: {Response.Errors[0].Message}");
+                    isLoading = false;
+
+                }
                 else
                     NotificationService.Error("Registration failed: Unknown error");
             }
+            isLoading = false;
+
         }
 
         // Get Enum Discription

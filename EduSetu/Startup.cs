@@ -63,7 +63,15 @@ public class Startup
             options.Cookie.SameSite = SameSiteMode.Lax;
             options.Cookie.IsEssential = true;
             options.Cookie.Path = "/";
-            options.Events.OnSignedIn = context => Task.CompletedTask;
+            options.Events.OnSignedIn = context =>
+            {
+                // If there's no return URL, default to the profile page
+                if (string.IsNullOrEmpty(context.Properties?.RedirectUri))
+                {
+                    context.Properties.RedirectUri = "/profile";
+                }
+                return Task.CompletedTask;
+            };
             options.Events.OnValidatePrincipal = async context =>
             {
                 var userId = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -100,17 +108,21 @@ public class Startup
         {
             options.ClientId = "367131133436-9ulnv933benc9d4cl4v85ddiaps28ped.apps.googleusercontent.com";
             options.ClientSecret = "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";
-            options.CallbackPath = "/api/auth/GoogleResponse"; // Fixed callback path
+            options.CallbackPath = "/signin-google";
             options.SaveTokens = true;
-            options.UsePkce = true; // Enable PKCE for better security
+            options.UsePkce = true;
             options.Events.OnCreatingTicket = context =>
             {
-                // Ensure proper state validation
+                return Task.CompletedTask;
+            };
+            options.Events.OnTicketReceived = context =>
+            {
+                // Redirect to profile page after successful authentication
+                context.ReturnUri = "/api/auth/GoogleResponse";
                 return Task.CompletedTask;
             };
             options.Events.OnRemoteFailure = context =>
             {
-                // Handle OAuth failures gracefully
                 context.Response.Redirect("/login?error=Google authentication failed");
                 context.HandleResponse();
                 return Task.CompletedTask;

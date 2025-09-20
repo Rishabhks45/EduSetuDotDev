@@ -43,7 +43,7 @@ namespace EduSetu.Components.Pages
         private bool isEditing = false;
         private string? ImageUrlToView;
         private bool showViewProfileImageModal = false;
-    private bool isChangingPassword = false;
+        private bool isChangingPassword = false;
         private bool isCropping = false;
         private bool showCropModal = false;
         private bool isSaving = false;
@@ -51,7 +51,6 @@ namespace EduSetu.Components.Pages
         private string cropImageError = string.Empty;
         private string? originalProfilePictureUrl;
         private string? DELETE = "DELETE";
-        private string? bindDelete = string.Empty;
 
         private UserProfile? user;
         private UserStats stats = new();
@@ -63,7 +62,7 @@ namespace EduSetu.Components.Pages
         private bool showSettingsDropdown = false;
 
         // Profile editing state
-        private bool isEditingProfile = false;  
+        private bool isEditingProfile = false;
 
 
         protected override async Task OnInitializedAsync()
@@ -220,7 +219,7 @@ namespace EduSetu.Components.Pages
             return FileUploadService.FileExists(record.ProfilePictureUrl);
         }
 
-             
+
 
         private void HideViewProfileImageModal()
         {
@@ -235,10 +234,10 @@ namespace EduSetu.Components.Pages
 
         private async Task HandleSubmitAsync()
         {
-            isSaving = true;
-
-            try
+            try 
             {
+                isSaving = true;
+
                 string? fileToDelete = null;
 
                 if (CropedImage != null && CropedImage.Length > 0)
@@ -249,13 +248,19 @@ namespace EduSetu.Components.Pages
                     }
 
                     record.ProfilePictureUrl = await FileUploadService.HandleFileUploadInByteAsync(CropedImage);
-                    //record.ImageBytes = null;
                 }
                 else if (record.ProfilePictureUrl == null && !string.IsNullOrEmpty(originalProfilePictureUrl))
                 {
                     fileToDelete = originalProfilePictureUrl;
                 }
 
+                if (string.IsNullOrEmpty(record.FirstName) || string.IsNullOrEmpty(record.LastName) || string.IsNullOrEmpty(record.Email))
+                {
+                    NotificationService.Error("Please fill in all required fields.");
+                    return;
+                }
+
+                // If validation passes, continue with the update
                 var response = await Mediator.Send(new UpdateUserProfileRequest(record, session));
                 if (response.HasError)
                 {
@@ -270,8 +275,6 @@ namespace EduSetu.Components.Pages
 
                 // Show success message
                 NotificationService.Success("Profile updated successfully!");
-
-                // Update header information via JavaScript
                 await JSRuntime.InvokeVoidAsync("setHeaderUserInfo", record.FullName, record.Email, record.ProfilePictureUrl);
 
                 isEditing = false;
@@ -280,8 +283,9 @@ namespace EduSetu.Components.Pages
             }
             finally
             {
-                isSaving = false;
                 isEditingProfile = false;
+                isSaving = false;
+                StateHasChanged(); // Ensure UI updates
             }
         }
 
@@ -301,7 +305,7 @@ namespace EduSetu.Components.Pages
             NotificationService.Success("Password changed successfully!");
             isChangingPassword = false;
             activeSection = "uploads"; // Default to uploads
-           // HideChangePasswordModal();
+                                       // HideChangePasswordModal();
         }
 
         private async Task DeleteUserAsync()
@@ -321,8 +325,8 @@ namespace EduSetu.Components.Pages
                 passwordFormData = new();
                 NotificationService.Success("Password changed successfully!");
                 isChangingPassword = false;
-                activeSection = "uploads"; // Default to uploads
-                                           // HideChangePasswordModal();
+                NavigationManager.NavigateTo("/api/auth/logout", forceLoad: true);
+
             }
             else
             {
@@ -406,15 +410,15 @@ namespace EduSetu.Components.Pages
 
         private void EditProfile()
         {
-            isEditingProfile = true;            
+            isEditingProfile = true;
         }
-        
+
 
         private void CancelEditProfile()
         {
-            isEditingProfile = false;           
+            isEditingProfile = false;
         }
-        
+
         private void UploadContent()
         {
             NavigationManager.NavigateTo("/profile/uploads");

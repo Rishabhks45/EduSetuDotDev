@@ -3,11 +3,6 @@ using EduSetu.Application.Features.Profile.Infrastructure;
 using EduSetu.Domain.Entities;
 using Mapster;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EduSetu.Application.Features.Profile.Requests;
 
@@ -27,7 +22,6 @@ internal sealed class UpdateUserProfileRequestHandler : IRequestHandler<UpdateUs
     public async Task<UpdateUserProfileResponse> Handle(UpdateUserProfileRequest request, CancellationToken cancellationToken)
     {
         var result = new UpdateUserProfileResponse();
-
         var emailExists = await _repository.ExistsUserByEmailAsync(request.Dto.Email, request.Dto.Id, cancellationToken);
         if (emailExists)
         {
@@ -46,7 +40,6 @@ internal sealed class UpdateUserProfileRequestHandler : IRequestHandler<UpdateUs
         {
             result.Success();
         }
-
         return result;
     }
 }

@@ -187,16 +187,9 @@ namespace EduSetu.Components.Accounts
         #region Google SignIn
         private void HandleGoogleLogin()
         {
-            Uri uri = new Uri(Navigation.Uri);
-            var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
-            string? returnUrl = queryParams["returnUrl"];
-            
+           
             string googleLoginUrl = "/api/auth/google-login";
-            if (!string.IsNullOrEmpty(returnUrl))
-            {
-                googleLoginUrl += $"?returnUrl={Uri.EscapeDataString(returnUrl)}";
-            }
-            
+                        
             Navigation.NavigateTo(googleLoginUrl, forceLoad: true);
         }
         #endregion
