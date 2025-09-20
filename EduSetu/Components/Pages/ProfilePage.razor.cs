@@ -200,6 +200,14 @@ namespace EduSetu.Components.Pages
                 isCropping = false;
             }
         }
+
+        private void ClearProfilePicture()
+        {
+            record.ProfilePictureUrl = null;
+            record.ImageBytes = null;
+            selectedFile = null;
+            NotificationService.Success("Profile picture marked for removal. Click 'Save Changes' to confirm.");
+        }
         private void HideCropModal()
         {
             showCropModal = false;
@@ -416,6 +424,12 @@ namespace EduSetu.Components.Pages
 
         private void CancelEditProfile()
         {
+            // Restore original profile picture state
+            record.ProfilePictureUrl = originalProfilePictureUrl;
+            record.ImageBytes = null;
+            selectedFile = null;
+            CropedImage = null;
+            
             isEditingProfile = false;
         }
 
