@@ -10,6 +10,9 @@ public class UpdateProfileDto
     public Guid Id { get; set; } = Guid.Empty;
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
+    public string Username { get; set; } = string.Empty;
+    public string Designation { get; set; } = "Associate Professor";
+    public string Institution { get; set; } = "Delhi University";
     public UserRole Role { get; set; }
     private string _email = string.Empty;
     public DateTime CreatedDate { get; set; }
@@ -95,6 +98,21 @@ public sealed class UpdateProfileDtoValidator : AbstractValidator<UpdateProfileD
                         RuleFor(x => x.LastName)
                             .Matches(@"^[a-zA-Z\s-']+$")
                             .WithMessage("Last name can only contain letters, spaces, hyphens, and apostrophes");
+                    });
+            });
+        RuleFor(x => x.Username)
+            .NotEmpty()
+            .WithMessage("Username is required")
+            .DependentRules(() =>
+            {
+                RuleFor(c => c.Username)
+                    .MaximumLength(50)
+                    .WithMessage("Username must not exceed 50 characters")
+                    .DependentRules(() =>
+                    {
+                        RuleFor(c => c.Username)
+                            .Matches(@"^[a-zA-Z0-9_.-]+$")
+                            .WithMessage("Username can only contain letters, numbers, underscores, periods, and hyphens");
                     });
             });
 

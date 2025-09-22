@@ -1,0 +1,218 @@
+﻿@using System.Collections.ObjectModel
+@using EduSetu.Application.Common.DTOs
+@if (IsVisible)
+{
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden">
+            <!-- Header -->
+            <div class="@GetHeaderClass() text-white px-4 py-3 flex justify-between items-center">
+                <h3 class="text-base font-semibold">@GetModalTitle()</h3>
+                <button @onclick="HandleClose" class="text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- Body -->
+            <div class="px-6 py-4 text-gray-700 text-sm bg-white">
+                @if (Errors is not null && Errors.Count > 0)
+                {
+                    @foreach (var error in Errors)
+                    {
+                        <div class="mb-2">@error.Message</div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <div class="w-12 h-12 @GetIconContainerClass() rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="@GetIconClass() text-lg"></i>
+                        </div>
+                        <p class="text-foreground font-medium">@DefaultMessage</p>
+                        @if (!string.IsNullOrEmpty(SubMessage))
+                        {
+                            <p class="text-sm text-muted-foreground mt-1">@SubMessage</p>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Footer -->
+            <div class="flex justify-end gap-3 px-6 py-4 bg-gray-50 border-t">
+                @if (ShowSecondaryButton)
+                {
+                    <button type="button" @onclick="HandleSecondaryAction"
+                            class="px-4 py-2 rounded-md border text-gray-700 hover:bg-gray-100">
+                        @SecondaryButtonText
+                    </button>
+                }
+
+                <button type="button" @onclick="HandlePrimaryAction"
+                        class="@GetPrimaryButtonClass()">
+                    @PrimaryButtonText
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    // Modal Type
+    [Parameter] public ModalType Type { get; set; } = ModalType.Error;
+
+    // Basic Parameters (for backward compatibility)
+    [Parameter] public bool IsVisible { get; set; } = false;
+    [Parameter] public string Title { get; set; } = "Error";
+    [Parameter] public string DefaultMessage { get; set; } = "Oops, Something went wrong!";
+    [Parameter] public string? SubMessage { get; set; } = "Please try again later.";
+    [Parameter] public string ButtonText { get; set; } = "Okay";
+    [Parameter] public Collection<AppError>? Errors { get; set; }
+
+    // Enhanced Button Parameters
+    [Parameter] public string PrimaryButtonText { get; set; } = "Okay";
+    [Parameter] public string SecondaryButtonText { get; set; } = "Cancel";
+    [Parameter] public bool ShowSecondaryButton { get; set; } = false;
+
+    // Event Callbacks
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback OnPrimaryAction { get; set; }
+    [Parameter] public EventCallback OnSecondaryAction { get; set; }
+
+    // Legacy Parameters (for backward compatibility)
+    [Parameter] public bool ShowChangePlanAlert { get; set; } = false;
+    [Parameter] public EventCallback OnChangePlan { get; set; }
+
+    // Modal Type Enum
+    public enum ModalType
+    {
+        Error,
+        Info,
+        Alert,
+        Success
+    }
+
+    private string GetHeaderClass()
+    {
+        return Type switch
+        {
+            ModalType.Error => "bg-red-500",
+            ModalType.Info => "bg-blue-500",
+            ModalType.Alert => "bg-brand-cyan-dark",
+            ModalType.Success => "bg-green-500",
+            _ => "bg-red-500"
+        };
+    }
+
+    private string GetIconContainerClass()
+    {
+        return Type switch
+        {
+            ModalType.Error => "bg-destructive/10",
+            ModalType.Info => "bg-blue-500/10",
+            ModalType.Alert => "bg-yellow-500/10",
+            ModalType.Success => "bg-green-500/10",
+            _ => "bg-destructive/10"
+        };
+    }
+
+    private string GetIconClass()
+    {
+        return Type switch
+        {
+            ModalType.Error => "fas fa-exclamation-triangle text-destructive",
+            ModalType.Info => "fas fa-info-circle text-blue-600",
+            ModalType.Alert => "fas fa-exclamation-circle text-yellow-600",
+            ModalType.Success => "fas fa-check-circle text-green-600",
+            _ => "fas fa-exclamation-triangle text-destructive"
+        };
+    }
+
+    private string GetPrimaryButtonClass()
+    {
+        var baseClass = "px-4 py-2 rounded-md text-white";
+        return Type switch
+        {
+            ModalType.Error => $"{baseClass} bg-red-600 hover:bg-red-700",
+            ModalType.Info => $"{baseClass} bg-blue-600 hover:bg-blue-700",
+            ModalType.Alert => $"{baseClass} bg-brand-cyan-dark hover:bg-brand-cyan",
+            ModalType.Success => $"{baseClass} bg-green-600 hover:bg-green-700",
+            _ => $"{baseClass} bg-red-600 hover:bg-red-700"
+        };
+    }
+
+    private string GetModalTitle()
+    {
+        // For backward compatibility, check if custom title is provided
+        if (!string.IsNullOrEmpty(Title) && Title != "Error")
+        {
+            return Title;
+        }
+
+        // Return default title based on modal type
+        return Type switch
+        {
+            ModalType.Error => "Error",
+            ModalType.Info => "Information",
+            ModalType.Alert => "Warning",
+            ModalType.Success => "Success",
+            _ => "Error"
+        };
+    }
+
+    // Handle backward compatibility for button text
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        // If using legacy parameters, map them to new system
+        if (ShowChangePlanAlert)
+        {
+            Type = ModalType.Alert;
+            PrimaryButtonText = "Change Plan";
+            SecondaryButtonText = "Cancel";
+            ShowSecondaryButton = true;
+        }
+        else if (string.IsNullOrEmpty(PrimaryButtonText) || PrimaryButtonText == "Okay")
+        {
+            PrimaryButtonText = ButtonText;
+        }
+    }
+
+    private async Task HandleClose()
+    {
+        if (OnClose.HasDelegate)
+        {
+            await OnClose.InvokeAsync();
+        }
+        else if (OnSecondaryAction.HasDelegate && ShowSecondaryButton)
+        {
+            await OnSecondaryAction.InvokeAsync();
+        }
+    }
+
+    private async Task HandlePrimaryAction()
+    {
+        if (OnPrimaryAction.HasDelegate)
+        {
+            await OnPrimaryAction.InvokeAsync();
+        }
+        else if (OnChangePlan.HasDelegate && ShowChangePlanAlert)
+        {
+            await OnChangePlan.InvokeAsync();
+        }
+        else if (OnClose.HasDelegate)
+        {
+            await OnClose.InvokeAsync();
+        }
+    }
+
+    private async Task HandleSecondaryAction()
+    {
+        if (OnSecondaryAction.HasDelegate)
+        {
+            await OnSecondaryAction.InvokeAsync();
+        }
+        else if (OnClose.HasDelegate)
+        {
+            await OnClose.InvokeAsync();
+        }
+    }
+}

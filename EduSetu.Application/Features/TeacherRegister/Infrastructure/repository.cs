@@ -22,6 +22,14 @@ public class repository
                                                   x.Id != excludeId &&
                                                   x.RowStatus != RowStatus.Deleted, cancellationToken);
     }
+
+    // GetCoachingByIdAsync
+    public async Task<bool> GetCoachingByIdAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return await _Ctx.CoachingDetails.AsNoTracking().AnyAsync(x => x.CreatedBy == userId &&
+                                                  x.RowStatus != RowStatus.Deleted, cancellationToken);
+    }
+
     // check if user already exists
     public async Task<bool> UserNameExistsAsync( string username, CancellationToken cancellationToken)
     {
