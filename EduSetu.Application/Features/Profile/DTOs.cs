@@ -158,37 +158,48 @@ public class ChangePasswordDtoValidator : AbstractValidator<ChangePasswordDto>
             .WithMessage("Please enter current password");
 
         RuleFor(x => x.NewPassword)
-            .NotEmpty().WithMessage("Please enter new password")
-            .DependentRules(() =>
-            {
-                RuleFor(x => x.NewPassword)
-                    .MaximumLength(100).WithMessage("Password must not exceed 100 characters")
-                    .DependentRules(() =>
-                    {
-                        RuleFor(x => x.NewPassword)
-                            .MinimumLength(8).Configure(cfg => cfg.MessageBuilder = _ => null)
-                            .DependentRules(() =>
-                            {
-                                RuleFor(x => x.NewPassword)
-                                    .Matches(@"[A-Z]").Configure(cfg => cfg.MessageBuilder = _ => null)
-                                    .DependentRules(() =>
-                                    {
-                                        RuleFor(x => x.NewPassword)
-                                            .Matches(@"[a-z]").Configure(cfg => cfg.MessageBuilder = _ => null)
-                                            .DependentRules(() =>
-                                            {
-                                                RuleFor(x => x.NewPassword)
-                                                    .Matches(@"\d").Configure(cfg => cfg.MessageBuilder = _ => null)
-                                                    .DependentRules(() =>
-                                                    {
-                                                        RuleFor(x => x.NewPassword)
-                                                            .Matches(@"[@$!%*?&]").Configure(cfg => cfg.MessageBuilder = _ => null);
-                                                    });
-                                            });
-                                    });
-                            });
-                    });
-            });
+     .NotEmpty().WithMessage("Please enter new password")
+     .DependentRules(() =>
+     {
+         RuleFor(x => x.NewPassword)
+             .MaximumLength(100).WithMessage("Password must not exceed 100 characters")
+             .DependentRules(() =>
+             {
+                 RuleFor(x => x.NewPassword)
+                     .MinimumLength(8).WithMessage("Password must be at least 8 characters long")
+                     .DependentRules(() =>
+                     {
+                         RuleFor(x => x.NewPassword)
+                             .Matches(@"[A-Z]").WithMessage("Password must contain at least one uppercase letter")
+                             .DependentRules(() =>
+                             {
+                                 RuleFor(x => x.NewPassword)
+                                     .Matches(@"[a-z]").WithMessage("Password must contain at least one lowercase letter")
+                                     .DependentRules(() =>
+                                     {
+                                         RuleFor(x => x.NewPassword)
+                                             .Matches(@"\d").WithMessage("Password must contain at least one digit")
+                                             .DependentRules(() =>
+                                             {
+                                                 RuleFor(x => x.NewPassword)
+                                                     .Matches(@"[@$!%*?&]").WithMessage("Password must contain at least one special character (@$!%*?&)")
+                                                     .DependentRules(() =>
+                                                     {
+                                                         RuleFor(x => x.NewPassword)
+                                                             .NotEqual(x => x.CurrentPassword)
+                                                             .WithMessage("New password cannot be the same as the current password.");
+                                                     });
+                                             });
+                                     });
+                             });
+                     });
+             });
+     });
+
+        RuleFor(x => x.ConfirmPassword)
+            .Equal(x => x.NewPassword)
+            .WithMessage("Confirm password must match the new password");
+
 
         RuleFor(x => x.ConfirmPassword)
             .NotEmpty().WithMessage("Please enter confirm password")

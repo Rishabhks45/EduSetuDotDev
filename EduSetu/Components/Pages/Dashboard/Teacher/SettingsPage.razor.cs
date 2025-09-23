@@ -30,6 +30,7 @@ namespace EduSetu.Components.Pages.Dashboard.Teacher
 
         //Form Data
         private CoachingDetailsDto InstituteformData = new();
+        private ChangePasswordDto passwordFormData = new();
         private UpdateProfileDto UpdateProfileDto = new();
 
         private bool showCurrentPassword = false;
@@ -306,6 +307,64 @@ namespace EduSetu.Components.Pages.Dashboard.Teacher
             }
             isLoading = false;
         }
+
+        private async Task ChangePasswordAsync()
+        {
+            isChangingPassword = true;
+
+            var response = await Mediator.Send(new ChangePasswordRequest(passwordFormData, session));
+            if (response.HasError)
+            {
+                ShowErrorModal(response.Errors);
+            showPasswordModal = false;
+                isChangingPassword = false;
+                return;
+            }
+
+            passwordFormData = new();
+            NotificationService.Success("Password changed successfully!");
+            showPasswordModal = false;
+            isChangingPassword = false;           
+        }
+
+        private void TogglePasswordVisibility(string field)
+        {
+            switch (field)
+            {
+                case "current":
+                    showCurrentPassword = !showCurrentPassword;
+                    break;
+                case "new":
+                    showNewPassword = !showNewPassword;
+                    break;
+                case "confirm":
+                    showConfirmPassword = !showConfirmPassword;
+                    break;
+            }
+        }
+
+        #region For Checkbox. Password validation method
+
+        private void ValidatePassword(ChangeEventArgs e)
+        {
+            isVisibleCheckBox = true;
+            var password = e.Value?.ToString() ?? string.Empty;
+
+            hasMinLength = password.Length >= 8;
+            hasUppercase = password.Any(char.IsUpper);
+            hasNumber = password.Any(char.IsDigit);
+            hasSpecialChar = password.Any(ch => !char.IsLetterOrDigit(ch));
+            if (!isPasswordValid)
+            {
+                isVisibleCheckBox = true;
+            }
+            else
+            {
+                isVisibleCheckBox = false;
+            }
+        }
+        #endregion
+
 
         private void HideCropModal()
         {

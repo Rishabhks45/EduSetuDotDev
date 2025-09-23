@@ -25,13 +25,7 @@ internal sealed class RegisterCoachingDetailsRequestHandler : IRequestHandler<Up
     {
         var result = new RegisterCoachingDetailsResponse();
 
-        var InstituteExists = await _Repository.InstituteExistsAsync(request.Dto.Id, cancellationToken);
-        var InstituteNameExists = await _Repository.InstituteNameExistsAsync(request.Dto.InstituteName, cancellationToken);
-        if (InstituteExists)
-        {
-            result.Failure(ErrorCode.Conflict, "Institute already exists");
-            return result;
-        }
+        var InstituteNameExists = await _Repository.InstituteNameExistsAsync(request.Dto.InstituteName,request.Dto.Id, cancellationToken);       
         if (InstituteNameExists)
         {
             result.Failure(ErrorCode.Conflict, "Institute name already exists");

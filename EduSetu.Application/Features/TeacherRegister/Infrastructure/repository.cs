@@ -1,8 +1,9 @@
 ﻿using EduSetu.Application.Common.Interfaces;
 using EduSetu.Domain.Entities;
 using EduSetu.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
 using Mapster;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace EduSetu.Application.Features.TeacherRegister.Infrastructure;
 
@@ -37,17 +38,15 @@ public class repository
                                                   x.RowStatus != RowStatus.Deleted, cancellationToken);
     }
     // check if coaching institute name already exists
-    public async Task<bool> InstituteNameExistsAsync( string instituteName, CancellationToken cancellationToken)
-    {
-        return await _Ctx.CoachingDetails.AsNoTracking().AnyAsync(x => x.InstituteName == instituteName &&                                                  
-                                                  x.RowStatus != RowStatus.Deleted, cancellationToken);
-    }
-    // check if coaching institute name already exists
-    public async Task<bool> InstituteExistsAsync( Guid instituteId, CancellationToken cancellationToken)
-    {
-        return await _Ctx.Users.AsNoTracking().AnyAsync(x => x.Id == instituteId &&                                                  
-                                                  x.RowStatus != RowStatus.Deleted, cancellationToken);
-    }
+    public async Task<bool> InstituteNameExistsAsync( string instituteName,Guid Id, CancellationToken cancellationToken)
+    {       
+        return await _Ctx.CoachingDetails.AsNoTracking()
+            .AnyAsync(x => x.InstituteName == instituteName &&
+                          x.Id != Id &&
+                          x.RowStatus != RowStatus.Deleted,
+                      cancellationToken);
+    }   
+
 
 
     public async Task<Guid> AddTeacherAsync(TeacherRegister TeacherReg, CancellationToken cancellationToken)
@@ -118,7 +117,6 @@ public class repository
                 entry.Property(nameof(CoachingDetails.State)).IsModified = true;
                 entry.Property(nameof(CoachingDetails.PinCode)).IsModified = true;
                 entry.Property(nameof(CoachingDetails.RowStatus)).IsModified = true;
-                entry.Property(nameof(CoachingDetails.CreatedBy)).IsModified = true;
                 entry.Property(nameof(CoachingDetails.LastModifiedBy)).IsModified = true;
                 entry.Property(nameof(CoachingDetails.LastModifiedDate)).IsModified = true;
             }
