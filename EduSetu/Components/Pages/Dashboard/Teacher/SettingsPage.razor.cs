@@ -30,6 +30,7 @@ namespace EduSetu.Components.Pages.Dashboard.Teacher
 
         //Form Data
         private CoachingDetailsDto InstituteformData = new();
+        private DeleteAccountModel deleteAccountModel = new();
         private ChangePasswordDto passwordFormData = new();
         private UpdateProfileDto UpdateProfileDto = new();
 
@@ -327,6 +328,37 @@ namespace EduSetu.Components.Pages.Dashboard.Teacher
             isChangingPassword = false;           
         }
 
+        private async Task DeleteUserAsync()
+        {
+            isChangingPassword = true;
+            bool isDelete = await DeletePermission();
+            if (isDelete)
+            {
+                var response = await Mediator.Send(new DeleteUserProfileRequest(deleteAccountModel, session));
+                if (response.HasError)
+                {
+                    ShowErrorModal(response.Errors);
+                    isChangingPassword = false;
+                    return;
+                }
+
+                passwordFormData = new();
+                NotificationService.Success("Password changed successfully!");
+                isChangingPassword = false;
+                NavigationManager.NavigateTo("/api/auth/logout", forceLoad: true);
+
+            }
+            else
+            {
+                NotificationService.Error("Type DELETE to confirm account deletion.");
+                isChangingPassword = false;
+            }
+
+        }
+        private async Task<bool> DeletePermission()
+        {
+            return (DELETE == deleteAccountModel.DeleteConfirmation ? true : false);
+        }
         private void TogglePasswordVisibility(string field)
         {
             switch (field)

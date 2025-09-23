@@ -705,7 +705,8 @@
                                                                 id="current-password"
                                                                 class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                                                 placeholder="••••••••" />
-                                                                <button type="button" class="absolute right-3 top-3 text-text-secondary hover:text-text-primary" @onclick="@(() => TogglePasswordVisibility("current"))">
+                                                                <!-- Current Password eye icon -->
+                                                                <button type="button" class="absolute right-3 top-3 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white" @onclick="@(() => TogglePasswordVisibility("current"))">
                                                                     <i class="fas @(showCurrentPassword ? "fa-eye-slash" : "fa-eye")"></i>
                                                                 </button>
                                                             </div>
@@ -730,7 +731,8 @@
                                                                 id="new-password"
                                                                 class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                                                 placeholder="••••••••" />
-                                                                <button type="button" class="absolute right-3 top-3 text-text-secondary hover:text-text-primary" @onclick="@(() => TogglePasswordVisibility("new"))">
+                                                                <!-- New Password eye icon -->
+                                                                <button type="button" class="absolute right-3 top-3 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white" @onclick="@(() => TogglePasswordVisibility("new"))">
                                                                     <i class="fas @(showNewPassword ? "fa-eye-slash" : "fa-eye")"></i>
                                                                 </button>
                                                             </div>
@@ -779,7 +781,8 @@
                                                                 id="confirm-password"
                                                                 class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                                                 placeholder="••••••••" />
-                                                                <button type="button" class="absolute right-3 top-3 text-text-secondary hover:text-text-primary" @onclick="@(() => TogglePasswordVisibility("confirm"))">
+                                                                <!-- Confirm Password eye icon -->
+                                                                <button type="button" class="absolute right-3 top-3 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white" @onclick="@(() => TogglePasswordVisibility("confirm"))">
                                                                     <i class="fas @(showConfirmPassword ? "fa-eye-slash" : "fa-eye")"></i>
                                                                 </button>
                                                             </div>
@@ -848,10 +851,110 @@
                                             <h4 class="font-medium text-red-900 dark:text-red-300">Delete Account</h4>
                                             <p class="text-sm text-red-700 dark:text-red-400">This action cannot be undone. All your data will be permanently deleted.</p>
                                         </div>
-                                        <button @onclick="@(() => showDeleteModal = true)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
-                                            Delete Account
+                                        <button @onclick="@(() => showDeleteModal = !showDeleteModal)"
+                                                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center gap-2">
+                                            <span>Delete Account</span>
+                                            @if (showDeleteModal)
+                                            {
+                                                <!-- Up Arrow -->
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                                </svg>
+                                            }
+                                            else
+                                            {
+                                                <!-- Down Arrow -->
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            }
                                         </button>
+
                                     </div>
+                                    @if (showDeleteModal)
+                                    {
+                                        <div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-red-200 dark:border-red-800 p-6">
+                                            <div class="space-y-6">
+                                                <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                                                    <div class="flex">
+                                                        <div class="flex-shrink-0">
+                                                            <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                                            </svg>
+                                                        </div>
+                                                        <div class="ml-3">
+                                                            <h3 class="text-sm font-medium text-red-800 dark:text-red-200">Warning: This action cannot be undone</h3>
+                                                            <div class="mt-2 text-sm text-red-700 dark:text-red-300">
+                                                                <p>Deleting your account will permanently remove all your data, including:</p>
+                                                                <ul class="list-disc list-inside mt-2 space-y-1">
+                                                                    <li>All uploaded notes, videos, and PYQs</li>
+                                                                    <li>Your profile information and settings</li>
+                                                                    <li>Download history and statistics</li>
+                                                                    <li>All associated data and preferences</li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <EditForm Model="@deleteAccountModel" OnValidSubmit="@DeleteUserAsync" class="space-y-6">
+                                                    <FluentValidationValidator />
+                                                    <div>
+                                                        <label for="delete-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                            Confirm Password
+                                                        </label>
+                                                        <div class="relative">
+                                                            <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                                </svg>
+                                                            </div>
+                                                            <InputText @bind-Value="deleteAccountModel.Password"
+                                                            type="@(showConfirmPassword ? "text" : "password")"
+                                                            id="delete-password"
+                                                            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                                            placeholder="Enter your password to confirm" />
+                                                            <button type="button" class="absolute right-3 top-3 text-text-secondary hover:text-text-primary" @onclick="@(() => TogglePasswordVisibility("confirm"))">
+                                                                <i class="fas @(showConfirmPassword ? "fa-eye-slash" : "fa-eye")"></i>
+                                                            </button>
+                                                        </div>
+                                                        <ValidationMessage For="@(() => deleteAccountModel.Password)" class="mt-1.5 text-sm text-red-500" />
+                                                    </div>
+
+                                                    <div>
+                                                        <label for="delete-confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                                            Type "DELETE" to confirm
+                                                        </label>
+                                                        <InputText @bind-Value="deleteAccountModel.DeleteConfirmation"
+                                                        id="delete-confirmation"
+                                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                                        placeholder="Type DELETE in capital letters" />
+                                                        <ValidationMessage For="@(() => deleteAccountModel.DeleteConfirmation)" class="mt-1.5 text-sm text-red-500" />
+                                                    </div>
+
+                                                    <div class="flex items-center space-x-2">
+                                                        <InputCheckbox @bind-Value="deleteAccountModel.UnderstandDeletion"
+                                                        id="delete-understand"
+                                                        class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 dark:border-gray-600 rounded" />
+                                                        <label for="delete-understand" class="text-sm text-gray-700 dark:text-gray-300">
+                                                            I understand that this action cannot be undone
+                                                        </label>
+                                                    </div>
+                                                    <ValidationMessage For="@(() => deleteAccountModel.UnderstandDeletion)" class="mt-1.5 text-sm text-red-500" />
+
+                                                    <div class="flex items-center justify-end space-x-3 pt-4">
+                                                        <button type="button" @onclick="@(() => showDeleteModal = !showDeleteModal)" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                                            Cancel
+                                                        </button>
+                                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+                                                            Delete Account
+                                                        </button>
+                                                    </div>
+                                                </EditForm>
+                                            </div>
+                                        </div>
+                                    }
+
                                 </div>
                             </div>
                         </div>
