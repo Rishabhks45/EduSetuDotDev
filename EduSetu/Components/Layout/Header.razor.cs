@@ -1,6 +1,7 @@
 using EduSetu.Services.Implementations;
 using EduSetu.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using System.Security.Claims;
 
@@ -24,14 +25,27 @@ namespace EduSetu.Components.Layout
 
         protected override async Task OnInitializedAsync()
         {
+            await LoadUserInfo();
             GetHeaderStyle();
+            AuthProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+        }
+
+        private async void OnAuthenticationStateChanged(Task<AuthenticationState> task)
+        {
+            await LoadUserInfo();
+            await InvokeAsync(StateHasChanged);
+        }
+
+        private async Task LoadUserInfo()
+        {
             var authState = await AuthProvider.GetAuthenticationStateAsync();
-            user = authState.User;
+            var user = authState.User;
             isAuthenticated = user.Identity?.IsAuthenticated == true;
+
             if (isAuthenticated)
             {
-                userName = user.Identity?.Name ?? user.FindFirst("name")?.Value ?? user.FindFirst("given_name")?.Value;
-                userEmail = user.FindFirst(c => c.Type == "email" || c.Type == ClaimTypes.Email)?.Value;
+                userName = user.FindFirst(ClaimTypes.Name)?.Value ?? "Guest User";
+                userEmail = user.FindFirst(ClaimTypes.Email)?.Value ?? "guest@example.com";
                 UserProfileUrl = user.FindFirst("ProfilePictureUrl")?.Value;
             }
         }

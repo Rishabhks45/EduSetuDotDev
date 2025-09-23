@@ -68,7 +68,6 @@ namespace EduSetu.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             await ShowLoaderAsync();
-
             await CheckAuthenticationState();
             await LoadUserProfileAsync();
             await HideLoaderAsync();

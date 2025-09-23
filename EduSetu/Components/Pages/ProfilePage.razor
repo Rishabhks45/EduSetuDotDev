@@ -2,6 +2,7 @@
 @inherits BaseComponent
 @using System.ComponentModel.DataAnnotations
 @using Blazored.FluentValidation
+@using EduSetu.Components.Shared
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
 
@@ -672,3 +673,4 @@
     </div>
 }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<Loader IsLoading="isLoading" />
