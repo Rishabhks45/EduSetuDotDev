@@ -9,7 +9,10 @@ namespace EduSetu.Components.Layout
 {
     public partial class Header
     {
+        [Inject] private AuthenticationStateProvider AuthProvider { get; set; } = default!;
         [Inject] private IFileUploadService FileUploadService { get; set; } = default!;
+        [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+        [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
 
         private bool isScrolled = false;
         private bool isMenuOpen = false;
@@ -129,7 +132,7 @@ namespace EduSetu.Components.Layout
 
         private void Logout()
         {
-            Navigation.NavigateTo("/api/auth/logout", forceLoad: true);
+            NavigationManager.NavigateTo("/api/auth/logout", forceLoad: true);
         }
 
         [JSInvokable]
@@ -165,6 +168,9 @@ namespace EduSetu.Components.Layout
             {
                 objRef.Dispose();
             }
+
+            // Unsubscribe from authentication state changes
+            AuthProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
         }
     }
 }

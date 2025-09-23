@@ -124,7 +124,7 @@ public class Startup
 
         services.AddControllers();
 
-        services.AddSingleton<INotificationService, NotificationService>();
+        services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IFileUploadService, FileUploadService>();
     }
 
