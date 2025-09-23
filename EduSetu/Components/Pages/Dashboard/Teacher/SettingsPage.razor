@@ -3,6 +3,7 @@
 @using EduSetu.Components.Layout
 @layout TeacherLayout
 @inherits BaseComponent
+@using EduSetu.Components.Shared
 @using EduSetu.Domain.Enums
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Roles = "Teacher")]
@@ -727,3 +728,4 @@
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<Loader IsLoading="isLoading" />

@@ -79,7 +79,6 @@ namespace EduSetu.Components.Pages.Dashboard.Teacher
         protected async override Task OnInitializedAsync()
         {
             await ShowLoaderAsync();
-
             await CheckAuthenticationState();
             await LoadUserProfileAsync();
             await LoadCoachingProfileAsync();
@@ -280,7 +279,7 @@ namespace EduSetu.Components.Pages.Dashboard.Teacher
         {
             isLoading = true;
             InstituteformData.TeacherId = session.UserId;
-            var Response = await Mediator.Send(new RegisterCoachingDetailsRequest(InstituteformData));
+            var Response = await Mediator.Send(new UpsertCoachingDetailsRequest(InstituteformData));
 
             if (!Response.HasError)
             {

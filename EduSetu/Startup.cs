@@ -1,13 +1,7 @@
-using EduSetu.Application.Common.Interfaces;
 using EduSetu.Components;
-using EduSetu.Infrastructure.Data.Contexts;
-using EduSetu.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
 using EduSetu.Application.Common.Settings;
 using EduSetu.Infrastructure.DependencyInjection;
-using FluentValidation;
-using EduSetu.Application.Features.Authentication;
 using System.Security.Claims;
 using EduSetu.Services.Interfaces;
 using EduSetu.Services.Implementations;
@@ -25,17 +19,13 @@ public class Startup
     {
         services.AddRazorComponents()
             .AddInteractiveServerComponents()
-            .AddInteractiveServerComponents()
-            .AddCircuitOptions(options => { options.DetailedErrors = true; });
+            .AddCircuitOptions(options => { options.DetailedErrors = true; })
+            .AddHubOptions(x => { x.MaximumParallelInvocationsPerClient = 1; x.MaximumReceiveMessageSize = 1024 * 1024 * 5; });
 
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+        // Centralized registrations via Infrastructure/Application layers
+        services.AddInfrastructure(Configuration);
+        services.AddApplicationServices();
 
-        services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
-        services.AddScoped<IPasswordEncryptionService, PasswordEncryptionService>();
-        services.AddScoped<IFileUploadService, FileUploadService>();
-
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(EduSetu.Application.Features.Authentication.Request.LoginRequest).Assembly));
         services.AddHttpContextAccessor();
 
         // Add data protection services for OAuth state validation
@@ -132,13 +122,10 @@ public class Startup
         services.Configure<EncryptionSettings>(
             Configuration.GetSection("EncryptionSettings"));
 
-        services.AddInfrastructure(Configuration);
-        services.AddApplicationServices();
-
         services.AddControllers();
-        services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
-        
+
         services.AddSingleton<INotificationService, NotificationService>();
+        services.AddScoped<IFileUploadService, FileUploadService>();
     }
 
     public void Configure(WebApplication app, IWebHostEnvironment env)

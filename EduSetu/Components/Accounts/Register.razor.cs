@@ -115,7 +115,7 @@ namespace EduSetu.Components.Accounts
         private async Task HandleCoachingDetailsSubmitAsync()
         {
             isLoading = true;
-            var Response = await Mediator.Send(new RegisterCoachingDetailsRequest(InstituteformData));
+            var Response = await Mediator.Send(new UpsertCoachingDetailsRequest(InstituteformData));
 
             if (!Response.HasError)
             {

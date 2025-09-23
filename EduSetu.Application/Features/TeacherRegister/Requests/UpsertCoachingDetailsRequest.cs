@@ -6,11 +6,11 @@ using MediatR;
 namespace EduSetu.Application.Features.TeacherRegister.Requests;
 
 
-public sealed record RegisterCoachingDetailsRequest(CoachingDetailsDto Dto) : IRequest<RegisterCoachingDetailsResponse>;
+public sealed record UpsertCoachingDetailsRequest(CoachingDetailsDto Dto) : IRequest<RegisterCoachingDetailsResponse>;
 
 public sealed class RegisterCoachingDetailsResponse : AppResult { }
 
-internal sealed class RegisterCoachingDetailsRequestHandler : IRequestHandler<RegisterCoachingDetailsRequest, RegisterCoachingDetailsResponse>
+internal sealed class RegisterCoachingDetailsRequestHandler : IRequestHandler<UpsertCoachingDetailsRequest, RegisterCoachingDetailsResponse>
 {
     public IAppDbContext _Ctx;
     public repository _Repository;
@@ -21,7 +21,7 @@ internal sealed class RegisterCoachingDetailsRequestHandler : IRequestHandler<Re
         _Repository = repository;
     }
 
-    public async Task<RegisterCoachingDetailsResponse> Handle(RegisterCoachingDetailsRequest request, CancellationToken cancellationToken)
+    public async Task<RegisterCoachingDetailsResponse> Handle(UpsertCoachingDetailsRequest request, CancellationToken cancellationToken)
     {
         var result = new RegisterCoachingDetailsResponse();
 

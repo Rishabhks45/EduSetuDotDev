@@ -1,0 +1,19 @@
+﻿
+@* This should be a full page loader and should overlay the entire screen *@
+<div hidden="@(!IsLoading)">
+    <div class="_dn_loader">
+        <div class="_dn_inner_loading">
+            <div class="logo-loading">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    // Use this to set the visibility based on the "Loading State" of the application
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+}
