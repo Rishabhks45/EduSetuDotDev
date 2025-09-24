@@ -40,14 +40,12 @@ namespace EduSetu.Components.Pages
         bool hasSpecialChar;
         bool isPasswordValid => hasMinLength && hasUppercase && hasNumber && hasSpecialChar;
 
-        private bool isEditing = false;
         private string? ImageUrlToView;
         private bool showViewProfileImageModal = false;
         private bool isChangingPassword = false;
         private bool isCropping = false;
         private bool showCropModal = false;
         private bool isSaving = false;
-        private IBrowserFile? selectedFile;
         private string cropImageError = string.Empty;
         private string? originalProfilePictureUrl;
         private string? DELETE = "DELETE";
@@ -68,6 +66,7 @@ namespace EduSetu.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             await ShowLoaderAsync();
+            //await Task.Delay(50000);
             await CheckAuthenticationState();
             await LoadUserProfileAsync();
             await HideLoaderAsync();
@@ -204,7 +203,6 @@ namespace EduSetu.Components.Pages
         {
             record.ProfilePictureUrl = null;
             record.ImageBytes = null;
-            selectedFile = null;
             NotificationService.Success("Profile picture marked for removal. Click 'Save Changes' to confirm.");
         }
         private void HideCropModal()
@@ -284,8 +282,6 @@ namespace EduSetu.Components.Pages
                 NotificationService.Success("Profile updated successfully!");
                 await JSRuntime.InvokeVoidAsync("setHeaderUserInfo", record.FullName, record.Email, record.ProfilePictureUrl);
 
-                isEditing = false;
-                selectedFile = null;
                 originalProfilePictureUrl = null;
             }
             finally
@@ -426,7 +422,6 @@ namespace EduSetu.Components.Pages
             // Restore original profile picture state
             record.ProfilePictureUrl = originalProfilePictureUrl;
             record.ImageBytes = null;
-            selectedFile = null;
             CropedImage = null;
             
             isEditingProfile = false;

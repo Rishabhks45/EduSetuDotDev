@@ -96,9 +96,13 @@ public class Startup
         })
         .AddGoogle("Google", options =>
         {
-            options.ClientId = "367131133436-9ulnv933benc9d4cl4v85ddiaps28ped.apps.googleusercontent.com";
-            options.ClientSecret = "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";
-            options.CallbackPath = "/signin-google";
+            // Get from configuration instead of hardcoding
+            options.ClientId = Configuration["Authentication:Google:ClientId"] ?? 
+                "367131133436-9ulnv933benc9d4cl4v85ddiaps28ped.apps.googleusercontent.com";
+            options.ClientSecret = Configuration["Authentication:Google:ClientSecret"] ?? 
+                "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";
+            options.CallbackPath = Configuration["Authentication:Google:CallbackPath"] ?? 
+                "/signin-google";
             options.SaveTokens = true;
             options.UsePkce = true;
             options.Events.OnCreatingTicket = context =>
