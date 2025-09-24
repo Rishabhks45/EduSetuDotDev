@@ -29,7 +29,7 @@ internal sealed class GetCoachingProfileRequestHandler : IRequestHandler<GetCoac
 
         if (coachingEntity is null)
         {
-            result.Failure(ErrorCode.NotFound, "Coaching profile not found");
+            //result.Failure(ErrorCode.NotFound, "Coaching profile not found");
             return result;
         }
 
